@@ -9,7 +9,9 @@ const {
   flatten,
   maxBy,
   minBy,
+  cloneDeep,
 } = require("lodash");
+const debug = false;
 const woodLength = 120;
 
 const { numbers } = require("./number");
@@ -25,6 +27,11 @@ function findCombinations(numbers, suggestList) {
 
   const selectedCombinations = [];
   function generateCombinations(currentCombination, start) {
+    const foundZero = selectedCombinations.find((item) => item.remain === 0)
+    if (foundZero) {
+      return
+    }
+
     combinations.push(currentCombination);
     combinationKeys = {
       ...combinationKeys,
@@ -33,6 +40,7 @@ function findCombinations(numbers, suggestList) {
 
     for (let i = start; i < numbers.length; i++) {
       const combindCurrent = currentCombination.concat(numbers[i]);
+      // console.log('combindCurrent:', combindCurrent)
 
       // check  duplication
       const found = combinationKeys[sortBy(combindCurrent).join(",")];
@@ -48,10 +56,6 @@ function findCombinations(numbers, suggestList) {
       // check lowetst is 0
       const remain = parseFloat((woodLength - sum(combindCurrent)).toFixed(2));
       if (remain === 0) {
-        // lowest = remain;
-        // combinationLowest.push(combindCurrent.join(","));
-        // console.log("===>", combindCurrent.join(","));
-
         // check pattern ว่ามี list ของ order หรือไม่ (filter out เฉพาะ list ที่มีแค่ suggest)
         const hasOrder = intersect(combindCurrent, numbers);
         if (hasOrder.length <= 0) {
@@ -64,7 +68,8 @@ function findCombinations(numbers, suggestList) {
           remain: remain,
           pattern: pattern,
         });
-        console.log("--->", remain, ',', pattern);
+        if (debug) console.log("--->", remain, ",", pattern);
+        continue;
       }
 
       // find lowest: ผลรวมของ patter นี้ - 120
@@ -83,20 +88,9 @@ function findCombinations(numbers, suggestList) {
           remain: remain,
           pattern: pattern,
         });
-        console.log(remain, combindCurrent.join(","));
-        // lowestList.push(remain);
-        // console.log("lowest:", lowest);
-        // const sortedNumbers = sortBy(numbers)
-        // const intersect = sortBy(combindCurrent).filter((val) => sortedNumbers.includes(val))
-        // if (intersect.length > 0) {
-        //   console.log(remain, combindCurrent.join(","));
-        // }
-        // console.log('intersect:', intersect.length)
-        // console.log('combindCurrent:', sortBy(numbers), sortBy(combindCurrent))
-        // combinationLowest.push(combindCurrent.join(","));
-        // console.log(remain, combindCurrent.join(","));
+        if (debug) console.log(remain, combindCurrent.join(","));
       }
-      // console.log(remain, combindCurrent.join(","));
+
       generateCombinations(combindCurrent, i + 1);
     }
   }
@@ -108,7 +102,7 @@ function findCombinations(numbers, suggestList) {
   //   console.log(element);
   // });
   const lowestRemain = orderBy(selectedCombinations, ["remain"], ["asc"])[0];
-  console.log("lowest_remain:", lowestRemain);
+  if (debug) console.log("lowest_remain:", lowestRemain);
 
   return {
     combinations,
@@ -140,82 +134,92 @@ function filterForCombination(numbers) {
 // Example usage:
 // const numbers = [1, 2, 3, 4, 5];
 
-const standardList = [
-  [],
-  // [17.5, 17.5, 14.5, 14.5],
-  // [17.5, 17.5, 12.5, 12.5],
-  // [14.5, 14.5, 12.5, 12.5],
-  // [14.5, 14.5, 10.5, 10.5],
-  // [14.19, 14.19, 10.74, 10.74],
-  // [12.5, 12.5, 10.5, 10.5],
-  // [10.5, 10.5, 8.5, 8.5],
-  // [9.5, 9.5, 7.5, 7.5],
-  // [8.5, 8.5, 6.5, 6.5],
-];
+function go() {
+  let copyNumber = cloneDeep(numbers);
+  while (copyNumber.length) {
+  // while (copyNumber.length > 306) {
+  //   console.log('copyNumber.length:', copyNumber.length)
+  //   copyNumber.pop()
+    const standardList = [
+      [],
+      // [17.5, 17.5, 14.5, 14.5],
+      // [17.5, 17.5, 12.5, 12.5],
+      // [14.5, 14.5, 12.5, 12.5],
+      // [14.5, 14.5, 10.5, 10.5],
+      // [14.19, 14.19, 10.74, 10.74],
+      // [12.5, 12.5, 10.5, 10.5],
+      // [10.5, 10.5, 8.5, 8.5],
+      // [9.5, 9.5, 7.5, 7.5],
+      // [8.5, 8.5, 6.5, 6.5],
+    ];
 
-const lowestRemainList = [];
-for (const list of standardList) {
-  const numberTest = [...numbers, ...list];
-  console.log("suggest_list:", list.join(","));
+    const lowestRemainList = [];
+    for (const list of standardList) {
+      const numberTest = [...copyNumber, ...list];
+      if (debug) console.log("suggest_list:", list.join(","));
 
-  const sliced = filterForCombination(numberTest);
-  const slicedFormatter = sortBy(flatten(sliced)).reverse();
-  const { lowestRemain } = findCombinations(slicedFormatter, list);
-  lowestRemainList.push(lowestRemain);
-  console.log("======================= end =======================");
+      const sliced = filterForCombination(numberTest);
+      const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      const { lowestRemain } = findCombinations(slicedFormatter, list);
+      lowestRemainList.push(lowestRemain);
+      if (debug) console.log("======================= end =======================");
+    }
+
+    const findLowestRemainList = lowestRemainList.map((element) => {
+      const stdList = uniq(flatten(standardList));
+      let calculate = stdList.map((val) => {
+        return {
+          wood: val,
+          test_cutting: +parseFloat(element.remain - val).toFixed(2),
+        };
+      });
+      // console.log('calculate:', element.remain, calculate)
+      calculate = calculate.filter((val) => val.test_cutting >= 0);
+
+      return {
+        ...element,
+        ...orderBy(calculate, ["test_cutting"], ["asc"])[0],
+      };
+    });
+
+    const selectedFromTestCutting = orderBy(
+      findLowestRemainList.filter((val) => val.test_cutting),
+      ["test_cutting"],
+      ["asc"]
+    )[0];
+
+    const selectedFromLowestList = orderBy(
+      findLowestRemainList,
+      ["remain"],
+      ["asc"]
+    )[0];
+
+    let selected;
+    if (selectedFromTestCutting) {
+      if (debug) console.log("====>selectedFromTestCutting");
+      selected = selectedFromTestCutting;
+    } else {
+      selected = selectedFromLowestList;
+      if (debug) console.log("====>selectedFromLowestList");
+    }
+
+    if (debug) console.log("selected:", selected.remain);
+    if (debug) console.log("suggest_list:", selected.suggest_list.join(","));
+    if (debug) console.log("pattern:", selected.pattern);
+
+
+    const selectedArray = selected.pattern.split(',')
+    for (const iterator of selectedArray) {
+      let deletIndex = copyNumber.indexOf(+iterator);
+      if (deletIndex > -1) {
+        copyNumber.splice(deletIndex, 1);
+      }
+    }
+    console.log(selected.pattern)
+  }
 }
 
-// lowestRemainList.forEach((element) => {
-//   const stdList = uniq(flatten(standardList))
-//   const calculate = stdList.map((val) => {
-//     return element.remain - val
-//   }).filter((val) => val >= 0)
-//   // console.log('stdList:', minBy(calculate))
-//   // console.log(element.remain);
-// });
-
-const findLowestRemainList = lowestRemainList.map((element) => {
-  const stdList = uniq(flatten(standardList));
-  let calculate = stdList.map((val) => {
-    return {
-      wood: val,
-      test_cutting: +parseFloat(element.remain - val).toFixed(2),
-    };
-  });
-  // console.log('calculate:', element.remain, calculate)
-  calculate = calculate.filter((val) => val.test_cutting >= 0);
-
-  return {
-    ...element,
-    ...orderBy(calculate, ["test_cutting"], ["asc"])[0],
-  };
-});
-
-const selectedFromTestCutting = orderBy(
-  findLowestRemainList.filter((val) => val.test_cutting),
-  ["test_cutting"],
-  ["asc"]
-)[0];
-
-const selectedFromLowestList = orderBy(
-  findLowestRemainList,
-  ["remain"],
-  ["asc"]
-)[0];
-
-let selected;
-if (selectedFromTestCutting) {
-  console.log("====>selectedFromTestCutting");
-  selected = selectedFromTestCutting;
-} else {
-  selected = selectedFromLowestList;
-  console.log("====>selectedFromLowestList");
-}
-
-console.log("selected:", selected.remain);
-// console.log("selected:", selected);
-console.log("suggest_list:", selected.suggest_list.join(","));
-console.log("pattern:", selected.pattern);
+go();
 
 // const sliced = filterForCombination(numbers);
 // const slicedFormatter = sortBy(flatten(sliced)).reverse();
