@@ -5,27 +5,20 @@ const { orderBy, sortBy } = require("lodash");
 const sparePart = 0.25;
 
 const orders = [
-  { size: "10x12", woodWidth: 1, qty: 11 },
-  { size: "10x15", woodWidth: 1, qty: 12 },
-  { size: "10x18", woodWidth: 1, qty: 2 },
-  { size: "10x20", woodWidth: 1, qty: 2 },
-  { size: "12x15", woodWidth: 1, qty: 5 },
-  { size: "12x18", woodWidth: 1, qty: 13 },
-  { size: "12x23", woodWidth: 1, qty: 1 },
-  { size: "12x24", woodWidth: 1, qty: 2 },
-  { size: "13x24", woodWidth: 1, qty: 2 },
-  { size: "15.5x23", woodWidth: 1, qty: 1 },
-  { size: "15x20", woodWidth: 1, qty: 3 },
-  { size: "17x23", woodWidth: 1, qty: 1 },
-  { size: "20x20", woodWidth: 1, qty: 1 },
-  { size: "20x24", woodWidth: 1, qty: 1 },
-  { size: "20x26", woodWidth: 1, qty: 1 },
-  { size: "20x28.5", woodWidth: 1, qty: 1 },
-  { size: "20x30", woodWidth: 1, qty: 2 },
-  { size: "21x15", woodWidth: 1, qty: 1 },
-  { size: "24x25", woodWidth: 1, qty: 1 },
-  { size: "11.61x16.34", woodWidth: 1, qty: 2 },
-  { size: "8x12", woodWidth: 1, qty: 12 },
+  {size: '10x12',woodWidth: 1,qty: 5,},
+  {size: '10x15',woodWidth: 1,qty: 8,},
+  {size: '11x14',woodWidth: 1,qty: 1,},
+  {size: '12x18',woodWidth: 1,qty: 10,},
+  {size: '12x24',woodWidth: 1,qty: 1,},
+  {size: '12x30',woodWidth: 1,qty: 1,},
+  {size: '15x20',woodWidth: 1,qty: 2,},
+  {size: '18x23',woodWidth: 1,qty: 1,},
+  {size: '29x10',woodWidth: 1,qty: 2,},
+  {size: '4x6',woodWidth: 1,qty: 7,},
+  {size: '6x8',woodWidth: 1,qty: 20,},
+  {size: '8.27x11.69',woodWidth: 1,qty: 15,},
+  {size: '8x10',woodWidth: 1,qty: 20,},
+  {size: '8x12',woodWidth: 1,qty: 4,},
 ];
 
 const test = () => {
@@ -57,7 +50,7 @@ const test = () => {
     if (useKeeping.length) {
       // console.log('wested:', useKeeping, wested, )
       // console.log(`${item.cutting}`, useKeeping[0].wested)
-      console.log(`${item.cutting}`, ":", useKeeping[0].wested);
+      console.log(`${item.cutting}`, ";", useKeeping[0].wested);
       wested = wested.filter((w) => w !== useKeeping[0].wested);
       continue;
     }

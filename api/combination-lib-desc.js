@@ -134,7 +134,7 @@ function filterForCombination(numbers) {
 // Example usage:
 // const numbers = [1, 2, 3, 4, 5];
 
-function go() {
+async function go() {
   let copyNumber = cloneDeep(numbers);
   while (copyNumber.length) {
   // while (copyNumber.length > 306) {
@@ -157,13 +157,14 @@ function go() {
     for (const list of standardList) {
       const numberTest = [...copyNumber, ...list];
       if (debug) console.log("suggest_list:", list.join(","));
-
       const sliced = filterForCombination(numberTest);
       const slicedFormatter = sortBy(flatten(sliced)).reverse();
       const { lowestRemain } = findCombinations(slicedFormatter, list);
       lowestRemainList.push(lowestRemain);
       if (debug) console.log("======================= end =======================");
     }
+
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const findLowestRemainList = lowestRemainList.map((element) => {
       const stdList = uniq(flatten(standardList));
@@ -181,6 +182,8 @@ function go() {
         ...orderBy(calculate, ["test_cutting"], ["asc"])[0],
       };
     });
+
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const selectedFromTestCutting = orderBy(
       findLowestRemainList.filter((val) => val.test_cutting),
@@ -207,6 +210,7 @@ function go() {
     if (debug) console.log("suggest_list:", selected.suggest_list.join(","));
     if (debug) console.log("pattern:", selected.pattern);
 
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const selectedArray = selected.pattern.split(',')
     for (const iterator of selectedArray) {

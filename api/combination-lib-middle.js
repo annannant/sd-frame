@@ -10,6 +10,7 @@ const {
   maxBy,
   minBy,
   cloneDeep,
+  uniqBy,
 } = require("lodash");
 const debug = false;
 const woodLength = 120;
@@ -27,10 +28,10 @@ function findCombinations(numbers, suggestList) {
 
   const selectedCombinations = [];
   function generateCombinations(currentCombination, start) {
-    const foundZero = selectedCombinations.find((item) => item.remain === 0)
-    if (foundZero) {
-      return
-    }
+    // const foundZero = selectedCombinations.find((item) => item.remain === 0)
+    // if (foundZero) {
+    //   return
+    // }
 
     combinations.push(currentCombination);
     combinationKeys = {
@@ -101,11 +102,21 @@ function findCombinations(numbers, suggestList) {
   // uniq(combinationLowest).forEach((element) => {
   //   console.log(element);
   // });
+
   const lowestRemain = orderBy(selectedCombinations, ["remain"], ["asc"])[0];
   if (debug) console.log("lowest_remain:", lowestRemain);
 
+  // // find middle
+  // const lowestValue = lowestRemain.remain
+  // const lowestList = selectedCombinations.filter((item) => item.remain === lowestValue) 
+  // const uniqList = uniqBy(lowestList, 'pattern')
+  // // console.log('uniqList:', lowestList.length, uniqList.length)
+  // const middleLowestRemain = uniqList[Math.floor(uniqList.length / 2)];
+  // if (debug) console.log("lowest_remain_middle:", middleLowestRemain);
+
   return {
     combinations,
+    // lowestRemain: middleLowestRemain,
     lowestRemain,
   };
 }
@@ -160,7 +171,12 @@ function go() {
 
       const sliced = filterForCombination(numberTest);
       // const slicedFormatter = sortBy(flatten(sliced)).reverse();
-      const slicedFormatter = sortBy(flatten(sliced));
+
+      // start with middle
+      const sliced2 = sortBy(flatten(sliced)).reverse();
+      const midex = sliced2.length / 2
+      const slicedFormatter = [...sliced2.slice(midex, sliced2.length), ...sliced2.slice(0, midex - 1)]
+
       const { lowestRemain } = findCombinations(slicedFormatter, list);
       lowestRemainList.push(lowestRemain);
       if (debug) console.log("======================= end =======================");
