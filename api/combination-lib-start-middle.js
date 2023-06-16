@@ -10,7 +10,6 @@ const {
   maxBy,
   minBy,
   cloneDeep,
-  uniqBy,
 } = require("lodash");
 const debug = false;
 const woodLength = 120;
@@ -28,10 +27,10 @@ function findCombinations(numbers, suggestList) {
 
   const selectedCombinations = [];
   function generateCombinations(currentCombination, start) {
-    // const foundZero = selectedCombinations.find((item) => item.remain === 0)
-    // if (foundZero) {
-    //   return
-    // }
+    const foundZero = selectedCombinations.find((item) => item.remain === 0)
+    if (foundZero) {
+      return
+    }
 
     combinations.push(currentCombination);
     combinationKeys = {
@@ -70,7 +69,7 @@ function findCombinations(numbers, suggestList) {
           pattern: pattern,
         });
         if (debug) console.log("--->", remain, ",", pattern);
-        // continue;
+        continue;
       }
 
       // find lowest: ผลรวมของ patter นี้ - 120
@@ -102,29 +101,12 @@ function findCombinations(numbers, suggestList) {
   // uniq(combinationLowest).forEach((element) => {
   //   console.log(element);
   // });
-
-  // selected first 0
   const lowestRemain = orderBy(selectedCombinations, ["remain"], ["asc"])[0];
   if (debug) console.log("lowest_remain:", lowestRemain);
 
-  // find other remain
-  // const lowestList = selectedCombinations.filter((item) => item.remain === lowestRemain.remain) 
-  // const uniqList = uniqBy(lowestList, 'pattern')
-  // const selectedIndex = uniqList.length > 1 ? 1 : 0
-  // const testLowestRemain = uniqList[selectedIndex] 
-  // if (debug) console.log("other_remain:", testLowestRemain);
-
-  // find middle
-  const lowestList = selectedCombinations.filter((item) => item.remain === lowestRemain.remain) 
-  const uniqList = uniqBy(lowestList, 'pattern')
-  const middleLowestRemain = uniqList[Math.floor(uniqList.length / 2)];
-  if (debug) console.log("middle_remain:", middleLowestRemain);
-
   return {
     combinations,
-    lowestRemain: middleLowestRemain,
-    // lowestRemain: testLowestRemain,
-    // lowestRemain,
+    lowestRemain,
   };
 }
 
@@ -152,10 +134,7 @@ function filterForCombination(numbers) {
 // Example usage:
 // const numbers = [1, 2, 3, 4, 5];
 
-
-
-
-function go() {
+async function go() {
   let copyNumber = cloneDeep(numbers);
   while (copyNumber.length) {
   // while (copyNumber.length > 306) {
@@ -178,20 +157,19 @@ function go() {
     for (const list of standardList) {
       const numberTest = [...copyNumber, ...list];
       if (debug) console.log("suggest_list:", list.join(","));
-
       const sliced = filterForCombination(numberTest);
-      const slicedFormatter = sortBy(flatten(sliced)).reverse();
-      // const slicedFormatter = sortBy(flatten(sliced))
-
-      // // start with middle
-      // const sliced2 = sortBy(flatten(sliced)).reverse();
-      // const midex = sliced2.length / 2
-      // const slicedFormatter = [...sliced2.slice(midex, sliced2.length), ...sliced2.slice(0, midex - 1)]
+      // const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      // start with middle
+      const sliced2 = sortBy(flatten(sliced)).reverse();
+      const midex = sliced2.length / 2
+      const slicedFormatter = [...sliced2.slice(midex, sliced2.length), ...sliced2.slice(0, midex - 1)]
 
       const { lowestRemain } = findCombinations(slicedFormatter, list);
       lowestRemainList.push(lowestRemain);
       if (debug) console.log("======================= end =======================");
     }
+
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const findLowestRemainList = lowestRemainList.map((element) => {
       const stdList = uniq(flatten(standardList));
@@ -209,6 +187,8 @@ function go() {
         ...orderBy(calculate, ["test_cutting"], ["asc"])[0],
       };
     });
+
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const selectedFromTestCutting = orderBy(
       findLowestRemainList.filter((val) => val.test_cutting),
@@ -235,6 +215,7 @@ function go() {
     if (debug) console.log("suggest_list:", selected.suggest_list.join(","));
     if (debug) console.log("pattern:", selected.pattern);
 
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     const selectedArray = selected.pattern.split(',')
     for (const iterator of selectedArray) {

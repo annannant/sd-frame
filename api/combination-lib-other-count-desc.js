@@ -21,6 +21,80 @@ function intersect(patternList, numbers) {
   const sortedNumbers = sortBy(numbers);
   return sortBy(patternList).filter((val) => sortedNumbers.includes(val));
 }
+
+function maxDiff(input) {
+  const list = sortBy(input).reverse()
+  let diff = 0
+  // for (let index = 0; index < list.length; index++) {
+  //   if (index === list.length - 1) {
+  //     continue
+  //   }
+
+  //   const val = Math.abs(list[index] - list[index + 1])
+  //   if (val < diff) {
+  //     diff = val
+  //   }
+  // }
+
+  // max diff
+  for (let index = 0; index < list.length; index++) {
+    if (index === list.length - 1) {
+      continue
+    }
+
+    const val = Math.abs(list[index] - list[index + 1])
+    if (val > diff) {
+      diff = val
+    }
+  }
+ 
+  return diff
+}
+
+function selectedSibling(uniqList) {
+  for (let index = 0; index < uniqList.length; index++) {
+    let merge = []
+    if (index != 0) {
+      merge = [...merge, ...cloneDeep(uniqList).splice(0, index - 1)]
+    }
+    merge = [...merge, ...cloneDeep(uniqList).splice(index + 1, uniqList.length - 1)]
+
+    const element = uniqList[0]
+    const groupped = groupBy(element.pattern.split(','))
+
+// console.log('groupped:', groupped)
+    // หาอันที่โดนใช้มากสุด
+    let max = 0
+    for (const iterator of Object.keys(groupped)) {
+      const matching = groupped[iterator].join(',')
+      const filtered = merge.filter((val) => {
+        return val.pattern.split(matching).length > 1
+      })
+      max += filtered.length
+      // console.log('iterator:', iterator, ":", groupped[iterator].join(','), filtered.length)
+    }
+
+// //     const before = index == 0 ? [] : cloneDeep(formatted).splice(0, index - 1)
+// // console.log('before:', before)
+// //     const after = cloneDeep(formatted).splice(index + 1, formatted.length - 1)
+
+//     // const merge = [...before, ...after]
+//     const groupped = groupBy(formatted[index])
+
+
+
+//     console.log('formatted[index]:', formatted[index].join(','))
+//     merge.forEach((mval) => {
+//       console.log(mval.join(','));
+//     });
+//     console.log('======')
+// ต้องเลือก max น้อยสุด
+      uniqList[index]['max_match'] = max
+  }
+// console.log('uniqList:', uniqList)
+  return uniqList
+}
+
 function findCombinations(numbers, suggestList) {
   let lowest = 99999999999999;
   const combinations = [];
@@ -28,10 +102,10 @@ function findCombinations(numbers, suggestList) {
 
   const selectedCombinations = [];
   function generateCombinations(currentCombination, start) {
-    // const foundZero = selectedCombinations.find((item) => item.remain === 0)
-    // if (foundZero) {
-    //   return
-    // }
+    const foundZero = selectedCombinations.find((item) => item.remain === 0)
+    if (foundZero) {
+      return
+    }
 
     combinations.push(currentCombination);
     combinationKeys = {
@@ -63,13 +137,16 @@ function findCombinations(numbers, suggestList) {
           continue;
         }
 
-        const pattern = sortBy(combindCurrent).reverse().join(",");
+        const patternSorted = sortBy(combindCurrent).reverse();
+        const pattern = patternSorted.reverse().join(",");
+        const diff = maxDiff(patternSorted)
         selectedCombinations.push({
           suggest_list: suggestList,
           remain: remain,
           pattern: pattern,
+          diff,
         });
-        if (debug) console.log("--->", remain, ",", pattern);
+        if (debug) console.log("--->", remain, ",", pattern, ";", diff );
         // continue;
       }
 
@@ -83,13 +160,17 @@ function findCombinations(numbers, suggestList) {
         if (hasOrder.length <= 0) {
           continue;
         }
-        const pattern = sortBy(combindCurrent).reverse().join(",");
+
+        const patternSorted = sortBy(combindCurrent).reverse();
+        const pattern = patternSorted.join(",");
+        const diff = maxDiff(patternSorted)
         selectedCombinations.push({
           suggest_list: suggestList,
           remain: remain,
           pattern: pattern,
+          diff,
         });
-        if (debug) console.log(remain, combindCurrent.join(","));
+        if (debug) console.log(remain, combindCurrent.join(","), ";", diff);
       }
 
       generateCombinations(combindCurrent, i + 1);
@@ -108,22 +189,26 @@ function findCombinations(numbers, suggestList) {
   if (debug) console.log("lowest_remain:", lowestRemain);
 
   // find other remain
-  // const lowestList = selectedCombinations.filter((item) => item.remain === lowestRemain.remain) 
-  // const uniqList = uniqBy(lowestList, 'pattern')
-  // const selectedIndex = uniqList.length > 1 ? 1 : 0
-  // const testLowestRemain = uniqList[selectedIndex] 
-  // if (debug) console.log("other_remain:", testLowestRemain);
+  const lowestList = selectedCombinations.filter(
+    (item) => item.remain === lowestRemain.remain
+  );
 
-  // find middle
-  const lowestList = selectedCombinations.filter((item) => item.remain === lowestRemain.remain) 
-  const uniqList = uniqBy(lowestList, 'pattern')
-  const middleLowestRemain = uniqList[Math.floor(uniqList.length / 2)];
-  if (debug) console.log("middle_remain:", middleLowestRemain);
+  const uniqList = orderBy(uniqBy(lowestList, "pattern"), ['diff'], ['asc']);
+  const otherLowestRemain = uniqList[0];
+  // console.log('lowestList:', lowestList)
+
+  // const uniqList = uniqBy(lowestList, "pattern");
+  // const selected = selectedSibling(uniqList)
+  // const otherLowestRemain = orderBy(selected, "max_match", "asc")[0];
+  if (debug) console.log("other_remain:", otherLowestRemain);
+  
+  // console.log('uniqList:', lowestList.length, uniqList.length)
+  // const middleLowestRemain = uniqList[Math.floor(uniqList.length / 2)];
+  // if (debug) console.log("lowest_remain_middle:", middleLowestRemain);
 
   return {
     combinations,
-    lowestRemain: middleLowestRemain,
-    // lowestRemain: testLowestRemain,
+    lowestRemain: otherLowestRemain,
     // lowestRemain,
   };
 }
@@ -153,14 +238,30 @@ function filterForCombination(numbers) {
 // const numbers = [1, 2, 3, 4, 5];
 
 
-
+function orderNumberByGroup(numbers) {
+  const grouped = [];
+  const groupedKeys = groupBy(numbers);
+  for (let key of Object.keys(groupedKeys)) {
+    const element = groupedKeys[key];
+    grouped.push({
+      value: element,
+      count: element.length,
+    });
+    // grouped['count'] = grouped[key].length
+  }
+  // console.log('grouped:', )
+  return flatten(
+    orderBy(grouped, ["count"], ["asc"]).map(({ value }) => value)
+  );
+}
 
 function go() {
   let copyNumber = cloneDeep(numbers);
+
   while (copyNumber.length) {
-  // while (copyNumber.length > 306) {
-  //   console.log('copyNumber.length:', copyNumber.length)
-  //   copyNumber.pop()
+    // while (copyNumber.length > 306) {
+    //   console.log('copyNumber.length:', copyNumber.length)
+    //   copyNumber.pop()
     const standardList = [
       [],
       // [17.5, 17.5, 14.5, 14.5],
@@ -180,17 +281,18 @@ function go() {
       if (debug) console.log("suggest_list:", list.join(","));
 
       const sliced = filterForCombination(numberTest);
-      const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      // const slicedFormatter = sortBy(flatten(sliced)).reverse();
       // const slicedFormatter = sortBy(flatten(sliced))
+      const slicedFormatter = orderNumberByGroup(flatten(sliced));
 
       // // start with middle
       // const sliced2 = sortBy(flatten(sliced)).reverse();
       // const midex = sliced2.length / 2
       // const slicedFormatter = [...sliced2.slice(midex, sliced2.length), ...sliced2.slice(0, midex - 1)]
-
       const { lowestRemain } = findCombinations(slicedFormatter, list);
       lowestRemainList.push(lowestRemain);
-      if (debug) console.log("======================= end =======================");
+      if (debug)
+        console.log("======================= end =======================");
     }
 
     const findLowestRemainList = lowestRemainList.map((element) => {
@@ -235,15 +337,14 @@ function go() {
     if (debug) console.log("suggest_list:", selected.suggest_list.join(","));
     if (debug) console.log("pattern:", selected.pattern);
 
-
-    const selectedArray = selected.pattern.split(',')
+    const selectedArray = selected.pattern.split(",");
     for (const iterator of selectedArray) {
       let deletIndex = copyNumber.indexOf(+iterator);
       if (deletIndex > -1) {
         copyNumber.splice(deletIndex, 1);
       }
     }
-    console.log(selected.pattern)
+    console.log(selected.pattern);
   }
 }
 

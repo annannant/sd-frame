@@ -1,6 +1,15 @@
-const { sum, uniq, sortBy, orderBy, groupBy, slice, flatten } = require("lodash");
+const {
+  sum,
+  uniq,
+  sortBy,
+  orderBy,
+  groupBy,
+  slice,
+  flatten,
+} = require("lodash");
 
 function findCombinations(numbers) {
+console.log('numbers:', numbers.length)
   const combinations = [];
 
   function generateCombinations(currentCombination, start) {
@@ -11,56 +20,142 @@ function findCombinations(numbers) {
   }
 
   generateCombinations([], 0);
+  console.log('combinations:', combinations)
+  console.log('combinations:', combinations.length)
   return combinations;
 }
 
-
 // Example usage:
-const numbers = [1, 2, 3, 4, 5];
+// 2 ^ numbers.length
+const numbers = [1, 2, 3, 4, 5]; 
 // const numbers = [
-//   14.5	,
-// 14.5	,
-// 12.5	,
-// 12.5	,
-// 10.5	,
-// 10.5	,
-// 10.5	,
-// 10.5	,
-// 10.5	,
-// 10.5	,
-// 9.5	,
-// 9.5	,
-// 8.5	,
-// 8.5	,
-// 8.5	,
-// 8.5	,
-// 7.5	,
-// 7.5	,
-// 6.5	,
-// 6.5	,
+// 31		,
+// 31		,
+// 22.5		,
+// 22.5		,
+// 26.5		,
+// 26.5		,
+// 14.5		,
+// 14.5		,
+// 26.5		,
+// 26.5		,
+// 14.5		,
+// 14.5		,
+// 26.5		,
+// 26.5		,
+// 14.5		,
+// 14.5		,
+// 26.5		,
+// 26.5		,
+// 15.5		,
+// 15.5		,
+// 26.5		,
+// 26.5		,
+// 15.5		,
+// 15.5		,
+// 26.5		,
+// 26.5		,
+// 15.5		,
+// 15.5		,
+// 23.5		,
+// 23.5		,
+// 17.5		,
+// 17.5		,
+// 23.5		,
+// 23.5		,
+// 17.5		,
+// 17.5		,
+// 23.5		,
+// 23.5		,
+// 17.5		,
+// 17.5		,
+// 20.5		,
+// 20.5		,
+// 14.5		,
+// 14.5		,
+// 20.5		,
+// 20.5		,
+// 14.5		,
+// 14.5		,
+// 20.5		,
+// 20.5		,
+// 14.5		,
+// 14.5		,
+// 19.5		,
+// 19.5		,
+// 14.5		,
+// 14.5		,
+// 18.5		,
+// 18.5		,
+// 14.5		,
+// 14.5		,
+// 14.5		,
+// 14.5		,
+// 12.5		,
+// 12.5		,
+// 14.5		,
+// 14.5		,
+// 12.5		,
+// 12.5		,
+// 14.5		,
+// 14.5		,
+// 12.5		,
+// 12.5		,
+// 10.5		,
+// 10.5		,
+// 8.5		,
+// 8.5		,
+// 10.5		,
+// 10.5		,
+// 8.5		,
+// 8.5		,
+// 10.5		,
+// 10.5		,
+// 8.5		,
+// 8.5		,
+// 10.5		,
+// 10.5		,
+// 8.5		,
+// 8.5		,
+// 10.5		,
+// 10.5		,
+// 8.5		,
+// 8.5		,
+// 9.5		,
+// 9.5		,
+// 8.5		,
+// 8.5		,
+// 9.5		,
+// 9.5		,
+// 8.5		,
+// 8.5		,
+// 9.5		,
+// 9.5		,
+// 8.5		,
+// 8.5		,
 // ];
 
 // const sliced = filterForCombination(numbers)
-const woodLength = 68.81
+const woodLength = 68.81;
 const result = findCombinations(numbers);
-const values = result.filter((item) => {
-  const summary = sum(item);
-  return summary <= woodLength;
-});
-const filterd = uniq(values.map((item) => sortBy(item).join(",")));
-filterd.forEach((element) => {
-  console.log(element);
+// const values = result.filter((item) => {
+//   const summary = sum(item);
+//   return summary <= woodLength;
+// });
+// const filterd = uniq(values.map((item) => sortBy(item).join(",")));
+result.forEach((element) => {
+  console.log(element.join(','));
 });
 
-// // select
-const selected = filterd.map((item) => {
-  const summary = sum(item.split(",").map((val) => +val));
-  return {
-    pattern: item,
-    summary: summary,
-  };
-});
-console.log("selected:", orderBy(selected, ["summary"], ["desc"]));
+// // // select
+// const selected = filterd.map((item) => {
+//   const summary = sum(item.split(",").map((val) => +val));
+//   return {
+//     pattern: item,
+//     summary: summary,
+//   };
+// });
+// console.log("selected:", orderBy(selected, ["summary"], ["desc"]));
 
 // console.log('result:', result.filter(item => item.length))
 // console.log('result:', uniq(values.map((item) => sortBy(item).join(''))))
