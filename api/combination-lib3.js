@@ -19,7 +19,6 @@ function findCombinations(numbers) {
 
   for (let i = 0; i < numbers.length; i++) {
     const currentCombinations = [...combinations]; // Create a copy of existing combinations
-
     for (let j = 0; j < currentCombinations.length; j++) {
       combinations.push([...currentCombinations[j], numbers[i]]);
     }
@@ -31,5 +30,6 @@ function findCombinations(numbers) {
 const numbers = [1, 2, 3, 4, 5];
 const result = findCombinations(numbers);
 result.forEach((element) => {
-  console.log(element.join(','));
+  console.log(element)
+  // console.log(element.join(','));
 });

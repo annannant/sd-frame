@@ -1,22 +1,54 @@
 const PrepareCutting = require("./helper/prepare-cutting");
 
 const { orderBy, sortBy } = require("lodash");
-
+const { woodStock } = require("./number-wood-stock");
+console.log("woodStock:", woodStock);
 const sparePart = 0.25;
 
-const orders = 
-[
-  {size: '12x18',woodWidth: 1,qty: 1,},
-  {size: '10x18',woodWidth: 1,qty: 2,},
-  {size: '20x20',woodWidth: 1,qty: 3,},
-  {size: '21x15',woodWidth: 1,qty: 4,},
-  {size: '17x23',woodWidth: 1,qty: 5,},
-  {size: '15.5x23',woodWidth: 1,qty: 6,},
-  {size: '12x23',woodWidth: 1,qty: 7,},
-  {size: '20x24',woodWidth: 1,qty: 8,},
-  {size: '13x24',woodWidth: 1,qty: 9,},
-  {size: '20x28.5',woodWidth: 1,qty: 10,},
-  {size: '20x30',woodWidth: 1,qty: 11,},
+const orders = [
+  { size: "20x30", woodWidth: 1, qty: 2 },
+
+  { size: "20x28.5", woodWidth: 1, qty: 1 },
+
+  { size: "20x26", woodWidth: 1, qty: 1 },
+
+  { size: "24x25", woodWidth: 1, qty: 1 },
+
+  { size: "12x24", woodWidth: 1, qty: 2 },
+
+  { size: "13x24", woodWidth: 1, qty: 2 },
+
+  { size: "20x24", woodWidth: 1, qty: 1 },
+
+  { size: "12x23", woodWidth: 1, qty: 1 },
+
+  { size: "15.5x23", woodWidth: 1, qty: 1 },
+
+  { size: "17x23", woodWidth: 1, qty: 1 },
+
+  { size: "21x15", woodWidth: 1, qty: 1 },
+
+  { size: "10x20", woodWidth: 1, qty: 2 },
+
+  { size: "15x20", woodWidth: 1, qty: 3 },
+
+  { size: "20x20", woodWidth: 1, qty: 1 },
+
+  { size: "10x18", woodWidth: 1, qty: 2 },
+
+  { size: "5x7", woodWidth: 1, qty: 13 },
+
+  // {size: '12x18',woodWidth: 1,qty: 1,},
+  // {size: '10x18',woodWidth: 1,qty: 2,},
+  // {size: '20x20',woodWidth: 1,qty: 3,},
+  // {size: '21x15',woodWidth: 1,qty: 4,},
+  // {size: '17x23',woodWidth: 1,qty: 5,},
+  // {size: '15.5x23',woodWidth: 1,qty: 6,},
+  // {size: '12x23',woodWidth: 1,qty: 7,},
+  // {size: '20x24',woodWidth: 1,qty: 8,},
+  // {size: '13x24',woodWidth: 1,qty: 9,},
+  // {size: '20x28.5',woodWidth: 1,qty: 10,},
+  // {size: '20x30',woodWidth: 1,qty: 11,},
 ];
 
 const test = () => {
@@ -25,7 +57,17 @@ const test = () => {
 
   let remaining = 120;
   let wood = 1;
-  let wested = [];
+  let wested = [...woodStock];
+  // wested = [
+  //   ...wested,
+  //   ...wested,
+  //   // ...woodStock.map((val) => {
+  //   //   return {
+  //   //     wested: val,
+  //   //     remaining: val,
+  //   //   };
+  //   // }),
+  // ];
   let used = [];
 
   let length = 120;
@@ -33,7 +75,7 @@ const test = () => {
   let bars = [];
   let barSummary = 0;
 
-  let useKeepingList = []
+  let useKeepingList = [];
 
   for (const [index, item] of ordered.entries()) {
     // ถ้าใช้ไม้เดิม
@@ -54,7 +96,7 @@ const test = () => {
       // useKeepingList.push({
       //   cutting: item.cutting,
       //   wested: useKeeping[0].wested,
-      // })
+      // });
       wested = wested.filter((w) => w !== useKeeping[0].wested);
       continue;
     }
@@ -65,9 +107,7 @@ const test = () => {
       const remain = parseFloat((length - barSummary).toFixed(2));
       wested.push(remain);
       // console.log(bar.join(','), ',',remain);
-      console.log(bar.join(","), ";", 120);
-      // console.log(`${item.cutting}`, ";", useKeeping[0].wested);
-
+      console.log(bar.join(","));
 
       bar = [item.cutting];
       barSummary = item.cutting;
@@ -79,8 +119,7 @@ const test = () => {
     if (index === ordered.length - 1) {
       // console.log('index:', index)
       bars.push(bar);
-      // console.log(bar.join(","));
-      console.log(bar.join(","), ";", 120);
+      console.log(bar.join(","));
     }
 
     // console.log('item.cutting:', item.cutting)
@@ -141,7 +180,7 @@ const test = () => {
   //   //   cutting: cutting,
   //   //   wested: useKeeping[0].wested,
   //   // })
-  // })
+  // });
 
   // console.log("remaining:", remaining);
   // console.log("wood:", wood);

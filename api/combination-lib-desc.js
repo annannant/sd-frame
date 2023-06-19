@@ -20,6 +20,7 @@ function intersect(patternList, numbers) {
   const sortedNumbers = sortBy(numbers);
   return sortBy(patternList).filter((val) => sortedNumbers.includes(val));
 }
+
 function findCombinations(numbers, suggestList) {
   let lowest = 99999999999999;
   const combinations = [];
