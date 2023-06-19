@@ -156,10 +156,10 @@ async function go() {
       const sliced = filterForCombination(numberTest);
 
       // ASC
-      const slicedFormatter = sortBy(flatten(sliced))
+      // const slicedFormatter = sortBy(flatten(sliced))
 
-      // // DESC
-      // const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      // DESC
+      const slicedFormatter = sortBy(flatten(sliced)).reverse();
 
       // // // qty asc
       // // const slicedFormatter = orderNumberByGroup(flatten(sliced))

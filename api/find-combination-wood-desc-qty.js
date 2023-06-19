@@ -155,17 +155,17 @@ async function go() {
       // if (debug) console.log("suggest_list:", list.join(","));
       const sliced = filterForCombination(numberTest);
 
-      // ASC
-      const slicedFormatter = sortBy(flatten(sliced))
+      // // ASC
+      // const slicedFormatter = sortBy(flatten(sliced))
 
       // // DESC
       // const slicedFormatter = sortBy(flatten(sliced)).reverse();
 
-      // // // qty asc
-      // // const slicedFormatter = orderNumberByGroup(flatten(sliced))
-
-      // // qty desc
-      // const slicedFormatter = orderNumberByGroup(flatten(sliced), 'desc')
+      // // qty asc
+      // const slicedFormatter = orderNumberByGroup(flatten(sliced))
+      
+      // qty desc
+      const slicedFormatter = orderNumberByGroup(flatten(sliced), 'desc')
 
       const result = findCombinations(slicedFormatter, list, remainWoodStock);
       // console.log('result:', result.join(','))

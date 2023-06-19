@@ -8,7 +8,7 @@ const stocks = [
   { size: "8x10", woodWidth: 1, qty: 1 },
   { size: "6x8", woodWidth: 1, qty: 5 },
   // { size: "8x10", woodWidth: 1, qty: 5 },
-  // { size: "6x8", woodWidth: 1, qty: 2 },
+  // { size: "6x8", woodWidth: 1, qty: 5 },
 ];
 
 const test = () => {
