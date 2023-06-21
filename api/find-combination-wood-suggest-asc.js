@@ -189,6 +189,9 @@ async function go() {
       const deletIndex = remainWoodStock.indexOf(+selected.wood);
       if (deletIndex > -1) {
         remainWoodStock.splice(deletIndex, 1);
+        if (+selected.remain > 0) {
+          remainWoodStock.push(+selected.remain)
+        }
       }
     }
 
@@ -271,6 +274,9 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
           const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
           if (deletIndex > -1) {
             copyRemainWoodStock.splice(deletIndex, 1);
+            if (+selected.remain > 0) {
+              copyRemainWoodStock.push(+selected.remain)
+            }
           }
         }
 
@@ -403,6 +409,9 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
           const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
           if (deletIndex > -1) {
             copyRemainWoodStock.splice(deletIndex, 1);
+            if (+selected.remain > 0) {
+              copyRemainWoodStock.push(+selected.remain)
+            }
           }
         }
 

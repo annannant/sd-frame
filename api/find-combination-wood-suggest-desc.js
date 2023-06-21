@@ -111,6 +111,7 @@ function filterForCombination(numbers) {
     result.push(sliced);
     // console.log('max:', max, grouped[key], )
   }
+
   return result;
 }
 
@@ -157,7 +158,6 @@ async function go() {
       const numberTest = [...copyNumber, ...list];
       // if (debug) console.log("suggest_list:", list.join(","));
       const sliced = filterForCombination(numberTest);
-
       // ASC
       // const slicedFormatter = sortBy(flatten(sliced))
 
@@ -189,6 +189,9 @@ async function go() {
       const deletIndex = remainWoodStock.indexOf(+selected.wood);
       if (deletIndex > -1) {
         remainWoodStock.splice(deletIndex, 1);
+        if (+selected.remain > 0) {
+          remainWoodStock.push(+selected.remain);
+        }
       }
     }
 
@@ -222,7 +225,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
   for (const [index, std] of stdList.entries()) {
     for (let i = 0; i < std.qty; i++) {
       const qty = i + 1;
-      console.log("qty================:", std.size, qty);
+      if (debug) console.log("qty================:", std.size, qty);
       const cutting = [
         std.dimensionW,
         std.dimensionW,
@@ -231,12 +234,14 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
       ];
       const testingList = Array.from({ length: qty }, (val) => cutting);
 
+
+      console.log("====>cross");
       let copyNumber = cloneDeep(listRemain);
       let copyTestingList = cloneDeep(flatten(testingList));
       let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
 
-      console.log("copyNumber:", copyNumber.length);
-      console.log("copyTestingList:", copyTestingList);
+      if (debug) console.log("copyNumber:", copyNumber.length);
+      if (debug) console.log("copyTestingList:", copyTestingList);
 
       const keepList = [];
       const wastedList = [];
@@ -263,14 +268,18 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         const selected = result;
         // split remaining wood
         if (selected.from_stock) {
-          console.log(
-            "selected.from_stock:",
-            selected.from_stock,
-            selected.wood
-          );
+          if (debug)
+            console.log(
+              "selected.from_stock:",
+              selected.from_stock,
+              selected.wood
+            );
           const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
           if (deletIndex > -1) {
             copyRemainWoodStock.splice(deletIndex, 1);
+            if (+selected.remain > 0) {
+              copyRemainWoodStock.push(+selected.remain);
+            }
           }
         }
 
@@ -287,14 +296,18 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
           // delete testing list
           let deletTestingIndex = copyTestingList.indexOf(+iterator);
           if (deletTestingIndex > -1) {
-            console.log("std item:", iterator);
+            if (debug) console.log("std item:", iterator);
             copyTestingList.splice(deletTestingIndex, 1);
           }
         }
 
         // reduce qty
         // stdList[index].qty = stdList[index].qty - qty;
-        console.log(selected.pattern);
+        console.log(
+          selected.pattern,
+          ";",
+          selected.from_stock ? selected.wood : 120
+        );
         pattern.push(selected.pattern);
 
         // wood info
@@ -305,40 +318,51 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         const sumSelected = sum(
           selected.pattern.split(",").map((item) => +item)
         );
+
         const selectedRemain =
           (selected.from_stock ? selected.wood : woodLength) - sumSelected;
-        if (selectedRemain >= minLength) {
-          // keep
-          keepList.push(selectedRemain);
-        } else {
-          // wasted
-          wastedList.push(selectedRemain);
+        if (!selected.from_stock) {
+          if (selectedRemain >= minLength) {
+            // keep
+            keepList.push(selectedRemain);
+          } else {
+            // wasted
+            wastedList.push(selectedRemain);
+          }
         }
 
         // console.log("copyNumber:", copyNumber.join(","));
         // console.log("============>");
       }
 
+      const mergeKept = [...keepList, ...copyRemainWoodStock];
+
       remainInfo.push({
         size: std.size,
         qty: qty,
         stdPattern: testingList,
         pattern,
-        keepList: keepList,
+        keepList: mergeKept,
         wastedList: wastedList,
-        countKeepList: keepList.length,
+        countKeepList: keepList.length + copyRemainWoodStock.length,
         countWastedList: wastedList.length,
-        totalKeepList: sum(keepList),
+        totalKeepList: sum(mergeKept),
         totalWastedList: sum(wastedList),
         woodStockInfo,
       });
 
-      if (keepList.length === 0) {
-        console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
-        console.log("keepList is 0:", keepList);
+      // console.log('remainInfo:', remainInfo)
+
+      console.log("keepList:", keepList);
+
+      if (mergeKept.length === 0) {
+        //
+        if (debug)
+          console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
+        console.log("mergeKept is 0:", remainInfo[remainInfo.length - 1]);
         return;
       }
-      console.log(std.size, qty);
+      if (debug) console.log(std.size, qty);
     }
   }
 
@@ -347,7 +371,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
   for (const [index, std] of stdList.entries()) {
     for (const [indexCorss, stdCross] of stdList.entries()) {
       // const qty = i + 1;
-      console.log("cros================:", std.size, stdCross.size);
+      if (debug) console.log("cros================:", std.size, stdCross.size);
       const cutting = [
         std.dimensionW,
         std.dimensionW,
@@ -361,6 +385,8 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         stdCross.dimensionH,
       ];
       const testingList = [...cutting, ...cuttingCross];
+
+      // start
       let copyNumber = cloneDeep(listRemain);
       let copyTestingList = cloneDeep(flatten(testingList));
       let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
@@ -402,6 +428,9 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
           const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
           if (deletIndex > -1) {
             copyRemainWoodStock.splice(deletIndex, 1);
+            if (+selected.remain > 0) {
+              copyRemainWoodStock.push(+selected.remain);
+            }
           }
         }
 
@@ -417,7 +446,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
           // delete testing list
           let deletTestingIndex = copyTestingList.indexOf(+iterator);
           if (deletTestingIndex > -1) {
-            console.log("std item:", iterator);
+            if (debug) console.log("std item:", iterator);
             copyTestingList.splice(deletTestingIndex, 1);
           }
         }
@@ -467,8 +496,8 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
       });
 
       if (keepList.length === 0) {
-        console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
-        console.log("keepList is 0:", keepList);
+        // console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
+        console.log("keepList is 0:", remainInfo[remainInfo.length - 1]);
         return;
       }
       console.log(std.size, stdCross.size);
@@ -499,8 +528,8 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
 }
 
 async function goNext(listRemain, remainWoodStock) {
-// console.log('====>goNext')
-// return
+  // console.log('====>goNext')
+  // return
   findSuggestionStd(listRemain, stdOrderList, remainWoodStock);
 }
 go();

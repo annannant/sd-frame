@@ -179,6 +179,9 @@ async function go() {
       const deletIndex = remainWoodStock.indexOf(+selected.wood);
       if (deletIndex > -1) {
         remainWoodStock.splice(deletIndex, 1);
+        if (+selected.remain > 0) {
+          remainWoodStock.push(+selected.remain)
+        }
       }
     }
 
