@@ -26,6 +26,112 @@ const uniqueArray = (list) => {
   return Array.from(new Set(list.map(JSON.stringify)), JSON.parse);
 };
 
+function findStdCombinations(listRemain, testingList, remainWoodStock) {
+  // start
+  let copyNumber = cloneDeep(listRemain);
+  let copyTestingList = cloneDeep(flatten(testingList));
+  let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
+
+  if (debug) console.log("copyNumber:", copyNumber.length);
+  if (debug) console.log("copyTestingList:", copyTestingList);
+
+  const keptList = [];
+  const wastedList = [];
+  const pattern = [];
+  const woodStockInfo = {};
+
+  while (copyTestingList.length || copyNumber.length) {
+    const numberTest = [...copyNumber, ...flatten(copyTestingList)];
+    // if (debug) console.log("suggest_list:", testingList.join(","));
+    const sliced = filterForCombination(numberTest);
+
+    // // ASC
+    // const slicedFormatter = sortBy(flatten(sliced));
+
+    // DESC
+    const slicedFormatter = sortBy(flatten(sliced)).reverse();
+    // console.log('slicedFormatter:', slicedFormatter)
+    const result = findCombinations(
+      slicedFormatter,
+      testingList,
+      copyRemainWoodStock
+    );
+
+    const selected = result;
+    // split remaining wood
+    if (selected.from_stock) {
+      if (debug)
+        console.log("selected.from_stock:", selected.from_stock, selected.wood);
+      const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
+      if (deletIndex > -1) {
+        copyRemainWoodStock.splice(deletIndex, 1);
+        if (+selected.remain > 0) {
+          copyRemainWoodStock.push(+selected.remain);
+        }
+      }
+    }
+
+    // split used wood
+    const selectedArray = selected.pattern.split(",");
+    for (const iterator of selectedArray) {
+      // delete remaing list
+      let deletIndex = copyNumber.indexOf(+iterator);
+      if (deletIndex > -1) {
+        copyNumber.splice(deletIndex, 1);
+        continue;
+      }
+
+      // delete testing list
+      let deletTestingIndex = copyTestingList.indexOf(+iterator);
+      if (deletTestingIndex > -1) {
+        if (debug) console.log("std item:", iterator);
+        copyTestingList.splice(deletTestingIndex, 1);
+      }
+    }
+
+    // reduce qty
+    // stdList[index].qty = stdList[index].qty - qty;
+    console.log(
+      selected.pattern,
+      ";",
+      selected.from_stock ? selected.wood : 120
+    );
+    pattern.push(selected.pattern);
+
+    // wood info
+    if (selected.from_stock) {
+      woodStockInfo[pattern.length - 1] = selected.wood;
+    }
+
+    const sumSelected = sum(selected.pattern.split(",").map((item) => +item));
+
+    const selectedRemain =
+      (selected.from_stock ? selected.wood : woodLength) - sumSelected;
+    if (!selected.from_stock) {
+      if (selectedRemain >= minLength) {
+        // keep
+        keptList.push(selectedRemain);
+      } else {
+        // wasted
+        wastedList.push(selectedRemain);
+      }
+    }
+
+    // console.log("copyNumber:", copyNumber.join(","));
+    // console.log("============>");
+  }
+
+  const mergeKept = [...keptList, ...copyRemainWoodStock];
+  return {
+    mergeKept,
+    keptList,
+    remainWoodStock: copyRemainWoodStock,
+    wastedList,
+    pattern,
+    woodStockInfo,
+  };
+}
+
 function findCombinations(numbers, stdList, remainWoodStock) {
   const combinations = [[]];
   let no = 1;
@@ -234,132 +340,133 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
       ];
       const testingList = Array.from({ length: qty }, (val) => cutting);
 
-
-      console.log("====>cross");
-      let copyNumber = cloneDeep(listRemain);
-      let copyTestingList = cloneDeep(flatten(testingList));
-      let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
-
-      if (debug) console.log("copyNumber:", copyNumber.length);
-      if (debug) console.log("copyTestingList:", copyTestingList);
-
-      const keepList = [];
-      const wastedList = [];
-      const pattern = [];
-      const woodStockInfo = {};
-
-      while (copyTestingList.length || copyNumber.length) {
-        const numberTest = [...copyNumber, ...flatten(copyTestingList)];
-        // if (debug) console.log("suggest_list:", testingList.join(","));
-        const sliced = filterForCombination(numberTest);
-
-        // // ASC
-        // const slicedFormatter = sortBy(flatten(sliced));
-
-        // DESC
-        const slicedFormatter = sortBy(flatten(sliced)).reverse();
-        // console.log('slicedFormatter:', slicedFormatter)
-        const result = findCombinations(
-          slicedFormatter,
-          testingList,
-          copyRemainWoodStock
+      const { mergeKept, wastedList, pattern, woodStockInfo } =
+        findStdCombinations(
+          listRemain,
+          flatten(testingList),
+          flatten(remainWoodStock)
         );
+      // // start
+      // let copyNumber = cloneDeep(listRemain);
+      // let copyTestingList = cloneDeep(flatten(testingList));
+      // let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
 
-        const selected = result;
-        // split remaining wood
-        if (selected.from_stock) {
-          if (debug)
-            console.log(
-              "selected.from_stock:",
-              selected.from_stock,
-              selected.wood
-            );
-          const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
-          if (deletIndex > -1) {
-            copyRemainWoodStock.splice(deletIndex, 1);
-            if (+selected.remain > 0) {
-              copyRemainWoodStock.push(+selected.remain);
-            }
-          }
-        }
+      // if (debug) console.log("copyNumber:", copyNumber.length);
+      // if (debug) console.log("copyTestingList:", copyTestingList);
 
-        // split used wood
-        const selectedArray = selected.pattern.split(",");
-        for (const iterator of selectedArray) {
-          // delete remaing list
-          let deletIndex = copyNumber.indexOf(+iterator);
-          if (deletIndex > -1) {
-            copyNumber.splice(deletIndex, 1);
-            continue;
-          }
+      // const keptList = [];
+      // const wastedList = [];
+      // const pattern = [];
+      // const woodStockInfo = {};
 
-          // delete testing list
-          let deletTestingIndex = copyTestingList.indexOf(+iterator);
-          if (deletTestingIndex > -1) {
-            if (debug) console.log("std item:", iterator);
-            copyTestingList.splice(deletTestingIndex, 1);
-          }
-        }
+      // while (copyTestingList.length || copyNumber.length) {
+      //   const numberTest = [...copyNumber, ...flatten(copyTestingList)];
+      //   // if (debug) console.log("suggest_list:", testingList.join(","));
+      //   const sliced = filterForCombination(numberTest);
 
-        // reduce qty
-        // stdList[index].qty = stdList[index].qty - qty;
-        console.log(
-          selected.pattern,
-          ";",
-          selected.from_stock ? selected.wood : 120
-        );
-        pattern.push(selected.pattern);
+      //   // // ASC
+      //   // const slicedFormatter = sortBy(flatten(sliced));
 
-        // wood info
-        if (selected.from_stock) {
-          woodStockInfo[pattern.length - 1] = selected.wood;
-        }
+      //   // DESC
+      //   const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      //   // console.log('slicedFormatter:', slicedFormatter)
+      //   const result = findCombinations(
+      //     slicedFormatter,
+      //     testingList,
+      //     copyRemainWoodStock
+      //   );
 
-        const sumSelected = sum(
-          selected.pattern.split(",").map((item) => +item)
-        );
+      //   const selected = result;
+      //   // split remaining wood
+      //   if (selected.from_stock) {
+      //     if (debug)
+      //       console.log(
+      //         "selected.from_stock:",
+      //         selected.from_stock,
+      //         selected.wood
+      //       );
+      //     const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
+      //     if (deletIndex > -1) {
+      //       copyRemainWoodStock.splice(deletIndex, 1);
+      //       if (+selected.remain > 0) {
+      //         copyRemainWoodStock.push(+selected.remain);
+      //       }
+      //     }
+      //   }
 
-        const selectedRemain =
-          (selected.from_stock ? selected.wood : woodLength) - sumSelected;
-        if (!selected.from_stock) {
-          if (selectedRemain >= minLength) {
-            // keep
-            keepList.push(selectedRemain);
-          } else {
-            // wasted
-            wastedList.push(selectedRemain);
-          }
-        }
+      //   // split used wood
+      //   const selectedArray = selected.pattern.split(",");
+      //   for (const iterator of selectedArray) {
+      //     // delete remaing list
+      //     let deletIndex = copyNumber.indexOf(+iterator);
+      //     if (deletIndex > -1) {
+      //       copyNumber.splice(deletIndex, 1);
+      //       continue;
+      //     }
 
-        // console.log("copyNumber:", copyNumber.join(","));
-        // console.log("============>");
-      }
+      //     // delete testing list
+      //     let deletTestingIndex = copyTestingList.indexOf(+iterator);
+      //     if (deletTestingIndex > -1) {
+      //       if (debug) console.log("std item:", iterator);
+      //       copyTestingList.splice(deletTestingIndex, 1);
+      //     }
+      //   }
 
-      const mergeKept = [...keepList, ...copyRemainWoodStock];
+      //   // reduce qty
+      //   // stdList[index].qty = stdList[index].qty - qty;
+      //   console.log(
+      //     selected.pattern,
+      //     ";",
+      //     selected.from_stock ? selected.wood : 120
+      //   );
+      //   pattern.push(selected.pattern);
+
+      //   // wood info
+      //   if (selected.from_stock) {
+      //     woodStockInfo[pattern.length - 1] = selected.wood;
+      //   }
+
+      //   const sumSelected = sum(
+      //     selected.pattern.split(",").map((item) => +item)
+      //   );
+
+      //   const selectedRemain =
+      //     (selected.from_stock ? selected.wood : woodLength) - sumSelected;
+      //   if (!selected.from_stock) {
+      //     if (selectedRemain >= minLength) {
+      //       // keep
+      //       keptList.push(selectedRemain);
+      //     } else {
+      //       // wasted
+      //       wastedList.push(selectedRemain);
+      //     }
+      //   }
+
+      //   // console.log("copyNumber:", copyNumber.join(","));
+      //   // console.log("============>");
+      // }
+
+      // const mergeKept = [...keptList, ...copyRemainWoodStock];
 
       remainInfo.push({
         size: std.size,
         qty: qty,
         stdPattern: testingList,
         pattern,
-        keepList: mergeKept,
+        keptList: mergeKept,
+        countKeptList: mergeKept.length,
+        totalKeptList: sum(mergeKept),
+
         wastedList: wastedList,
-        countKeepList: keepList.length + copyRemainWoodStock.length,
         countWastedList: wastedList.length,
-        totalKeepList: sum(mergeKept),
         totalWastedList: sum(wastedList),
         woodStockInfo,
       });
 
-      // console.log('remainInfo:', remainInfo)
-
-      console.log("keepList:", keepList);
-
       if (mergeKept.length === 0) {
         //
         if (debug)
-          console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
-        console.log("mergeKept is 0:", remainInfo[remainInfo.length - 1]);
+          console.log("mergeKept is 0:", remainInfo[remainInfo.length - 1]);
         return;
       }
       if (debug) console.log(std.size, qty);
@@ -385,99 +492,104 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         stdCross.dimensionH,
       ];
       const testingList = [...cutting, ...cuttingCross];
-
+      const { mergeKept, wastedList, pattern, woodStockInfo } =
+        findStdCombinations(
+          listRemain,
+          flatten(testingList),
+          flatten(remainWoodStock)
+        );
       // start
-      let copyNumber = cloneDeep(listRemain);
-      let copyTestingList = cloneDeep(flatten(testingList));
-      let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
+      // let copyNumber = cloneDeep(listRemain);
+      // let copyTestingList = cloneDeep(flatten(testingList));
+      // let copyRemainWoodStock = cloneDeep(flatten(remainWoodStock));
 
-      console.log("copyNumber:", copyNumber.length);
-      console.log("copyTestingList:", copyTestingList);
+      // console.log("copyNumber:", copyNumber.length);
+      // console.log("copyTestingList:", copyTestingList);
 
-      const keepList = [];
-      const wastedList = [];
-      const pattern = [];
-      const woodStockInfo = {};
+      // const keptList = [];
+      // const wastedList = [];
+      // const pattern = [];
+      // const woodStockInfo = {};
 
-      while (copyTestingList.length || copyNumber.length) {
-        const numberTest = [...copyNumber, ...flatten(copyTestingList)];
-        // if (debug) console.log("suggest_list:", testingList.join(","));
-        const sliced = filterForCombination(numberTest);
+      // while (copyTestingList.length || copyNumber.length) {
+      //   const numberTest = [...copyNumber, ...flatten(copyTestingList)];
+      //   // if (debug) console.log("suggest_list:", testingList.join(","));
+      //   const sliced = filterForCombination(numberTest);
 
-        // // ASC
-        // const slicedFormatter = sortBy(flatten(sliced));
+      //   // // ASC
+      //   // const slicedFormatter = sortBy(flatten(sliced));
 
-        // DESC
-        const slicedFormatter = sortBy(flatten(sliced)).reverse();
-        // console.log('slicedFormatter:', slicedFormatter)
-        const result = findCombinations(
-          slicedFormatter,
-          testingList,
-          copyRemainWoodStock
-        );
+      //   // DESC
+      //   const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      //   // console.log('slicedFormatter:', slicedFormatter)
+      //   const result = findCombinations(
+      //     slicedFormatter,
+      //     testingList,
+      //     copyRemainWoodStock
+      //   );
 
-        // split used wood
-        const selected = result;
-        // split remaining wood
-        if (selected.from_stock) {
-          console.log(
-            "selected.from_stock:",
-            selected.from_stock,
-            selected.wood
-          );
-          const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
-          if (deletIndex > -1) {
-            copyRemainWoodStock.splice(deletIndex, 1);
-            if (+selected.remain > 0) {
-              copyRemainWoodStock.push(+selected.remain);
-            }
-          }
-        }
+      //   // split used wood
+      //   const selected = result;
+      //   // split remaining wood
+      //   if (selected.from_stock) {
+      //     console.log(
+      //       "selected.from_stock:",
+      //       selected.from_stock,
+      //       selected.wood
+      //     );
+      //     const deletIndex = copyRemainWoodStock.indexOf(+selected.wood);
+      //     if (deletIndex > -1) {
+      //       copyRemainWoodStock.splice(deletIndex, 1);
+      //       if (+selected.remain > 0) {
+      //         copyRemainWoodStock.push(+selected.remain);
+      //       }
+      //     }
+      //   }
 
-        const selectedArray = selected.pattern.split(",");
-        for (const iterator of selectedArray) {
-          // delete remaing list
-          let deletIndex = copyNumber.indexOf(+iterator);
-          if (deletIndex > -1) {
-            copyNumber.splice(deletIndex, 1);
-            continue;
-          }
+      //   const selectedArray = selected.pattern.split(",");
+      //   for (const iterator of selectedArray) {
+      //     // delete remaing list
+      //     let deletIndex = copyNumber.indexOf(+iterator);
+      //     if (deletIndex > -1) {
+      //       copyNumber.splice(deletIndex, 1);
+      //       continue;
+      //     }
 
-          // delete testing list
-          let deletTestingIndex = copyTestingList.indexOf(+iterator);
-          if (deletTestingIndex > -1) {
-            if (debug) console.log("std item:", iterator);
-            copyTestingList.splice(deletTestingIndex, 1);
-          }
-        }
+      //     // delete testing list
+      //     let deletTestingIndex = copyTestingList.indexOf(+iterator);
+      //     if (deletTestingIndex > -1) {
+      //       if (debug) console.log("std item:", iterator);
+      //       copyTestingList.splice(deletTestingIndex, 1);
+      //     }
+      //   }
 
-        // reduce qty
-        // stdList[index].qty = stdList[index].qty - qty;
-        console.log(selected.pattern);
-        pattern.push(selected.pattern);
+      //   // reduce qty
+      //   // stdList[index].qty = stdList[index].qty - qty;
+      //   console.log(selected.pattern);
+      //   pattern.push(selected.pattern);
 
-        // wood info
-        if (selected.from_stock) {
-          woodStockInfo[pattern.length - 1] = selected.wood;
-        }
+      //   // wood info
+      //   if (selected.from_stock) {
+      //     woodStockInfo[pattern.length - 1] = selected.wood;
+      //   }
 
-        const sumSelected = sum(
-          selected.pattern.split(",").map((item) => +item)
-        );
-        // const selectedRemain = woodLength - sumSelected;
-        const selectedRemain =
-          (selected.from_stock ? selected.wood : woodLength) - sumSelected;
-        if (selectedRemain >= minLength) {
-          // keep
-          keepList.push(selectedRemain);
-        } else {
-          // wasted
-          wastedList.push(selectedRemain);
-        }
+      //   const sumSelected = sum(
+      //     selected.pattern.split(",").map((item) => +item)
+      //   );
+      //   // const selectedRemain = woodLength - sumSelected;
+      //   const selectedRemain =
+      //     (selected.from_stock ? selected.wood : woodLength) - sumSelected;
+      //   if (selectedRemain >= minLength) {
+      //     // keep
+      //     keptList.push(selectedRemain);
+      //   } else {
+      //     // wasted
+      //     wastedList.push(selectedRemain);
+      //   }
 
-        // console.log("copyNumber:", copyNumber.join(","));
-        // console.log("============>");
-      }
+      //   // console.log("copyNumber:", copyNumber.join(","));
+      //   // console.log("============>");
+      // }
 
       remainInfo.push({
         size: std.size,
@@ -486,18 +598,19 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         crossStdPattern: cuttingCross,
         pattern,
         // qty: qty,
-        keepList: keepList,
+        keptList: mergeKept,
+        countKeptList: mergeKept.length,
+        totalKeptList: sum(mergeKept),
+
         wastedList: wastedList,
-        countKeepList: keepList.length,
         countWastedList: wastedList.length,
-        totalKeepList: sum(keepList),
         totalWastedList: sum(wastedList),
         woodStockInfo,
       });
 
-      if (keepList.length === 0) {
+      if (mergeKept.length === 0) {
         // console.log("remainInfo:", remainInfo[remainInfo.length - 1]);
-        console.log("keepList is 0:", remainInfo[remainInfo.length - 1]);
+        console.log("mergeKept is 0:", remainInfo[remainInfo.length - 1]);
         return;
       }
       console.log(std.size, stdCross.size);
@@ -509,22 +622,13 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
   // selected pattern
   const orderKeeplingList = orderBy(
     remainInfo,
-    ["countKeepList", "totalKeepList"],
-    ["asc", "desc"]
+    ["countKeptList", "totalKeptList", "totalWastedList"],
+    ["asc", "desc", "asc"]
   );
-  console.log("orderKeeplingList:", orderKeeplingList[0]);
-
-  // console.log('copyNumber:', copyNumber.join("  "))
-  // console.log(copyNumber.join(","));
-  // console.log('stdList:', stdList)
-
-  // const combinations = [[]];
-  // for (let i = 0; i < numbers.length; i++) {
-  //   const currentCombinations = [...combinations]; // Create a copy of existing combinations
-  //   for (let j = 0; j < currentCombinations.length; j++) {
-  //     combinations.push([...currentCombinations[j], numbers[i]]);
-  //   }
-  // }
+  console.log("Selected Pattern fron Suggest:", orderKeeplingList[0]);
+  orderKeeplingList[0].pattern.forEach((item, index) => {
+    console.log(item, ";", get(orderKeeplingList[0].woodStockInfo, index, 120));
+  });
 }
 
 async function goNext(listRemain, remainWoodStock) {
