@@ -6,16 +6,16 @@ const helper = require("./helper");
 const sparePart = 0.25;
 
 const orders = [
-  { size: "6x8", woodWidth: 1, qty: 9 },
-  { size: "4x6", woodWidth: 1, qty: 7 },
-  { size: "8.27x11.69", woodWidth: 1, qty: 3 },
-  { size: "8x12", woodWidth: 1, qty: 2 },
-  { size: "10x12 ", woodWidth: 1, qty: 5 },
-  { size: "8x10", woodWidth: 1, qty: 10 },
-  { size: "29x10", woodWidth: 1, qty: 1 },
-  { size: "20x30", woodWidth: 1, qty: 2 },
-  { size: "16x20", woodWidth: 1, qty: 2 },
-  { size: "10x15", woodWidth: 1, qty: 3 },
+  {size: '8x10',woodWidth: 1,qty: 20,},
+  {size: '8.24x11.69',woodWidth: 1,qty: 8,},
+  {size: '8x12',woodWidth: 1,qty: 8,},
+  {size: '12x18',woodWidth: 1,qty: 6,},
+  {size: '8x12',woodWidth: 1,qty: 3,},
+  {size: '6x8',woodWidth: 1,qty: 10,},
+  {size: '20x24',woodWidth: 1,qty: 4,},
+  {size: '10x15',woodWidth: 1,qty: 4,},
+  {size: '6x8',woodWidth: 1,qty: 4,},
+  {size: '12x30',woodWidth: 1,qty: 1,},
   // {size: '20x30',woodWidth: 1,qty: 1,},
   // {size: '20x28.5',woodWidth: 1,qty: 2,},
   // {size: '13x24',woodWidth: 1,qty: 3,},
@@ -60,7 +60,6 @@ const totalCutting = (print = false) => {
     }
 
     res.forEach((element) => {
-
       element.value.forEach((val, index) => {
         const name = index === 0 ? `${element.name} ; ${element.qty} ; ` : ";;";
         console.log(name, val, ",");

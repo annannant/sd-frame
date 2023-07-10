@@ -239,6 +239,24 @@ function orderNumberByGroup(numbers, order = "asc") {
   );
 }
 async function go() {
+  // const params= {
+  //   a: '',
+  //   b: null,
+  //   c: 'xxx',
+  //   d: undefined
+  // }
+
+  // const hasEmpty = Object.values(params).filter((item) => !item).length
+  // if (hasEmpty) {
+  //   // do something
+  //   return
+  // }
+
+
+// console.log('Object.values(a) :', 'xx')
+// return
+
+
   let copyNumber = cloneDeep(numbers);
   let remainWoodStock = cloneDeep(woodStock);
   let listHasRemain = [];
@@ -320,7 +338,6 @@ async function go() {
 }
 
 async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
-  console.log("====>findSuggestionStd");
   const stdList = orderBy(stdOrderList, ["height", "width"], ["asc", "asc"]);
 
   let noneZeroRemain = [];
@@ -621,6 +638,8 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
   // console.log("remainInfo qty:", remainInfo);
 
   // selected pattern
+  console.log('orderKeeplingList:', orderKeeplingList)
+
   const orderKeeplingList = orderBy(
     remainInfo,
     ["countKeptList", "totalKeptList", "totalWastedList"],
@@ -643,7 +662,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
 }
 
 async function goNext(listRemain, remainWoodStock) {
-  // console.log('====>goNext')
+  console.log('====>goNext')
   // return
   findSuggestionStd(listRemain, stdOrderList, remainWoodStock);
 }

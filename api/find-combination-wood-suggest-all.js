@@ -50,7 +50,7 @@ function findStdCombinations(listRemain, testingList, remainWoodStock) {
     // const slicedFormatter = sortBy(flatten(sliced));
 
     // DESC
-    const slicedFormatter = sortBy(flatten(sliced)).reverse();
+    const slicedFormatter = sortBy(flatten(sliced));
     // console.log('slicedFormatter:', slicedFormatter)
     const result = findCombinations(
       slicedFormatter,
@@ -269,7 +269,7 @@ async function go() {
       // const slicedFormatter = sortBy(flatten(sliced))
 
       // DESC
-      const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      const slicedFormatter = sortBy(flatten(sliced));
 
       // // // qty asc
       // // const slicedFormatter = orderNumberByGroup(flatten(sliced))
@@ -368,7 +368,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
       //   // const slicedFormatter = sortBy(flatten(sliced));
 
       //   // DESC
-      //   const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      //   const slicedFormatter = sortBy(flatten(sliced));
       //   // console.log('slicedFormatter:', slicedFormatter)
       //   const result = findCombinations(
       //     slicedFormatter,
@@ -520,7 +520,7 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
       //   // const slicedFormatter = sortBy(flatten(sliced));
 
       //   // DESC
-      //   const slicedFormatter = sortBy(flatten(sliced)).reverse();
+      //   const slicedFormatter = sortBy(flatten(sliced));
       //   // console.log('slicedFormatter:', slicedFormatter)
       //   const result = findCombinations(
       //     slicedFormatter,
@@ -613,11 +613,11 @@ async function findSuggestionStd(listRemain, stdOrderList, remainWoodStock) {
         console.log("mergeKept is 0:", remainInfo[remainInfo.length - 1]);
         return;
       }
-      console.log(std.size, stdCross.size);
+      console.log('xxxxx', std.size, stdCross.size);
     }
   }
 
-  // console.log("remainInfo qty:", remainInfo);
+  console.log("remainInfo qty:", remainInfo);
 
   // selected pattern
   const orderKeeplingList = orderBy(
