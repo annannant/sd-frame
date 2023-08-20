@@ -6,16 +6,27 @@ const helper = require("./helper");
 const sparePart = 0.25;
 
 const orders = [
-  {size: '8x10',woodWidth: 1,qty: 20,},
-  {size: '8.24x11.69',woodWidth: 1,qty: 8,},
-  {size: '8x12',woodWidth: 1,qty: 8,},
-  {size: '12x18',woodWidth: 1,qty: 6,},
-  {size: '8x12',woodWidth: 1,qty: 3,},
-  {size: '6x8',woodWidth: 1,qty: 10,},
-  {size: '20x24',woodWidth: 1,qty: 4,},
-  {size: '10x15',woodWidth: 1,qty: 4,},
-  {size: '6x8',woodWidth: 1,qty: 4,},
-  {size: '12x30',woodWidth: 1,qty: 1,},
+  // { size: "20x30", woodWidth: 1, qty: 2 },
+  // { size: "20x28.5", woodWidth: 1, qty: 1 },
+  // { size: "20x26", woodWidth: 1, qty: 1 },
+  // { size: "24x25", woodWidth: 1, qty: 1 },
+  // { size: "12x24", woodWidth: 1, qty: 2 },
+  // { size: "13x24", woodWidth: 1, qty: 2 },
+  // { size: "20x24", woodWidth: 1, qty: 1 },
+  // { size: "12x23", woodWidth: 1, qty: 1 },
+  // { size: "15.5x23", woodWidth: 1, qty: 1 },
+  // { size: "17x23", woodWidth: 1, qty: 1 },
+  // { size: "21x15", woodWidth: 1, qty: 1 },
+  // { size: "10x20", woodWidth: 1, qty: 2 },
+  // { size: "15x20", woodWidth: 1, qty: 3 },
+  // { size: "20x20", woodWidth: 1, qty: 1 },
+  { size: "10x18", woodWidth: 1, qty: 2 },
+  // { size: "5x7", woodWidth: 1, qty: 13 },
+  
+  
+  
+  
+  
   // {size: '20x30',woodWidth: 1,qty: 1,},
   // {size: '20x28.5',woodWidth: 1,qty: 2,},
   // {size: '13x24',woodWidth: 1,qty: 3,},
@@ -37,8 +48,8 @@ const test = () => {
   return ordered;
 };
 
-const totalCutting = (print = false) => {
-  const ordered = PrepareCutting.prepare(orders);
+const totalCutting = (print = false, list = orders) => {
+  const ordered = PrepareCutting.prepare(list);
   const cutting = ordered.map((item) => {
     return item.cutting;
   });
