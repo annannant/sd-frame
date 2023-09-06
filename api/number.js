@@ -293,16 +293,16 @@
 //   7.5		,
 // ];
 
-const numbers = [
-  28.5, 26.5, 26.5, 9.5, 9.5, 9.5,
-  9.5,  9.5,  9.5, 9.5, 9.5, 9.5,
-  9.5,  9.5,  9.5, 9.5, 9.5, 9.5,
-  9.5,  9.5,  9.5, 7.5, 7.5, 9.5,
-  9.5,  7.5,  7.5
-]
+// const numbers = [
+//   28.5, 26.5, 26.5, 9.5, 9.5, 9.5,
+//   9.5,  9.5,  9.5, 9.5, 9.5, 9.5,
+//   9.5,  9.5,  9.5, 9.5, 9.5, 9.5,
+//   9.5,  9.5,  9.5, 7.5, 7.5, 9.5,
+//   9.5,  7.5,  7.5,
+// ]
 
 const { totalCutting } = require("./list-order");
 
-// const  numbers = totalCutting(false)
+const  numbers = totalCutting(false)
 
 module.exports = { numbers };

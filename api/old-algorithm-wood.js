@@ -81,7 +81,7 @@ const test = () => {
     if (useKeeping.length) {
       // console.log('wested:', useKeeping, wested, )
       // console.log(`${item.cutting}`, useKeeping[0].wested)
-      console.log(`${item.cutting}`, ";", useKeeping[0].wested);
+      console.log(`${item.cutting}`, ", wood:", useKeeping[0].wested);
       // useKeepingList.push({
       //   cutting: item.cutting,
       //   wested: useKeeping[0].wested,
@@ -101,7 +101,7 @@ const test = () => {
       wested.push(remain);
       // console.log(bar.join(','), ',',remain);
       // console.log(bar.join(","));
-      console.log(bar.join(","), ";", 120);
+      console.log(bar.join(","));
 
 
       bar = [item.cutting];
@@ -114,7 +114,7 @@ const test = () => {
     if (index === ordered.length - 1) {
       // console.log('index:', index)
       bars.push(bar);
-      console.log(bar.join(","), ";", 120);
+      console.log(bar.join(","), );
 
     }
 
