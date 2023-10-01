@@ -136,6 +136,14 @@ function findCombinations(numbers, remainWoodStock) {
           return data;
         }
 
+        if (afterUseWood > 0) {
+
+          const find = findWithStd(data, totalStd)
+          
+          remainList.push(data)
+
+        }
+
         if (afterUseWood > 0 && afterUseWood < lowest) {
           lowest = afterUseWood;
           lowestUsedWood = data;
@@ -260,6 +268,17 @@ function checkPattern(copyNumber, patternList) {
     }
   }
   return true;
+}
+
+ function findWithStd(data, stdList) {
+// console.log('stdList:', stdList)
+// console.log('data:', data)
+  const remaining = data.remaning
+  const found = stdList.find((item) => item == remaining)
+  if (found) {
+    console.log('found:', found)
+  }
+
 }
 
 async function go(numbers, woodStock, suggestFlag = false, ordering = 'desc') {
