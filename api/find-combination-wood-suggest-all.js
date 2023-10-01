@@ -137,11 +137,8 @@ function findCombinations(numbers, remainWoodStock) {
         }
 
         if (afterUseWood > 0) {
-
-          const find = findWithStd(data, totalStd)
-          
-          remainList.push(data)
-
+          // const find = findWithStd(data, totalStd)
+          // remainList.push(data)
         }
 
         if (afterUseWood > 0 && afterUseWood < lowest) {
@@ -312,14 +309,14 @@ async function go(numbers, woodStock, suggestFlag = false, ordering = 'desc') {
         copyNumber.length > 0 &&
         stdOrderList.length > 0
       ) {
-        //
+        // //
         if (!remainingCopyNumber.length) {
           remainingCopyNumber = [...copyNumber];
         }
 
-        if (!remainingCopyWood.length) {
-          remainingCopyWood = [...remainWoodStock];
-        }
+        // if (!remainingCopyWood.length) {
+        //   remainingCopyWood = [...remainWoodStock];
+        // }
 
         //
         if (selected.remaning >= minLength) {
@@ -331,7 +328,7 @@ async function go(numbers, woodStock, suggestFlag = false, ordering = 'desc') {
         zeroPattern.push(selected);
       }
 
-      if (selected.from_stock) {
+      if (selected.from_stock || selected.use_stock_first) {
         // console.log("selected:", selected);
         const removedWood = removeSelectedWoodFromStock(
           remainWoodStock,
@@ -363,8 +360,10 @@ async function go(numbers, woodStock, suggestFlag = false, ordering = 'desc') {
 
   let suggestPattern;
   if (remainingCopyNumber.length && suggestFlag) {
-    console.log('============>suggest')
-    suggestPattern = await suggest(remainingCopyNumber, remainingCopyWood);
+    // console.log('remainingCopyNumber:', sum(remainingCopyNumber) + sumBy(zeroPattern, 'sum'))
+    // console.log('remainingCopyNumber:', remainWoodStock)
+
+    suggestPattern = await suggest(remainingCopyNumber, remainWoodStock);
   }
 
   return {
@@ -539,7 +538,6 @@ const suggest = async (numbers, wood) => {
     // check keeping list
     // console.log("wasted:", wasted);
     // console.log("kept:", keptList.length);
-    console.log("rm:", rm, "keptList:", keptList);
 
     // if (rm.length === 0) {
     // if (keptList.length <= 1 && rm.length === 0) {
@@ -557,7 +555,6 @@ const suggest = async (numbers, wood) => {
     "keptListCount",
     "wasted",
   ]);
-  console.log("resultList:", JSON.stringify(resultList));
   if (!resultList.length) {
     return undefined;
   }
