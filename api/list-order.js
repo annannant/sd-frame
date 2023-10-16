@@ -6,13 +6,26 @@ const helper = require("./helper");
 const sparePart = 0.25;
 
 const orders = [
-  {size: '24x25',woodWidth: 1,qty: 1,},	
-  {size: '12x24',woodWidth: 1,qty: 2,},	
-  {size: '12x23',woodWidth: 1,qty: 1,},	
-  {size: '20x20',woodWidth: 1,qty: 1,},	
-  {size: '10x12',woodWidth: 1,qty: 3,},	
-  {size: '10x15',woodWidth: 1,qty: 5,},	
-  {size: '8x10',woodWidth: 1,qty: 6,},	
+  {size: '24x25',woodWidth: 1,qty: 1,},
+  {size: '12x24',woodWidth: 1,qty: 2,},
+  {size: '12x23',woodWidth: 1,qty: 1,},
+  {size: '20x20',woodWidth: 1,qty: 1,},
+  {size: '10x12',woodWidth: 1,qty: 3,},
+  {size: '10x15',woodWidth: 1,qty: 5,},
+  {size: '8x10',woodWidth: 1,qty: 6,},
+
+  // {size: '6x8',woodWidth: 1,qty: 9,},
+  // {size: '4x6',woodWidth: 1,qty: 7,},
+  // {size: '8.27x11.69',woodWidth: 1,qty: 3,},
+  // {size: '8x12',woodWidth: 1,qty: 2,},
+  // {size: '10x12 ',woodWidth: 1,qty: 5,},
+  // {size: '8x10',woodWidth: 1,qty: 10,},
+  // {size: '29x10',woodWidth: 1,qty: 1,},
+  // {size: '20x30',woodWidth: 1,qty: 2,},
+  // {size: '16x20',woodWidth: 1,qty: 2,},
+  // {size: '10x15',woodWidth: 1,qty: 3,},
+
+
   // {size: '20x30',woodWidth: 1,qty: 2,},
   // {size: '20x28.5',woodWidth: 1,qty: 1,},
   // {size: '20x26',woodWidth: 1,qty: 1,},

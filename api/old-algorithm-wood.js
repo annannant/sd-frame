@@ -81,7 +81,7 @@ const test = () => {
     if (useKeeping.length) {
       // console.log('wested:', useKeeping, wested, )
       // console.log(`${item.cutting}`, useKeeping[0].wested)
-      console.log(`${item.cutting}`, ", wood:", useKeeping[0].wested);
+      console.log(`${item.cutting}`, ", wood:,", useKeeping[0].wested);
       // useKeepingList.push({
       //   cutting: item.cutting,
       //   wested: useKeeping[0].wested,
