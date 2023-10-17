@@ -17,7 +17,7 @@ const {
   maxBy,
 } = require("lodash");
 const debug = false;
-const printAlgo = false;
+const printAlgo = true;
 const woodLength = 120;
 const minLength = 6.5;
 const ORDER_BY = "desc"; // asc
@@ -43,7 +43,9 @@ function findCombinations(numbers, remainWoodStock, copyStdOrderList) {
   // std
   // const sortedStdOrderList = [...copyStdOrderList];
   // const totalStd = totalCutting(false, sortedStdOrderList);
-
+  const maxWoodItemStd = maxBy(
+    flatten(copyStdOrderList.map((item) => item.woodList))
+  );
   for (let i = 0; i < numbers.length; i++) {
     if (printAlgo) {
       console.log("----", i + 1, ";", numbers[i]);
@@ -139,8 +141,17 @@ function findCombinations(numbers, remainWoodStock, copyStdOrderList) {
         }
 
         if (afterUseWood > 0 && copyStdOrderList.length) {
+          // if (afterUseWood > 0 && copyStdOrderList.length && afterUseWood <= maxWoodItemStd &&  (maxWoodItemStd - afterUseWood <= minLength)) {
           const find = compareWithStd(data, copyStdOrderList);
+          if (find?.after_cut === 0) {
+            return {
+              use_std_wood: true,
+              ...find,
+            };
+          }
+
           if (find?.after_cut < lowestStd) {
+            console.log("find?.after_cut:", find?.after_cut);
             lowestStd = find?.after_cut;
             lowestUsedWoodStd = find;
           }
@@ -160,18 +171,18 @@ function findCombinations(numbers, remainWoodStock, copyStdOrderList) {
       // console.log('combinations:', combinations)
       combinations.push(current);
       if (printAlgo) {
-        console.log(
-          ";",
-          ";",
-          ";",
-          ";",
-          ";",
-          ";",
-          ";",
-          ";",
-          ";",
-          JSON.stringify(combinations)
-        );
+        // console.log(
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   ";",
+        //   JSON.stringify(combinations)
+        // );
       }
     }
   }
@@ -280,25 +291,137 @@ function checkPattern(copyNumber, patternList) {
   return true;
 }
 
-function compareWithStd(data, copyStdOrderList) {
-  const stdList = totalCutting(false, copyStdOrderList);
-  const remaining = data.remaning;
-  const filltered = uniq(stdList).reduce((prev, val) => {
-    const remain = val - remaining;
-    if (remain < 0 || remain >= minLength) {
-      return prev;
+function getCombination(list) {
+  const combinations = [[]];
+  for (let i = 0; i < list.length; i++) {
+    const currentCombinations = [...combinations];
+    for (let j = 0; j < currentCombinations.length; j++) {
+      const current = [...currentCombinations[j], list[i]];
+      // check duplicate pattern
+      const found = currentCombinations
+        .map((item) => item.join("|"))
+        .find((item) => item === current.join("|"));
+      if (found) {
+        continue;
+      }
+      const sumvalue = sum(current);
+      if (sumvalue > woodLength) {
+        continue;
+      }
+
+      const pattern = current.join(",");
+      combinations.push(current);
     }
-    return [
-      ...prev,
-      {
-        after_cut: remain,
-        val: val,
-        wood: remaining,
-      },
-    ];
-  }, []);
-  const ordered = orderBy(filltered, "after_cut", "asc");
-  return ordered[0];
+  }
+
+  return combinations;
+}
+
+function compareWithStd(data, copyStdOrderList) {
+console.log('============ strt compare with std ============')
+  const remaining = data.remaning;
+  const minValue = 999999;
+  let selected = undefined;
+  for (const std of copyStdOrderList) {
+    const combinationList = getCombination(std.woodList);
+    std.combinations = combinationList;
+    for (const pattern of combinationList) {
+      const total = sum(pattern);
+      if (total == 0) {
+        continue;
+      }
+      const remain = total - remaining;
+      console.log(
+        pattern,
+        ";",
+        total,
+        ";",
+        remain,
+        ";",
+        remain < 0 || remain >= minLength ? "" : "** selected"
+      );
+      if (remain < 0 || remain >= minLength) {
+        continue;
+      }
+
+      if (remain < minValue) {
+        selected = {
+          ...std,
+          after_cut: remain,
+          main_wood: remaining,
+          pattern,
+        };
+      }
+    }
+  }
+  console.log('============ end compare with std ============')
+  return selected;
+
+  // console.log('selected:', selected)
+
+  //   const sdtList = copyStdOrderList.map((val) => {
+  //     const combinations = getCombination(val.woodList)
+  //     return {
+  //       ...val,
+  //       combinations
+  //     };
+  //   });
+
+  //   const filter = sdtList.reduce((preve, std) => {
+  //     let remaingList = []
+  //     for (const pattern of std.combinations) {
+  //       const total = sum(pattern)
+  //       if (total == 0) {
+  //         continue
+  //       }
+
+  //       const remain = total - remaining;
+  //       // console.log(pattern, ';', total, ';', remain)
+  //       if (remain < 0 || remain >= minLength) {
+  //         continue
+  //       }
+
+  //       remaingList.push({
+  //         after_cut: remain,
+  //         // val: val,
+  //         main_wood: remaining,
+  //         pattern,
+  //       })
+  //     }
+
+  //     const ordered = orderBy(remaingList, "after_cut", "asc");
+  //     if (!ordered[0]) {
+  //       return preve
+  //     }
+  //     return [
+  //       ...preve,
+  //       {
+  //         ...std,
+  //         ...ordered[0],
+  //       }
+  //     ]
+  //   }, [])
+
+  //   const selected2 = orderBy(filter, 'after_cut', 'asc')
+  //   return selected2[0]
+
+  // const stdList = totalCutting(false, copyStdOrderList);
+  // const filltered = uniq(stdList).reduce((prev, val) => {
+  //   const remain = val - remaining;
+  //   if (remain < 0 || remain >= minLength) {
+  //     return prev;
+  //   }
+  //   return [
+  //     ...prev,
+  //     {
+  //       after_cut: remain,
+  //       val: val,
+  //       wood: remaining,
+  //     },
+  //   ];
+  // }, []);
+  // const ordered = orderBy(filltered, "after_cut", "asc");
+  // return ordered[0];
 }
 
 async function go(numbers, woodStock, ordering = "desc") {
@@ -387,12 +510,13 @@ async function go(numbers, woodStock, ordering = "desc") {
 
   let suggestPattern;
   if (remainingCopyNumber.length) {
+    console.log("==================== start suggest ====================");
+
     console.log(
       "remainingCopyNumber:",
       sum(remainingCopyNumber) + sumBy(zeroPattern, "sum")
     );
     console.log("remainingCopyNumber:", remainWoodStock);
-    // suggestPattern = await suggestV2(remainingCopyNumber, remainWoodStock);
     suggestPattern = await suggestV2(remainingCopyNumber, remainWoodStock);
   }
 
@@ -411,13 +535,14 @@ async function go(numbers, woodStock, ordering = "desc") {
 const findUseStd = (copyStdOrderList, data) => {
   let find = null;
   for (const item of copyStdOrderList) {
-    const found = item.woodList.includes(data.val);
+    const found = item.size == data.size;
     if (!found || find) {
       continue;
     }
     item.qty -= 1;
     find = { ...item };
   }
+
   return {
     try_pattern: find.woodList,
     std_selected: {
@@ -430,8 +555,7 @@ const findUseStd = (copyStdOrderList, data) => {
 
 const suggestV2 = async (numbers, woodStock, ordering = "desc") => {
   let copyNumber = cloneDeep(numbers);
-  let remainWoodStock = [12, 12, 109.5];
-  // let remainWoodStock = cloneDeep(woodStock);
+  let remainWoodStock = cloneDeep(woodStock);
   let copyStdOrderList = cloneDeep(stdOrderList);
 
   // console.log('remainWoodStock:', remainWoodStock)
