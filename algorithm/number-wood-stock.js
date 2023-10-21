@@ -1,7 +1,8 @@
 const woodStock = [
-  12,
-  12,
-  109.5,
+  14	,
+105.5	,
+22	,
+97.5	,
 ];
 
 module.exports = { woodStock };
