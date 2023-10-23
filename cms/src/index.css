@@ -1,10 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: "IBMPlexSansThai-Bold";
+  src: url('./assets/fonts/IBMPlexSansThai-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: "IBMPlexSansThai-ExtraLight";
+  src: url('./assets/fonts/IBMPlexSansThai-ExtraLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: "IBMPlexSansThai-Light";
+  src: url('./assets/fonts/IBMPlexSansThai-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: "IBMPlexSansThai-Medium";
+  src: url('./assets/fonts/IBMPlexSansThai-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: "IBMPlexSansThai-Regular";
+  src: url('./assets/fonts/IBMPlexSansThai-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: "IBMPlexSansThaiLooped-Regular";
+  src: url('./assets/fonts/IBMPlexSansThaiLooped-Regular.ttf') format('truetype');
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'IBMPlexSansThai-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f6f8ff;
+  font-size: 16px;
 }
 
 code {
