@@ -1,30 +1,59 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
+
+import { ConfigProvider, theme } from 'antd'
+
+import { colors } from 'constants/colors'
+
+import 'assets/styles/tailwind.css'
+
+import 'assets/styles/styles.css'
+
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import router from './routes/routers'
-import { ConfigProvider, theme } from 'antd'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
         token: {
           // Seed Token
           colorPrimary: '#4B49AC',
           borderRadius: 2,
           fontFamily: 'IBMPlexSansThai-Regular',
-
           // Alias Token
           // colorBgContainer: "#f6ffed",
         },
         components: {
           Menu: {
+            algorithm: theme.darkAlgorithm,
             itemBorderRadius: 10,
             groupTitleColor: '#ffffff73',
+          },
+          Button: {
+            colorBgBase: colors.primary,
+            borderRadiusLG: 8,
+            borderRadius: 8,
+          },
+          Form: {
+            labelColor: colors.fontLabel,
+          },
+          Card: {
+            borderRadiusLG: 15,
+            borderRadius: 15,
+          },
+          Input: {
+            borderRadiusLG: 10,
+            borderRadius: 10,
+          },
+          Select: {
+            borderRadiusLG: 10,
+            borderRadius: 10,
+            optionSelectedBg: colors.primary,
+            optionSelectedColor: colors.white,
           },
         },
       }}

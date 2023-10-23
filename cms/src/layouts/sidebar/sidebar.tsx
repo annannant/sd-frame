@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
@@ -53,7 +53,19 @@ function getItem(
 const transformMenu = (menus: ITFSidebarItem[], collapsed: boolean) => {
   return menus.map((menu, pindex) => {
     const items = menu.items?.map((item, index: number) => {
-      return getItem(item.label, item.key, item.icon, item.children, item.type)
+      const label = item.url ? (
+        <NavLink
+          to={item.url}
+          className={({ isActive, isPending }) =>
+            isPending ? 'pending' : isActive ? 'active' : ''
+          }
+        >
+          {item.label}
+        </NavLink>
+      ) : (
+        item.label
+      )
+      return getItem(label, item.key, item.icon, item.children, item.type)
     })
 
     return getItem(

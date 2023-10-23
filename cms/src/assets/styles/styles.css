@@ -1,0 +1,32 @@
+/**
+ * This injects Tailwind's base styles and any base styles registered by
+ * plugins.
+ */
+@import 'tailwindcss/base';
+
+/**
+ * This injects Tailwind's component classes and any component classes
+ * registered by plugins.
+ */
+@import 'tailwindcss/components';
+@layer components {
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    /* background-color:  */
+    background-color: initial;
+  }
+
+  .btn--primary {
+    @apply bg-primary text-white;
+  }
+  .btn--secondary {
+    @apply bg-secondary text-white;
+  }
+}
+/**
+ * This injects Tailwind's utility classes and any utility classes registered
+ * by plugins.
+ */
+@import 'tailwindcss/utilities';

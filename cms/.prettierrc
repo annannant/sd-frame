@@ -12,6 +12,8 @@
     "^common/(.*)$|^components/(.*)$|^pages/(.*)$",
     "^constants/(.*)$|^types/(.*)$",
     "^api/(.*)$|^helper/(.*)$|^hooks/(.*)$|^locales/(.*)$|^redux/(.*)$|^store/(.*)$|^utils/(.*)$",
+    "^assets/styles/tailwind.css$",
+    "^assets/(.*)$",
     "^[./]",
     "^@[./]",
     "^"

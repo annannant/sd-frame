@@ -18,6 +18,10 @@
     "baseUrl": "src",
     "paths": {
       "/*": ["/*"],
+      "assets/*": ["assets/*"],
+      "common/*": ["common/*"],
+      "constants/*": ["constants/*"],
+      "hooks/*": ["hooks/*"],
       "components/*": ["components/*"],
       "layouts/*": ["layouts/*"],
       "pages/*": ["pages/*"]

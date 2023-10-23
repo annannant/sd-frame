@@ -1,14 +1,15 @@
-import { ITFSidebarItem } from './sidebar.type'
 import {
-  PlusOutlined,
+  AppstoreOutlined,
+  BlockOutlined,
+  CodeSandboxOutlined,
+  ContainerOutlined,
   FileTextOutlined,
   FormOutlined,
-  ContainerOutlined,
-  BlockOutlined,
+  PlusOutlined,
   ProjectOutlined,
-  CodeSandboxOutlined,
-  AppstoreOutlined,
 } from '@ant-design/icons'
+
+import { ITFSidebarItem } from './sidebar.type'
 
 export const menus: ITFSidebarItem[] = [
   {
@@ -19,13 +20,13 @@ export const menus: ITFSidebarItem[] = [
     items: [
       {
         key: 'list-orders',
-        url: 'list-orders',
+        url: '/production-orders',
         label: 'รายการสั่งผลิต',
         icon: <FileTextOutlined />,
       },
       {
         key: 'create-order',
-        url: 'create-order',
+        url: '/production-orders/create',
         label: 'สั่งผลิต',
         icon: <PlusOutlined />,
       },

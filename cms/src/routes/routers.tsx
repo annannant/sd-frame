@@ -1,8 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import { ProductionOrdersList } from 'components/production-orders/production-orders-list'
-import MainLayout from 'layouts/main-layout/main-layout'
 import ErrorPage from 'pages/error-page'
+import {
+  ProductionOrdersInfo,
+  createOrderLoader,
+  editOrderLoader,
+} from 'pages/production-orders/production-orders-info'
+
+import { create } from 'domain'
+import MainLayout from 'layouts/main-layout/main-layout'
 
 export const router = createBrowserRouter([
   {
@@ -14,23 +21,36 @@ export const router = createBrowserRouter([
     path: '/production-orders',
     element: <MainLayout />,
     errorElement: <ErrorPage />,
+    loader: () => {
+      console.log('loader')
+      return {
+        data: 'loader',
+      }
+    },
+    action: () => {
+      console.log('action')
+      return {
+        data: 'action',
+      }
+    },
     children: [
-      { index: true, element: <ProductionOrdersList /> },
-      // {
-      //   path: "/",
-      //   element: <ProductionOrders />,
-      //   errorElement: <ErrorPage />
-      // },
-      // {
-      //   path: "/create",
-      //   element: <ProductionOrdersCreate />,
-      //   errorElement: <ErrorPage />
-      // },
-      // {
-      //   path: "/:id",
-      //   element: <ProductionOrdersEdit />,
-      //   errorElement: <ErrorPage />
-      // },
+      {
+        index: true,
+        element: <ProductionOrdersList />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'create',
+        element: <ProductionOrdersInfo />,
+        errorElement: <ErrorPage />,
+        loader: createOrderLoader,
+      },
+      {
+        path: 'edit/:orderId',
+        element: <ProductionOrdersInfo />,
+        errorElement: <ErrorPage />,
+        loader: editOrderLoader,
+      },
     ],
   },
   // {

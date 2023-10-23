@@ -26,11 +26,12 @@ module.exports = {
         'support-red': '#F3797E',
         'bg-base': '#f6f8ff',
         'font-base': '#535453',
-
+        'font-title': '#010101',
+        'font-description': '#76838f',
+        'font-label': '#1F1F1F',
         'dark-bg-base': '#001529',
         'dark-font-base': '#fff',
         'dark-font-nuetral': '#ffffffa6',
-
         // 'font-gray': '#a0a1a5',
         // 'font-dark-active': '#fff',
         // 'font-dark': '#ffffffa6',
