@@ -1,8 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],
@@ -28,17 +26,20 @@ module.exports = {
         'support-red': '#F3797E',
         'bg-base': '#f6f8ff',
         'font-base': '#535453',
-        'font-gray': '#a0a1a5',
-        'font-dark-base': '#fff',
-        'font-dark-active': '#fff',
-        'font-dark': '#ffffffa6',
-        'bg-dark': '#001529',
-        'bg-dark2': '#000c17',
-        'dark-gray': '#2f2f30',
-        'gray': '#acacac'
+
+        'dark-bg-base': '#001529',
+        'dark-font-base': '#fff',
+        'dark-font-nuetral': '#ffffffa6',
+
+        // 'font-gray': '#a0a1a5',
+        // 'font-dark-active': '#fff',
+        // 'font-dark': '#ffffffa6',
+        // 'bg-dark': '#001529',
+        // 'bg-dark2': '#000c17',
+        // 'dark-gray': '#2f2f30',
+        // 'gray': '#acacac'
       },
     },
   },
   plugins: [],
 }
-
