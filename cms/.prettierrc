@@ -1,0 +1,25 @@
+{
+  "semi": false,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "arrowParens": "always",
+  "trailingComma": "es5",
+  "quoteProps": "preserve",
+  "bracketSpacing": true,
+  "importOrder": [
+    "^react|^@redux|^redux-",
+    "antd|@ant-design/(.*)$|@mui/(.*)$",
+    "^common/(.*)$|^components/(.*)$|^pages/(.*)$",
+    "^constants/(.*)$|^types/(.*)$",
+    "^api/(.*)$|^helper/(.*)$|^hooks/(.*)$|^locales/(.*)$|^redux/(.*)$|^store/(.*)$|^utils/(.*)$",
+    "^[./]",
+    "^@[./]",
+    "^"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ]
+}

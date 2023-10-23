@@ -1,20 +1,17 @@
-import {
-  createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter } from 'react-router-dom'
 
-import { ProductionOrdersList } from 'components/production-orders/production-orders-list';
-import MainLayout from 'layouts/main-layout/main-layout';
-import ErrorPage from "pages/error-page";
-
+import { ProductionOrdersList } from 'components/production-orders/production-orders-list'
+import MainLayout from 'layouts/main-layout/main-layout'
+import ErrorPage from 'pages/error-page'
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <div>Hello world!</div>,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
   },
   {
-    path: "/production-orders",
+    path: '/production-orders',
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [
@@ -34,7 +31,7 @@ export const router = createBrowserRouter([
       //   element: <ProductionOrdersEdit />,
       //   errorElement: <ErrorPage />
       // },
-    ]
+    ],
   },
   // {
   //   path: "/production-orders/create",
@@ -51,6 +48,6 @@ export const router = createBrowserRouter([
   //   element: <ProductionOrdersEdit />,
   //   errorElement: <ErrorPage />
   // },
-]);
+])
 
-export default router;
+export default router

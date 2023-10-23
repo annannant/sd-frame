@@ -1,5 +1,6 @@
 export const colors = {
-  white: "#fff",
+  white: '#fff',
+  lightGray: '#ffffffa6',
   primary: '#4B49AC',
   secondary: '#98BDFF',
   supportBlue: '#7DAOFA',
@@ -8,4 +9,8 @@ export const colors = {
   bgBase: '#f6f8ff',
   fontBase: '#535453',
   fontGray: '#a0a1a5',
+  bgDark: '#001529',
+  bgDark2: '#000c17',
+  darkGray: '#2f2f30',
+  gray: '#acacac',
 }

@@ -29,6 +29,13 @@ module.exports = {
         'bg-base': '#f6f8ff',
         'font-base': '#535453',
         'font-gray': '#a0a1a5',
+        'font-dark-base': '#fff',
+        'font-dark-active': '#fff',
+        'font-dark': '#ffffffa6',
+        'bg-dark': '#001529',
+        'bg-dark2': '#000c17',
+        'dark-gray': '#2f2f30',
+        'gray': '#acacac'
       },
     },
   },
