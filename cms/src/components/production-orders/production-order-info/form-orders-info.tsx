@@ -1,10 +1,43 @@
+import { useState } from 'react'
+
 import { Col, Form, Row, Select, Typography } from 'antd'
+
+import frameList from 'data/frame-list'
 
 const { Text } = Typography
 export const FormOrdersInfo = () => {
+  const [selected, setSelected] = useState<string>('')
+
   const handleChange = (value: string) => {
     console.log(`selected ${value}`)
   }
+
+  const data = frameList.map((item, index) => {
+    return {
+      id: item.id,
+      code: `${item.type}-00${index + 1}`,
+      name: `${item.type}-${item.variant_name}`,
+      woodTypeCode: item.type,
+      woodTypeName: item.type,
+      woodTypeWidth: item.w_inch,
+      woodTypeHeight: item.h_inch,
+      woodTypeData: {
+        name: item.type,
+        code: item.type,
+        woodWidth: item.w_inch,
+        woodWidthUnit: 'inch',
+        woodLength: 120,
+        woodLengthUnit: 'inch',
+        wMm: item.w_mm,
+        hMm: item.h_mm,
+        qtyPerBox: item.qty_per_box,
+        pricePerUnit: item.price_per_unit,
+        pricePerBox: item.total_price_per_box,
+      },
+    }
+  })
+
+  console.log(JSON.stringify(data))
 
   return (
     <div className="grid gap-y-[20px]">

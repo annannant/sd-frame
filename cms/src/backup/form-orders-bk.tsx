@@ -17,7 +17,7 @@ import {
 
 import { colors } from 'constants/colors'
 
-import { Container } from './form-orders.styles'
+import { Container } from '../components/production-orders/production-order-info/form-orders.styles'
 
 const { Text, Title } = Typography
 
