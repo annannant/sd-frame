@@ -25,4 +25,5 @@ export const colors = {
   // 'fontDarkBase': '#fff',
   // 'fontDarkActive': '#fff',
   // 'fontDark': '#ffffffa6',
+  danger: '#FF4747',
 }

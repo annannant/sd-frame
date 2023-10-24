@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import type { InputRef } from 'antd'
-import { Button, Form, Input, Popconfirm, Table } from 'antd'
+import { Button, Col, Form, Input, Row, Table, Typography } from 'antd'
 import type { FormInstance } from 'antd/es/form'
 
+const { Text } = Typography
 const EditableContext = React.createContext<FormInstance<any> | null>(null)
 
 interface Item {
@@ -216,6 +217,11 @@ export const TableOrders = () => {
 
   return (
     <>
+      <Row className="mb-[15px]">
+        <Col span={24}>
+          <Text>รายการขนาดกรอบรูปที่ต้องการสั่งผลิต</Text>
+        </Col>
+      </Row>
       <Table
         components={components}
         rowClassName={() => 'editable-row'}
@@ -226,18 +232,11 @@ export const TableOrders = () => {
       <Button
         onClick={handleAdd}
         type="primary"
-        className="btn "
+        className="btn btn--primary"
         style={{ marginBottom: 16 }}
       >
         Add a row
       </Button>
-      <Button type="primary" className="">
-        Primary Button
-      </Button>
-      <Button>Default Button</Button>
-      <Button type="dashed">Dashed Button</Button>
-      <Button type="text">Text Button</Button>
-      <Button type="link">Link Button</Button>
     </>
   )
 }
