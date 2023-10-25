@@ -1,43 +1,44 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
 
-import frameList from 'data/frame-list'
+import { convertUnitToText } from 'helper/unit'
+
+import woodList, { ITFWoodData } from 'data/wood-list'
+import { orderBy } from 'lodash'
 
 const { Text } = Typography
 export const FormOrdersInfo = () => {
-  const [selected, setSelected] = useState<string>('')
+  const [selected, setSelected] = useState<ITFWoodData | null>()
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`)
+  const handleChange = (value: string, option: any) => {
+    setSelected(option?.data ?? null)
   }
 
-  const data = frameList.map((item, index) => {
-    return {
-      id: item.id,
-      code: `${item.type}-00${index + 1}`,
-      name: `${item.type}-${item.variant_name}`,
-      woodTypeCode: item.type,
-      woodTypeName: item.type,
-      woodTypeWidth: item.w_inch,
-      woodTypeHeight: item.h_inch,
-      woodTypeData: {
-        name: item.type,
-        code: item.type,
-        woodWidth: item.w_inch,
-        woodWidthUnit: 'inch',
-        woodLength: 120,
-        woodLengthUnit: 'inch',
-        wMm: item.w_mm,
-        hMm: item.h_mm,
-        qtyPerBox: item.qty_per_box,
-        pricePerUnit: item.price_per_unit,
-        pricePerBox: item.total_price_per_box,
-      },
-    }
-  })
+  const handleClear = () => {
+    setSelected(null)
+  }
 
-  console.log(JSON.stringify(data))
+  const options = useMemo(() => {
+    return orderBy(woodList, [
+      'woodTypeCode',
+      'attributeData.attributeName',
+    ]).map((item) => {
+      const desc = [item.name, ``]
+      return {
+        value: item.id,
+        label: `${item.codeName} - ${desc.join(' ')}`,
+        data: item,
+      }
+    })
+  }, [])
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: number | undefined; data: ITFWoodData }
+  ) => {
+    return (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+  }
 
   return (
     <div className="grid gap-y-[20px]">
@@ -53,18 +54,23 @@ export const FormOrdersInfo = () => {
               <Form layout="vertical" size="large">
                 <Form.Item label="">
                   <Select
-                    defaultValue="lucy"
+                    // defaultValue="lucy"
                     onChange={handleChange}
-                    options={[
-                      { value: 'jack', label: 'Jack' },
-                      { value: 'lucy', label: 'Lucy' },
-                      { value: 'Yiminghe', label: 'yiminghe' },
-                      {
-                        value: 'disabled',
-                        label: 'Disabled',
-                        disabled: true,
-                      },
-                    ]}
+                    onClear={handleClear}
+                    allowClear
+                    showSearch
+                    filterOption={filterOption}
+                    // options={[
+                    //   { value: 'jack', label: 'Jack' },
+                    //   { value: 'lucy', label: 'Lucy' },
+                    //   { value: 'Yiminghe', label: 'yiminghe' },
+                    //   {
+                    //     value: 'disabled',
+                    //     label: 'Disabled',
+                    //     disabled: true,
+                    //   },
+                    // ]}
+                    options={options}
                   />
                   <div className="mt-[5px]">
                     <Text type="secondary" className="font-title text-xs">
@@ -91,7 +97,9 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">รหัส</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">1217</Text>
+                      <Text className="text-font-title">
+                        {selected?.codeName}
+                      </Text>
                     </Col>
                   </Row>
                 </Col>
@@ -101,7 +109,9 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">ประเภท</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">ไม้ลายไทย</Text>
+                      <Text className="text-font-title">
+                        {selected?.woodTypeName} ({selected?.woodTypeCode})
+                      </Text>
                     </Col>
                   </Row>
                 </Col>
@@ -111,9 +121,7 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">ชื่อไม้</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">
-                        ทองเส้น หน้า 1 นิ้ว
-                      </Text>
+                      <Text className="text-font-title">{selected?.name}</Text>
                     </Col>
                   </Row>
                 </Col>
@@ -123,14 +131,24 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">ขนาดหน้าไม้</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">1 นิ้ว</Text>
+                      <Text className="text-font-title">
+                        {selected?.woodTypeWidth}{' '}
+                        {convertUnitToText(
+                          selected?.woodTypeData?.woodTypeUnit ?? ''
+                        )}
+                      </Text>
                     </Col>
                   </Row>
                 </Col>
               </Row>
             </Col>
             <Col span={6}>
-              <div className="aspect-[1/1] w-full bg-red-50"></div>
+              <div className="aspect-[1/1] w-full bg-gray-50">
+                <img
+                  src={selected?.woodTypeData?.imageUrl}
+                  alt={selected?.woodTypeData?.woodTypeName}
+                />
+              </div>
             </Col>
           </Row>
         </Col>
