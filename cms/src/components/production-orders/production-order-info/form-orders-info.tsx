@@ -1,22 +1,28 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
 
 import { convertUnitToText } from 'helper/unit'
 
+import {
+  productionOrdersSelector,
+  setSelected,
+} from 'app/slice/production-orders'
 import woodList, { ITFWoodData } from 'data/wood-list'
 import { orderBy } from 'lodash'
 
 const { Text } = Typography
 export const FormOrdersInfo = () => {
-  const [selected, setSelected] = useState<ITFWoodData | null>()
+  const dispatch = useDispatch()
+  const { selected } = useSelector(productionOrdersSelector)
 
   const handleChange = (value: string, option: any) => {
-    setSelected(option?.data ?? null)
+    dispatch(setSelected(option?.data ?? null))
   }
 
   const handleClear = () => {
-    setSelected(null)
+    dispatch(setSelected(null))
   }
 
   const options = useMemo(() => {
@@ -109,9 +115,11 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">ประเภท</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">
-                        {selected?.woodTypeName} ({selected?.woodTypeCode})
-                      </Text>
+                      {selected?.woodTypeCode && (
+                        <Text className="text-font-title">
+                          {selected?.woodTypeName} ({selected?.woodTypeCode})
+                        </Text>
+                      )}
                     </Col>
                   </Row>
                 </Col>

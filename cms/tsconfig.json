@@ -24,8 +24,10 @@
       "hooks/*": ["hooks/*"],
       "components/*": ["components/*"],
       "layouts/*": ["layouts/*"],
-      "pages/*": ["pages/*"]
+      "pages/*": ["pages/*"],
+      "data/*": ["data/*"],
+      "app/*": ["app/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/pages/production-orders/.tsx"]
 }

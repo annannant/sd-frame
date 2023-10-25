@@ -5,13 +5,13 @@ import { Typography } from 'antd'
 
 import { FormOrders } from 'components/production-orders/production-order-info/form-orders'
 import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info'
-import TableOrders from 'components/production-orders/production-order-info/table-orders'
 
 const { Title } = Typography
 export const ProductionOrdersInfo = () => {
   const { id, action }: any = useLoaderData()
-  console.log('id:', id)
-  console.log('action:', action)
+
+  // console.log('id:', id)
+  // console.log('action:', action)
 
   return (
     <>

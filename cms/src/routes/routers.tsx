@@ -8,7 +8,6 @@ import {
   editOrderLoader,
 } from 'pages/production-orders/production-orders-info'
 
-import { create } from 'domain'
 import MainLayout from 'layouts/main-layout/main-layout'
 
 export const router = createBrowserRouter([
