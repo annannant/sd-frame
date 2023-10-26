@@ -1,14 +1,19 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import { RootState } from 'app/store'
-import { ITFStadardSizeData } from 'data/standard-list'
+import {
+  ITFStadardSizeData,
+  ITFStadardSizeDataOption,
+} from 'data/standard-list'
 
 export interface StandardSizeState {
   list: ITFStadardSizeData[]
+  listOption: ITFStadardSizeDataOption[]
 }
 
 const initialValues: StandardSizeState = {
   list: [],
+  listOption: [],
 }
 
 const standardSizeSlice = createSlice({
@@ -20,6 +25,11 @@ const standardSizeSlice = createSlice({
       action: PayloadAction<ITFStadardSizeData[]>
     ) => {
       state.list = action.payload
+      state.listOption = action.payload.map((item: ITFStadardSizeData) => ({
+        value: item.id,
+        label: item.name,
+        data: item,
+      }))
     },
   },
 })

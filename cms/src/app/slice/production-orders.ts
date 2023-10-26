@@ -7,12 +7,24 @@ export interface ProductionOrdersInfoState {
   list: any[]
   data: any
   selected: ITFWoodData | null
+  loading: boolean
+  // loding: {
+  //   'page'?: boolean
+  //   'save'?: boolean
+  //   'submit'?: boolean
+  // }
 }
 
 const initialValues: ProductionOrdersInfoState = {
   list: [],
   data: null,
   selected: null,
+  loading: false,
+  // loding: {
+  //   'page': false,
+  //   'save': false,
+  //   'submit': false,
+  // },
 }
 
 const productionOrdersSlice = createSlice({

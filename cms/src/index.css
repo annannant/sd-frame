@@ -49,3 +49,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.ant-btn-primary {
+  background-color: #4b49ac;
+}
+
+.ant-btn-default {
+  background-color: #ffffff;
+}

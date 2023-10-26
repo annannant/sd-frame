@@ -5,6 +5,11 @@ export interface ITFStadardSizeData {
   h?: number
   unit?: string
 }
+export interface ITFStadardSizeDataOption {
+  value?: number
+  label?: string
+  data?: ITFStadardSizeData
+}
 
 export const standardList = [
   { id: 1, name: '4x6 นิ้ว', w: 4, h: 6 },

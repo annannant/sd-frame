@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
 
+import { filterOption } from 'helper/select-input'
 import { convertUnitToText } from 'helper/unit'
 
 import {
   productionOrdersSelector,
   setSelected,
 } from 'app/slice/production-orders'
-import woodList, { ITFWoodData } from 'data/wood-list'
+import woodList from 'data/wood-list'
 import { orderBy } from 'lodash'
 
 const { Text } = Typography
@@ -39,13 +40,6 @@ export const FormOrdersInfo = () => {
     })
   }, [])
 
-  const filterOption = (
-    input: string,
-    option?: { label: string; value: number | undefined; data: ITFWoodData }
-  ) => {
-    return (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-  }
-
   return (
     <div className="grid gap-y-[20px]">
       <Row gutter={[0, 30]}>
@@ -57,34 +51,32 @@ export const FormOrdersInfo = () => {
           </Row>
           <Row>
             <Col span={18}>
-              <Form layout="vertical" size="large">
-                <Form.Item label="">
-                  <Select
-                    // defaultValue="lucy"
-                    onChange={handleChange}
-                    onClear={handleClear}
-                    allowClear
-                    showSearch
-                    filterOption={filterOption}
-                    // options={[
-                    //   { value: 'jack', label: 'Jack' },
-                    //   { value: 'lucy', label: 'Lucy' },
-                    //   { value: 'Yiminghe', label: 'yiminghe' },
-                    //   {
-                    //     value: 'disabled',
-                    //     label: 'Disabled',
-                    //     disabled: true,
-                    //   },
-                    // ]}
-                    options={options}
-                  />
-                  <div className="mt-[5px]">
-                    <Text type="secondary" className="font-title text-xs">
-                      เลือกไม้กรอบที่ต้องการสั่งผลิต
-                    </Text>
-                  </div>
-                </Form.Item>
-              </Form>
+              <Form.Item label="">
+                <Select
+                  // defaultValue="lucy"
+                  onChange={handleChange}
+                  onClear={handleClear}
+                  allowClear
+                  showSearch
+                  filterOption={filterOption}
+                  // options={[
+                  //   { value: 'jack', label: 'Jack' },
+                  //   { value: 'lucy', label: 'Lucy' },
+                  //   { value: 'Yiminghe', label: 'yiminghe' },
+                  //   {
+                  //     value: 'disabled',
+                  //     label: 'Disabled',
+                  //     disabled: true,
+                  //   },
+                  // ]}
+                  options={options}
+                />
+                <div className="mt-[5px]">
+                  <Text type="secondary" className="font-title text-xs">
+                    เลือกไม้กรอบที่ต้องการสั่งผลิต
+                  </Text>
+                </div>
+              </Form.Item>
             </Col>
           </Row>
         </Col>

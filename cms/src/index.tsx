@@ -52,6 +52,10 @@ root.render(
               borderRadiusLG: 10,
               borderRadius: 10,
             },
+            InputNumber: {
+              borderRadiusLG: 10,
+              borderRadius: 10,
+            },
             Select: {
               borderRadiusLG: 10,
               borderRadius: 10,
