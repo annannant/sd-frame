@@ -89,11 +89,15 @@ export const Sidebar = () => {
   return (
     <Container className={`shadow-sm`}>
       <Button
-        type="primary"
+        type="text"
         onClick={toggleCollapsed}
         style={{ marginBottom: 16 }}
       >
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        {collapsed ? (
+          <MenuUnfoldOutlined className="text-white" />
+        ) : (
+          <MenuFoldOutlined className="text-white" />
+        )}
       </Button>
       <Menu
         defaultSelectedKeys={['list-orders']}
