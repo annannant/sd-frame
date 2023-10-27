@@ -21,13 +21,19 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    const data = await this.userService.findAll();
+    return {
+      data,
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const data = await this.userService.findOne(+id);
+    return {
+      data,
+    };
   }
 
   @Patch(':id')

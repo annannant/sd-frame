@@ -13,8 +13,7 @@ export class UserService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
-    console.log('createUserDto:', createUserDto);
-    return 'This action adds a new user';
+    return this.usersRepository.save(createUserDto);
   }
 
   findAll(): Promise<User[]> {
@@ -22,15 +21,15 @@ export class UserService {
   }
 
   findOne(id: number): Promise<User | null> {
+    console.log('id:', id);
     return this.usersRepository.findOneBy({ id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    console.log('updateUserDto:', updateUserDto);
-    return `This action updates a #${id} user`;
+    return this.usersRepository.update(id, updateUserDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository.delete(id);
   }
 }
