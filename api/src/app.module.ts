@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from './modules/users/entities/user.entity';
 import { UserModule } from './modules/users/users.module';
+import { Wood } from './modules/woods/entities/wood.entity';
+import { WoodsModule } from './modules/woods/woods.module';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { UserModule } from './modules/users/users.module';
       username: 'admin',
       password: '@secret!',
       database: 'sd-frame-db',
-      entities: [User],
+      entities: [User, Wood],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -25,6 +27,7 @@ import { UserModule } from './modules/users/users.module';
       envFilePath: ['.env.development.local', '.env.development'],
     }),
     UserModule,
+    WoodsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
