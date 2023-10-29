@@ -16,6 +16,7 @@ import {
   InputNumber,
   Row,
   Select,
+  Switch,
   Typography,
 } from 'antd'
 
@@ -26,13 +27,16 @@ import { filterOption } from 'helper/select-input'
 import { Container } from './form-orders.styles'
 
 import { standardSizeSelector } from 'app/slice/standard-size'
-import { keyBy } from 'lodash'
+import { keyBy, set } from 'lodash'
 
 const { Text } = Typography
 
 export const FormOrders = () => {
   const form = Form.useFormInstance()
+  const formValues = Form.useWatch('standard', form)
+
   const [selectedSize, setSelectedSize] = useState<any>({})
+
   const listOption = useSelector(standardSizeSelector).listOption
   const options = useMemo(() => {
     return listOption?.map((item) => {
@@ -62,6 +66,14 @@ export const FormOrders = () => {
     setSelectedSize(keyBy(standard?.filter(Boolean), 'size'))
   }
 
+  useEffect(() => {
+    const data = [
+      { isCustomSize: false, size: 2, qty: 1 },
+      { isCustomSize: true, size: 2, qty: 1 },
+    ]
+    form?.setFieldValue('standard', data)
+  }, [])
+
   return (
     <ConfigProvider
       theme={{
@@ -74,27 +86,30 @@ export const FormOrders = () => {
       }}
     >
       <Container className="px-[30px]">
-        <Divider
+        {/* <Divider
           orientation="left"
           orientationMargin="0"
           className="mb-[20px] mt-[20px]"
         >
           ขนาดมาตรฐาน (Standard Size)
-        </Divider>
-        <Form.List name="standard">
+        </Divider> */}
+        <Form.List
+          name="standard"
+          // initialValue={[{ isCustomSize: true, size: 2, qty: 1 }]}
+        >
           {(fields, { add, remove }) => (
             <>
               <Row gutter={[50, 10]} className="mb-[20px]">
-                <Col span={4} className="flex items-center justify-center">
+                <Col span={2} className="flex items-center justify-center">
                   <Text strong>No.</Text>
                 </Col>
-                {/* <Col span={4} className="flex items-center justify-center">
-                    <Text strong>ประเภท</Text>
-                  </Col> */}
-                <Col span={12} className="flex items-center justify-center">
+                <Col span={4} className="flex items-center justify-center">
+                  <Text strong>ขนาดพิเศษ</Text>
+                </Col>
+                <Col span={10} className="flex items-center justify-center">
                   <Text strong>ขนาด</Text>
                 </Col>
-                <Col span={6} className="flex items-center justify-center">
+                <Col span={4} className="flex items-center justify-center">
                   <Text strong>จำนวน</Text>
                 </Col>
               </Row>
@@ -108,37 +123,104 @@ export const FormOrders = () => {
                   <Col span={24} key={key}>
                     <Row gutter={[40, 20]}>
                       <Col
-                        span={4}
+                        span={2}
                         className="flex items-center justify-center"
                       >
                         <Text>{index + 1}</Text>
                       </Col>
                       <Col
-                        span={12}
+                        span={4}
+                        className="flex items-center justify-center"
+                      >
+                        <Form.Item
+                          {...restField}
+                          valuePropName="checked"
+                          name={[name, 'isCustomSize']}
+                          noStyle
+                          initialValue={false}
+                        >
+                          <Switch
+                            checkedChildren="Yes"
+                            unCheckedChildren="No"
+                          />
+                        </Form.Item>
+                      </Col>
+
+                      <Col
+                        span={10}
                         className="flex items-center justify-start gap-3"
                       >
-                        <div className="flex-1">
-                          <Form.Item
-                            {...restField}
-                            name={[name, 'size']}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'ระบุขนาด',
-                              },
-                            ]}
-                            className="w-full"
-                          >
-                            <Select
-                              showSearch
-                              onChange={handleOnChange}
-                              options={options}
-                              filterOption={filterOption}
-                            />
-                          </Form.Item>
-                        </div>
+                        {formValues?.[index]?.isCustomSize ? (
+                          <>
+                            <div className="flex-1">
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'width']}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'ระบุความกว้าง',
+                                  },
+                                ]}
+                                className="w-full"
+                              >
+                                <InputNumber
+                                  min={1}
+                                  max={120}
+                                  placeholder="กว้าง"
+                                  style={{ width: '100%' }}
+                                />
+                              </Form.Item>
+                            </div>
+                            <div className="w-[8px] text-center">x</div>
+                            <div className="flex-1">
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'height']}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'ระบุความยาว',
+                                  },
+                                ]}
+                                className="w-full"
+                              >
+                                <InputNumber
+                                  min={1}
+                                  max={120}
+                                  placeholder="ยาว"
+                                  style={{ width: '100%' }}
+                                />
+                              </Form.Item>
+                            </div>
+                            <div className="w-[20px]">
+                              <Text>นิ้ว</Text>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex-1">
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'size']}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: 'ระบุขนาด',
+                                },
+                              ]}
+                              className="w-full"
+                            >
+                              <Select
+                                showSearch
+                                onChange={handleOnChange}
+                                options={options}
+                                filterOption={filterOption}
+                              />
+                            </Form.Item>
+                          </div>
+                        )}
                       </Col>
-                      <Col span={6} className="flex justify-start">
+                      <Col span={4} className="flex justify-start">
                         <Form.Item
                           {...restField}
                           name={[name, 'qty']}
@@ -161,7 +243,9 @@ export const FormOrders = () => {
               <Form.Item>
                 <Button
                   type="dashed"
-                  onClick={() => add()}
+                  onClick={() => {
+                    add()
+                  }}
                   block
                   icon={<PlusOutlined />}
                 >
@@ -172,7 +256,7 @@ export const FormOrders = () => {
           )}
         </Form.List>
         <div className="mb-[60px]"></div>
-        <Divider orientation="left" orientationMargin="0" className="mb-[20px]">
+        {/* <Divider orientation="left" orientationMargin="0" className="mb-[20px]">
           ขนาดพิเศษ (Custom Size)
         </Divider>
         <Form.List name="customize">
@@ -204,55 +288,7 @@ export const FormOrders = () => {
                       >
                         <Text>{index + 1}</Text>
                       </Col>
-                      <Col
-                        span={12}
-                        className="flex items-center justify-start gap-3"
-                      >
-                        <div className="flex-1">
-                          <Form.Item
-                            {...restField}
-                            name={[name, 'width']}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'ระบุความกว้าง',
-                              },
-                            ]}
-                            className="w-full"
-                          >
-                            <InputNumber
-                              min={1}
-                              max={120}
-                              placeholder="กว้าง"
-                              style={{ width: '100%' }}
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className="w-[8px] text-center">x</div>
-                        <div className="flex-1">
-                          <Form.Item
-                            {...restField}
-                            name={[name, 'height']}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'ระบุความยาว',
-                              },
-                            ]}
-                            className="w-full"
-                          >
-                            <InputNumber
-                              min={1}
-                              max={120}
-                              placeholder="ยาว"
-                              style={{ width: '100%' }}
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className="w-[20px]">
-                          <Text>นิ้ว</Text>
-                        </div>
-                      </Col>
+
                       <Col span={6} className="flex justify-start">
                         <Form.Item
                           {...restField}
@@ -311,7 +347,7 @@ export const FormOrders = () => {
               </Form.Item>
             </>
           )}
-        </Form.List>
+        </Form.List> */}
       </Container>
     </ConfigProvider>
   )

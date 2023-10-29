@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
 
+import { StyleProvider } from '@ant-design/cssinjs'
 import { ConfigProvider, theme } from 'antd'
 
 import { colors } from 'constants/colors'
 
 import 'assets/styles/tailwind.css'
-
-import 'assets/styles/styles.css'
 
 import store from './app/store'
 import './index.css'

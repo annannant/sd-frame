@@ -50,10 +50,14 @@ code {
     monospace;
 }
 
-.ant-btn-primary {
+/* .ant-btn-primary {
   background-color: #4b49ac;
 }
 
 .ant-btn-default {
   background-color: #ffffff;
 }
+
+.ant-switch {
+  background-color: rgba(0, 0, 0, 0.25);
+} */

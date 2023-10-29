@@ -10,20 +10,6 @@
  */
 @import 'tailwindcss/components';
 @layer components {
-  button,
-  [type='button'],
-  [type='reset'],
-  [type='submit'] {
-    /* background-color:  */
-    background-color: initial;
-  }
-
-  .btn--primary {
-    @apply bg-primary text-white;
-  }
-  .btn--secondary {
-    @apply bg-secondary text-white;
-  }
 }
 /**
  * This injects Tailwind's utility classes and any utility classes registered
