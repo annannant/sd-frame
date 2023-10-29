@@ -6,8 +6,8 @@ import { Typography } from 'antd'
 import { notification } from 'antd'
 import type { NotificationPlacement } from 'antd/es/notification/interface'
 
-import { FormOrders } from 'components/production-orders/production-order-info/form-orders'
-import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info'
+import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info/form-orders-info'
+import { FormOrders } from 'components/production-orders/production-order-info/form-orders/form-orders'
 
 const { Title } = Typography
 

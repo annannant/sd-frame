@@ -21,11 +21,23 @@ export class WoodsService {
       order: {
         name: 'ASC',
       },
+      relations: {
+        woodType: true,
+        attribute: true,
+      },
     });
   }
 
   findOne(id: number): Promise<Wood | null> {
-    return this.woodsRepository.findOneBy({ id });
+    return this.woodsRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        woodType: true,
+        attribute: true,
+      },
+    });
   }
 
   update(id: number, updateWoodDto: UpdateWoodDto) {

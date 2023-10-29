@@ -1,12 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { useDispatch } from 'react-redux'
 
 import rootReducer from './root-reducer'
 
+import { woodApiSlice } from 'services/wood'
+
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(woodApiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 })
+
+setupListeners(store.dispatch)
+
 export type RootState = ReturnType<typeof store.getState>
+export const useAppDispatch = () => useDispatch<typeof store.dispatch>()
 
 export const appSelector = (store: RootState) => store
 

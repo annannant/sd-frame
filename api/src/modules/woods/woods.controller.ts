@@ -22,18 +22,12 @@ export class WoodsController {
 
   @Get()
   async findAll() {
-    const data = await this.woodsService.findAll();
-    return {
-      data,
-    };
+    return await this.woodsService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const data = await this.woodsService.findOne(+id);
-    return {
-      data,
-    };
+    return await this.woodsService.findOne(+id);
   }
 
   @Patch(':id')

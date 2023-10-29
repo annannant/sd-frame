@@ -1,3 +1,5 @@
+import { Attribute } from '@/modules/attributes/entities/attribute.entity';
+import { WoodType } from '@/modules/wood-types/entities/wood-type.entity';
 import {
   Entity,
   Column,
@@ -11,25 +13,29 @@ export class Wood {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'wood_type_id' })
+  @Column({ name: 'wood_type_id', nullable: true })
   woodTypeId: number;
 
-  @Column({ name: 'attribute_id' })
+  @Column({ name: 'attribute_id', nullable: true })
   attributeId: number;
 
-  @Column({ name: 'code' })
+  @Column({ name: 'code', nullable: true })
   code: string;
 
-  @Column({ name: 'name' })
+  @Column({ name: 'name', nullable: true })
   name: string;
 
-  @Column({ name: 'description' })
+  @Column({ name: 'description', type: 'text', nullable: true })
   description: string;
 
-  @Column({ name: 'image_url' })
+  @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl: string;
 
-  // @OneToOne(() => Profile)
-  // @JoinColumn()
-  // woodType: Profile;
+  @OneToOne(() => WoodType)
+  @JoinColumn({ name: 'wood_type_id' })
+  woodType: WoodType;
+
+  @OneToOne(() => Attribute)
+  @JoinColumn({ name: 'attribute_id' })
+  attribute: Attribute;
 }

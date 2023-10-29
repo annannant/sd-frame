@@ -1,7 +1,8 @@
-import { ITFStandardFrame } from './standard-frame-option.type'
-
-export interface ITFStandardFrameOption {
-  value?: number
-  label?: string
-  data?: ITFStandardFrame
+export interface ITFStandardFrame {
+  id?: number
+  name?: string | null
+  width?: number | null
+  height?: number | null
+  isActive?: boolean | null
+  unit?: string | null
 }

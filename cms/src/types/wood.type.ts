@@ -1,3 +1,6 @@
+import { ITFAttribute } from './attribute.type'
+import { ITFWoodType } from './wood-type.type'
+
 export interface ITFWood {
   id?: number
   woodTypeId?: number | null
@@ -6,4 +9,6 @@ export interface ITFWood {
   name?: string | null
   description?: string | null
   imageUrl?: string | null
+  woodType?: ITFWoodType | null
+  attribute?: ITFAttribute | null
 }

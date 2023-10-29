@@ -19,8 +19,6 @@ import {
   Typography,
 } from 'antd'
 
-import { ModalStandardSize } from 'common/modal/modal-standard-size/modal-standard-size'
-
 import { colors } from 'constants/colors'
 
 import { filterOption } from 'helper/select-input'
@@ -34,7 +32,6 @@ const { Text } = Typography
 
 export const FormOrders = () => {
   const form = Form.useFormInstance()
-
   const [selectedSize, setSelectedSize] = useState<any>({})
   const listOption = useSelector(standardSizeSelector).listOption
   const options = useMemo(() => {

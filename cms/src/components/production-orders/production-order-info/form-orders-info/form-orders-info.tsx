@@ -12,10 +12,12 @@ import {
 } from 'app/slice/production-orders'
 import woodList from 'data/wood-list'
 import { orderBy } from 'lodash'
+import { useGetAllWoodsQuery } from 'services/wood'
 
 const { Text } = Typography
 export const FormOrdersInfo = () => {
   const dispatch = useDispatch()
+  const { data } = useGetAllWoodsQuery()
   const { selected } = useSelector(productionOrdersSelector)
 
   const handleChange = (value: string, option: any) => {
@@ -26,19 +28,7 @@ export const FormOrdersInfo = () => {
     dispatch(setSelected(null))
   }
 
-  const options = useMemo(() => {
-    return orderBy(woodList, [
-      'woodTypeCode',
-      'attributeData.attributeName',
-    ]).map((item) => {
-      const desc = [item.name, ``]
-      return {
-        value: item.id,
-        label: `${item.codeName} - ${desc.join(' ')}`,
-        data: item,
-      }
-    })
-  }, [])
+  const options = data?.options ?? []
 
   return (
     <div className="grid gap-y-[20px]">
@@ -95,9 +85,7 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">รหัส</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">
-                        {selected?.codeName}
-                      </Text>
+                      <Text className="text-font-title">{selected?.code}</Text>
                     </Col>
                   </Row>
                 </Col>
@@ -107,9 +95,10 @@ export const FormOrdersInfo = () => {
                       <Text type="secondary">ประเภท</Text>
                     </Col>
                     <Col span={18} className="pl-[40px] ">
-                      {selected?.woodTypeCode && (
+                      {selected?.woodType?.code && (
                         <Text className="text-font-title">
-                          {selected?.woodTypeName} ({selected?.woodTypeCode})
+                          {selected?.woodType?.name} ({selected?.woodType?.code}
+                          )
                         </Text>
                       )}
                     </Col>
@@ -132,10 +121,8 @@ export const FormOrdersInfo = () => {
                     </Col>
                     <Col span={18} className="pl-[40px] ">
                       <Text className="text-font-title">
-                        {selected?.woodTypeWidth}{' '}
-                        {convertUnitToText(
-                          selected?.woodTypeData?.woodTypeUnit ?? ''
-                        )}
+                        {selected?.woodType?.width}{' '}
+                        {convertUnitToText(selected?.woodType?.sizeUnit ?? '')}
                       </Text>
                     </Col>
                   </Row>
@@ -145,8 +132,8 @@ export const FormOrdersInfo = () => {
             <Col span={6}>
               <div className="aspect-[1/1] w-full bg-gray-50">
                 <img
-                  src={selected?.woodTypeData?.imageUrl}
-                  alt={selected?.woodTypeData?.woodTypeName}
+                  src={selected?.woodType?.imageUrl ?? '#'}
+                  alt={selected?.woodType?.name ?? ''}
                 />
               </div>
             </Col>

@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
+import { ITFWood } from 'types/wood.type'
+
 import { RootState } from 'app/store'
-import { ITFWoodData } from 'data/wood-list'
 
 export interface ProductionOrdersInfoState {
   list: any[]
   data: any
-  selected: ITFWoodData | null
+  selected: ITFWood | null
   loading: boolean
   // loding: {
   //   'page'?: boolean
@@ -33,7 +34,7 @@ const productionOrdersSlice = createSlice({
   reducers: {
     setSelected: (
       state: ProductionOrdersInfoState,
-      action: PayloadAction<ITFWoodData | null>
+      action: PayloadAction<ITFWood | null>
     ) => {
       state.selected = action.payload
     },

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { ProductionOrdersList } from 'components/production-orders/production-orders-list'
+import { ProductionOrdersList } from 'components/production-orders/production-orders-list/production-orders-list'
 import ErrorPage from 'pages/error-page'
 import {
   ProductionOrdersInfo,

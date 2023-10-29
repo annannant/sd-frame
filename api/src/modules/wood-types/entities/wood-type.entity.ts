@@ -1,40 +1,53 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Wood } from '@/modules/woods/entities/wood.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity('wood_type')
 export class WoodType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'name' })
+  @Column({ name: 'name', nullable: true })
   name: string;
 
-  @Column({ name: 'code' })
+  @Column({ name: 'code', nullable: true })
   code: string;
 
-  @Column({ name: 'width' })
+  @Column({
+    name: 'width',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+  })
   width: number;
 
-  @Column({ name: 'height' })
+  @Column({
+    name: 'height',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+  })
   height: number;
 
-  @Column({ name: 'length' })
+  @Column({
+    name: 'length',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+  })
   length: number;
 
-  @Column({ name: 'size_unit' })
+  @Column({ name: 'size_unit', nullable: true })
   sizeUnit: string;
 
-  @Column({ name: 'qty_perbox' })
+  @Column({ name: 'qty_perbox', nullable: true })
   qtyPerbox: number;
 
-  @Column({ name: 'image_url' })
+  @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl: string;
 
-  // @Column({ name: 'first_name' })
-  // firstName: string;
-
-  // @Column({ name: 'last_name' })
-  // lastName: string;
-
-  // @Column({ name: 'is_active' })
-  // isActive: boolean;
+  // @ManyToOne(() => Wood, (wood) => wood.photos)
+  // woods: Wood;
 }
