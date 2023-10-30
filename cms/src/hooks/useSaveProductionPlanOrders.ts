@@ -45,7 +45,7 @@ export const useSaveProductionPlanOrders = () => {
     try {
       const payload = transformPayload(values)
       const response = await postCreate(payload)
-      // navigate('/production-orders')
+      navigate('/production-orders')
       console.log('response:', response)
     } catch (error) {
       console.log('error:', error)

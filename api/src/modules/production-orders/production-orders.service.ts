@@ -9,6 +9,7 @@ import { ProductionOrderItem } from '../production-order-items/entities/producti
 import { CreateProductionOrderItemDto } from '../production-order-items/dto/create-production-order-item.dto';
 import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 import { plainToInstance } from 'class-transformer';
+import { Wood } from '../woods/entities/wood.entity';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -45,15 +46,21 @@ export class ProductionOrdersService {
 
   async findAll(query: QueryProductionOrderDto) {
     const queryOrders =
-      this.productionOrdersRepository.createQueryBuilder('productionOrder');
+      this.productionOrdersRepository.createQueryBuilder('pod');
     if (query.statuses) {
       const statuses = query.statuses.split(',');
-      queryOrders.where('status IN (:...statuses)', {
+      queryOrders.where('pod.status IN (:...statuses)', {
         statuses,
       });
     }
 
-    const orders = await queryOrders.orderBy('id', 'ASC').getMany();
+    const orders = await queryOrders
+      .leftJoinAndSelect('pod.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute')
+      .orderBy('pod.id', 'ASC')
+      .getMany();
+
     return orders;
   }
 

@@ -22,9 +22,6 @@ export const woodApiSlice = createApi({
         }
       },
     }),
-    // getPokemonByName: builder.query<Pokemon, string>({
-    //   query: (name) => `pokemon/${name}`,
-    // }),
   }),
 })
 

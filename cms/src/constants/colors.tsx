@@ -1,7 +1,7 @@
 export const colors = {
   primary: '#4B49AC',
   secondary: '#98BDFF',
-  supportBlue: '#7DAOFA',
+  supportGreen: '#77ddaa',
   supportPurple: '#7978E9',
   supportRed: '#F3797E',
   bgBase: '#f6f8ff',

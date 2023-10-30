@@ -27,6 +27,7 @@ root.render(
             fontFamily: 'IBMPlexSansThai-Regular',
             // Alias Token
             // colorBgContainer: "#f6ffed",
+            // borderRadiusSM:
           },
           components: {
             Menu: {

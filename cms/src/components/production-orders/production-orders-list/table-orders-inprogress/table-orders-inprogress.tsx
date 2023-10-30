@@ -1,8 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Table } from 'antd'
 
-import { DRAFT, WAIT_FOR_CUTTING } from 'constants/current-status.constant'
+import {
+  CUTTING_INPROGRESS,
+  PREPARING_INPROGRESS,
+  WAIT_FOR_CUTTING,
+  WAIT_FOR_PREPARING,
+} from 'constants/current-status.constant'
 
 import { useProductionPlanOrders } from 'hooks/useProductionPlanOrders'
 
@@ -10,11 +15,12 @@ import columns from '../columns'
 
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
-export const TableOrders = () => {
+export const TableOrdersInprogress = () => {
   const { transformTable } = useProductionPlanOrders()
   const { data, refetch } = useGetAllProductionOrdersQuery({
-    statuses: [DRAFT, WAIT_FOR_CUTTING],
+    statuses: [CUTTING_INPROGRESS, WAIT_FOR_PREPARING, PREPARING_INPROGRESS],
   })
+
   const dataSource = transformTable(data ?? [])
 
   useEffect(() => {

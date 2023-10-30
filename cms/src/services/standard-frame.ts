@@ -21,9 +21,6 @@ export const standardFrameApiSlice = createApi({
         }
       },
     }),
-    // getPokemonByName: builder.query<Pokemon, string>({
-    //   query: (name) => `pokemon/${name}`,
-    // }),
   }),
 })
 

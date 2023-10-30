@@ -1,4 +1,5 @@
 import { Attribute } from '@/modules/attributes/entities/attribute.entity';
+import { ProductionOrder } from '@/modules/production-orders/entities/production-order.entity';
 import { WoodType } from '@/modules/wood-types/entities/wood-type.entity';
 import {
   Entity,
@@ -6,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('wood')
@@ -38,4 +40,7 @@ export class Wood {
   @OneToOne(() => Attribute)
   @JoinColumn({ name: 'attribute_id' })
   attribute: Attribute;
+
+  @OneToMany(() => ProductionOrder, (productionOrder) => productionOrder.woodId)
+  productionOrders: ProductionOrder[];
 }

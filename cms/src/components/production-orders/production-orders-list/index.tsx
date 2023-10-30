@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { Card, Tabs, Typography } from 'antd'
 import type { TabsProps } from 'antd'
 
-import { TableOrdersList } from './table-orders/table-orders'
+import { TableOrdersInprogress } from './table-orders-inprogress/table-orders-inprogress'
+import { TableOrders } from './table-orders/table-orders'
+
+import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
 const { Title } = Typography
 
@@ -20,7 +23,7 @@ export const ProductionOrdersListIndex = () => {
       label: 'รอผลิต',
       children: (
         <div className="min-h-[50vh]">
-          <TableOrdersList />
+          <TableOrders />
         </div>
       ),
     },
@@ -29,7 +32,7 @@ export const ProductionOrdersListIndex = () => {
       label: 'อยู่ระหว่างผลิต',
       children: (
         <div className="min-h-[50vh]">
-          <TableOrdersList />
+          <TableOrdersInprogress />
         </div>
       ),
     },

@@ -1,11 +1,15 @@
 import { generateOrderNo } from '@/common/helpers/generator';
 import { padWithLeadingZeros } from '@/common/helpers/stringFormat';
+import { Wood } from '@/modules/woods/entities/wood.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('production_order')
@@ -49,4 +53,8 @@ export class ProductionOrder {
   updateDates() {
     this.updatedAt = new Date();
   }
+
+  @ManyToOne(() => Wood, (wood) => wood.productionOrders)
+  @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
+  wood: Wood;
 }
