@@ -10,7 +10,6 @@ import {
   Button,
   Col,
   ConfigProvider,
-  Divider,
   Form,
   Input,
   InputNumber,
@@ -26,52 +25,45 @@ import { filterOption } from 'helper/select-input'
 
 import { Container } from './form-orders.styles'
 
-import { standardSizeSelector } from 'app/slice/standard-size'
-import { keyBy, set } from 'lodash'
+import { keyBy } from 'lodash'
+import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 const { Text } = Typography
 
 export const FormOrders = () => {
   const form = Form.useFormInstance()
-  const formValues = Form.useWatch('standard', form)
+  const formValues = Form.useWatch('orderItems', form)
 
   const [selectedSize, setSelectedSize] = useState<any>({})
 
-  const listOption = useSelector(standardSizeSelector).listOption
+  const { data } = useGetAllStandardFramesQuery()
   const options = useMemo(() => {
-    return listOption?.map((item) => {
+    return data?.options?.map((item) => {
       return {
         ...item,
         disabled: selectedSize[item.value ?? ''],
       }
     })
-  }, [listOption, selectedSize])
-
-  const [isModalOpen, setIsModalOpen] = useState(true)
-
-  const showModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
+  }, [data?.options, selectedSize])
 
   const handleOnChange = (value: number) => {
-    const standard = form?.getFieldValue('standard')
-    setSelectedSize(keyBy(standard?.filter(Boolean), 'size'))
+    const orderItems = form?.getFieldValue('orderItems')
+    setSelectedSize(keyBy(orderItems?.filter(Boolean), 'size'))
   }
+
+  const initialChecked: boolean = useMemo(() => {
+    return !!formValues?.[formValues.length - 2]?.isCustomSize
+  }, [formValues])
 
   useEffect(() => {
     const data = [
-      { isCustomSize: false, size: 2, qty: 1 },
+      { isCustomSize: false, size: 20, qty: 1 },
+      { isCustomSize: false, size: 22, qty: 1 },
       { isCustomSize: true, size: 2, qty: 1 },
     ]
-    form?.setFieldValue('standard', data)
+    setSelectedSize(keyBy(data?.filter(Boolean), 'size'))
+
+    form?.setFieldValue('orderItems', data)
   }, [])
 
   return (
@@ -94,7 +86,7 @@ export const FormOrders = () => {
           ขนาดมาตรฐาน (Standard Size)
         </Divider> */}
         <Form.List
-          name="standard"
+          name="orderItems"
           // initialValue={[{ isCustomSize: true, size: 2, qty: 1 }]}
         >
           {(fields, { add, remove }) => (
@@ -137,7 +129,7 @@ export const FormOrders = () => {
                           valuePropName="checked"
                           name={[name, 'isCustomSize']}
                           noStyle
-                          initialValue={false}
+                          initialValue={initialChecked}
                         >
                           <Switch
                             checkedChildren="Yes"

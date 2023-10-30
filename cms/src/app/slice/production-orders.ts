@@ -1,5 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
+import { ITFCreateProductionOrder } from 'types/production-order.type'
 import { ITFWood } from 'types/wood.type'
 
 import { RootState } from 'app/store'

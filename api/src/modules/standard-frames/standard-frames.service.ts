@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStandardFrameDto } from './dto/create-standard-frame.dto';
 import { UpdateStandardFrameDto } from './dto/update-standard-frame.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { StandardFrame } from './entities/standard-frame.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StandardFramesService {
+  constructor(
+    @InjectRepository(StandardFrame)
+    private standardFramesRepository: Repository<StandardFrame>,
+  ) {}
+
   create(createStandardFrameDto: CreateStandardFrameDto) {
-    return 'This action adds a new standardFrame';
+    return this.standardFramesRepository.save(createStandardFrameDto);
   }
 
   findAll() {
-    return `This action returns all standardFrames`;
+    return this.standardFramesRepository.find({
+      order: {
+        width: 'ASC',
+        height: 'ASC',
+      },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} standardFrame`;
+    return this.standardFramesRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
   update(id: number, updateStandardFrameDto: UpdateStandardFrameDto) {
-    return `This action updates a #${id} standardFrame`;
+    return this.standardFramesRepository.update(id, updateStandardFrameDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} standardFrame`;
+    return this.standardFramesRepository.delete(id);
   }
 }

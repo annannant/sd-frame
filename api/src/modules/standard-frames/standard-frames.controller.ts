@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { StandardFramesService } from './standard-frames.service';
 import { CreateStandardFrameDto } from './dto/create-standard-frame.dto';
 import { UpdateStandardFrameDto } from './dto/update-standard-frame.dto';
@@ -23,7 +31,10 @@ export class StandardFramesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStandardFrameDto: UpdateStandardFrameDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateStandardFrameDto: UpdateStandardFrameDto,
+  ) {
     return this.standardFramesService.update(+id, updateStandardFrameDto);
   }
 

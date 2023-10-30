@@ -1,23 +1,9 @@
 import { convertWoodNumber } from 'helper/number'
 
-import attributeList, { ITFAttributeData } from './attribute-list'
-import { ITFWoodTypeData, woodTypeList } from './wood-type-list'
+import attributeList from './attribute-list'
+import { woodTypeList } from './wood-type-list'
 
 import { keyBy } from 'lodash'
-
-export interface ITFWoodData {
-  id?: number
-  code?: string
-  codeName?: string
-  name?: string
-  description?: string
-  woodTypeCode?: string
-  woodTypeName?: string
-  woodTypeWidth?: number
-  woodTypeHeight?: number
-  woodTypeData?: ITFWoodTypeData
-  attributeData?: ITFAttributeData
-}
 
 export const rawData = [
   {
@@ -425,7 +411,7 @@ export const rawData = [
 
 const woodTypeObj = keyBy(woodTypeList, 'woodTypeCode')
 const attributeObj = keyBy(attributeList, 'attributeName')
-export const woodList: ITFWoodData[] = rawData.map((item, index) => {
+export const woodList: any[] = rawData.map((item, index) => {
   const woodTypeData = woodTypeObj[`${item.woodTypeCode}`]
   const attributeData = attributeObj[`${item.color_name}`]
   const code = `${woodTypeData.woodTypeCode}${attributeData.attributeCode}`

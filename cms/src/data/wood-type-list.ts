@@ -1,22 +1,3 @@
-export interface ITFWoodTypeData {
-  url?: string
-  imageUrl?: string
-  woodTypeCode?: string
-  woodTypeName?: string
-  woodTypeWidth?: number
-  woodTypeHeight?: number
-  woodTypeWidth2?: number
-  woodTypeHeight2?: number
-  woodLength?: number
-  woodLengthUnit?: string
-  woodTypeUnit?: string
-  wMm?: number
-  hMm?: number
-  qtyPerBox?: number
-  pricePerUnit?: number
-  pricePerBox?: number
-}
-
 export const woodTypeList = [
   {
     'url': 'https://www.laithai-frame.com/704-01',

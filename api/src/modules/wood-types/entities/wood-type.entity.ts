@@ -1,5 +1,4 @@
-import { Wood } from '@/modules/woods/entities/wood.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('wood_type')
 export class WoodType {

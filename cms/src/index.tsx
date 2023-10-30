@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
 
-import { StyleProvider } from '@ant-design/cssinjs'
 import { ConfigProvider, theme } from 'antd'
 
 import { colors } from 'constants/colors'
@@ -60,6 +59,10 @@ root.render(
               borderRadius: 10,
               optionSelectedBg: colors.primary,
               optionSelectedColor: colors.white,
+            },
+            Tabs: {
+              horizontalItemPadding: '10px 18px',
+              horizontalItemPaddingLG: '16px 18px',
             },
           },
         }}

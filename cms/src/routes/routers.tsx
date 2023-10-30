@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { ProductionOrdersList } from 'components/production-orders/production-orders-list/production-orders-list'
 import ErrorPage from 'pages/error-page'
 import {
-  ProductionOrdersInfo,
+  ProductionOrdersInfoPage,
   createOrderLoader,
   editOrderLoader,
 } from 'pages/production-orders/production-orders-info'
+import { ProductionOrdersListPage } from 'pages/production-orders/production-orders-list'
 
 import MainLayout from 'layouts/main-layout/main-layout'
 
@@ -35,18 +35,18 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ProductionOrdersList />,
+        element: <ProductionOrdersListPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'create',
-        element: <ProductionOrdersInfo />,
+        element: <ProductionOrdersInfoPage />,
         errorElement: <ErrorPage />,
         loader: createOrderLoader,
       },
       {
         path: 'edit/:orderId',
-        element: <ProductionOrdersInfo />,
+        element: <ProductionOrdersInfoPage />,
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
       },

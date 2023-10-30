@@ -1,11 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ProductionOrdersService } from './production-orders.service';
 import { CreateProductionOrderDto } from './dto/create-production-order.dto';
 import { UpdateProductionOrderDto } from './dto/update-production-order.dto';
+import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 
 @Controller('production-orders')
 export class ProductionOrdersController {
-  constructor(private readonly productionOrdersService: ProductionOrdersService) {}
+  constructor(
+    private readonly productionOrdersService: ProductionOrdersService,
+  ) {}
 
   @Post()
   create(@Body() createProductionOrderDto: CreateProductionOrderDto) {
@@ -13,8 +25,8 @@ export class ProductionOrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.productionOrdersService.findAll();
+  findAll(@Query() query: QueryProductionOrderDto) {
+    return this.productionOrdersService.findAll(query);
   }
 
   @Get(':id')
@@ -23,7 +35,10 @@ export class ProductionOrdersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductionOrderDto: UpdateProductionOrderDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateProductionOrderDto: UpdateProductionOrderDto,
+  ) {
     return this.productionOrdersService.update(+id, updateProductionOrderDto);
   }
 

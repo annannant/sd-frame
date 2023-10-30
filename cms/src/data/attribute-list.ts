@@ -1,10 +1,3 @@
-export interface ITFAttributeData {
-  id?: number | null
-  attributeCode?: string | null
-  attributeName?: string | null
-  attributeDescription?: string | null
-}
-
 const attributeList = [
   {
     'attributeCode': '100026',

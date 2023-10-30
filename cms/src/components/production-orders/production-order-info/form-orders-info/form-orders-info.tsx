@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
@@ -10,8 +9,6 @@ import {
   productionOrdersSelector,
   setSelected,
 } from 'app/slice/production-orders'
-import woodList from 'data/wood-list'
-import { orderBy } from 'lodash'
 import { useGetAllWoodsQuery } from 'services/wood'
 
 const { Text } = Typography
@@ -41,32 +38,30 @@ export const FormOrdersInfo = () => {
           </Row>
           <Row>
             <Col span={18}>
-              <Form.Item label="">
+              <Form.Item
+                label=""
+                name="woodId"
+                rules={[
+                  {
+                    required: true,
+                    message: 'ระบุไม้กรอบ',
+                  },
+                ]}
+              >
                 <Select
-                  // defaultValue="lucy"
                   onChange={handleChange}
                   onClear={handleClear}
                   allowClear
                   showSearch
                   filterOption={filterOption}
-                  // options={[
-                  //   { value: 'jack', label: 'Jack' },
-                  //   { value: 'lucy', label: 'Lucy' },
-                  //   { value: 'Yiminghe', label: 'yiminghe' },
-                  //   {
-                  //     value: 'disabled',
-                  //     label: 'Disabled',
-                  //     disabled: true,
-                  //   },
-                  // ]}
                   options={options}
                 />
-                <div className="mt-[5px]">
-                  <Text type="secondary" className="font-title text-xs">
-                    เลือกไม้กรอบที่ต้องการสั่งผลิต
-                  </Text>
-                </div>
               </Form.Item>
+              <div className="mt-[-15px]">
+                <Text type="secondary" className="font-title text-xs">
+                  เลือกไม้กรอบที่ต้องการสั่งผลิต
+                </Text>
+              </div>
             </Col>
           </Row>
         </Col>
@@ -131,10 +126,13 @@ export const FormOrdersInfo = () => {
             </Col>
             <Col span={6}>
               <div className="aspect-[1/1] w-full bg-gray-50">
-                <img
-                  src={selected?.woodType?.imageUrl ?? '#'}
-                  alt={selected?.woodType?.name ?? ''}
-                />
+                {selected?.woodType?.imageUrl && (
+                  <img
+                    className="h-full w-full object-cover"
+                    src={selected?.woodType?.imageUrl ?? '#'}
+                    alt={selected?.woodType?.name ?? ''}
+                  />
+                )}
               </div>
             </Col>
           </Row>

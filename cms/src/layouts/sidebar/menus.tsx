@@ -19,16 +19,16 @@ export const menus: ITFSidebarItem[] = [
     permission: [],
     items: [
       {
-        key: 'list-orders',
-        url: '/production-orders',
-        label: 'รายการสั่งผลิต',
-        icon: <FileTextOutlined />,
-      },
-      {
         key: 'create-order',
         url: '/production-orders/create',
         label: 'สั่งผลิต',
         icon: <PlusOutlined />,
+      },
+      {
+        key: 'list-orders',
+        url: '/production-orders',
+        label: 'รายการสั่งผลิต',
+        icon: <FileTextOutlined />,
       },
     ],
   },

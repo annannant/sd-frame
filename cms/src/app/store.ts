@@ -4,12 +4,15 @@ import { useDispatch } from 'react-redux'
 
 import rootReducer from './root-reducer'
 
+import { standardFrameApiSlice } from 'services/standard-frame'
 import { woodApiSlice } from 'services/wood'
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(woodApiSlice.middleware),
+    getDefaultMiddleware()
+      .concat(woodApiSlice.middleware)
+      .concat(standardFrameApiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 })
 
