@@ -1,4 +1,7 @@
-import { ITFUpdateProductionOrderItem } from './production-order-items.type'
+import {
+  ITFProductionOrderItem,
+  ITFUpdateProductionOrderItem,
+} from './production-order-items.type'
 import { ITFTable } from './table.type'
 import { ITFWood } from './wood.type'
 
@@ -7,11 +10,12 @@ export interface ITFProductionOrder {
   woodId?: number | null
   orderNo?: string | null
   status?: string | null
-  createdAt?: Date | null
+  createdAt?: string | null
   createdBy?: string | null
-  updatedAt?: Date | null
+  updatedAt?: string | null
   updatedBy?: string | null
   wood?: ITFWood | null
+  productionOrderItems?: ITFProductionOrderItem[] | null
 }
 
 export interface ITFProductionOrderQueryParams {

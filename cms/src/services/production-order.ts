@@ -28,7 +28,16 @@ export const productionOrderApiSlice = createApi({
         },
       }),
     }),
+    getProductionOrderByID: builder.query<ITFProductionOrder, string>({
+      query: (id: string | number | undefined) => ({
+        url: `production-orders/${id}`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
-export const { useGetAllProductionOrdersQuery } = productionOrderApiSlice
+export const {
+  useGetAllProductionOrdersQuery,
+  useGetProductionOrderByIDQuery,
+} = productionOrderApiSlice

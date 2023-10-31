@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useLoaderData } from 'react-router-dom'
 
 import {
   MinusCircleOutlined,
@@ -26,6 +27,7 @@ import { filterOption } from 'helper/select-input'
 import { Container } from './form-orders.styles'
 
 import { keyBy } from 'lodash'
+import { useGetProductionOrderByIDQuery } from 'services/production-order'
 import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 const { Text } = Typography
@@ -36,8 +38,10 @@ export const FormOrders = () => {
 
   const [selectedSize, setSelectedSize] = useState<any>({})
 
+  const { id, action }: any = useLoaderData()
   const { data } = useGetAllStandardFramesQuery()
-  console.log('data:', data)
+  const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
+
   const options = useMemo(() => {
     return data?.options?.map((item) => {
       return {
@@ -57,20 +61,34 @@ export const FormOrders = () => {
   }, [formValues])
 
   useEffect(() => {
-    const data = [
-      { isCustomSize: true, width: 24, height: 25, qty: 1 },
-      { isCustomSize: true, width: 12, height: 24, qty: 2 },
-      { isCustomSize: true, width: 12, height: 23, qty: 1 },
-      { isCustomSize: true, width: 20, height: 20, qty: 1 },
-      { isCustomSize: false, size: 26, name: '10x12', qty: 3 },
-      { isCustomSize: false, size: 27, name: '10x15', qty: 5 },
-      { isCustomSize: false, size: 24, name: '8x10', qty: 6 },
-    ]
-    setSelectedSize(keyBy(data?.filter(Boolean), 'size'))
+    if (id && orderInfo) {
+      console.log('orderInfo:', orderInfo?.productionOrderItems)
+      form?.setFieldValue(
+        'orderItems',
+        orderInfo?.productionOrderItems?.map((item) => ({
+          ...item,
+          size: item?.standardFrame?.id,
+        }))
+      )
+    } else {
+      form?.setFieldValue('orderItems', [])
+    }
+  }, [options, id, orderInfo, form])
 
-    // for (const iterator of Object.keys(data)) {
-    // }
-    form?.setFieldValue('orderItems', data)
+  useEffect(() => {
+    // const data = [
+    //   { isCustomSize: true, width: 24, height: 25, qty: 1 },
+    //   { isCustomSize: true, width: 12, height: 24, qty: 2 },
+    //   { isCustomSize: true, width: 12, height: 23, qty: 1 },
+    //   { isCustomSize: true, width: 20, height: 20, qty: 1 },
+    //   { isCustomSize: false, size: 26, name: '10x12', qty: 3 },
+    //   { isCustomSize: false, size: 27, name: '10x15', qty: 5 },
+    //   { isCustomSize: false, size: 24, name: '8x10', qty: 6 },
+    // ]
+    // setSelectedSize(keyBy(data?.filter(Boolean), 'size'))
+    // // for (const iterator of Object.keys(data)) {
+    // // }
+    // // form?.setFieldValue('orderItems', data)
   }, [])
 
   return (

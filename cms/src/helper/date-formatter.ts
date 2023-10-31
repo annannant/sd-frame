@@ -39,6 +39,6 @@ dayjs.updateLocale('en', {
   ],
 })
 
-export const formatDate = (date?: string | Date) => {
+export const formatDate = (date?: string | Date | null) => {
   return dayjs(date)
 }

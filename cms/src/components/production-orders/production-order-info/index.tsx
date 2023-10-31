@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLoaderData } from 'react-router-dom'
 
 import { Button, Card, Form } from 'antd'
@@ -8,7 +8,11 @@ import type { NotificationPlacement } from 'antd/es/notification/interface'
 import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info/form-orders-info'
 import { FormOrders } from 'components/production-orders/production-order-info/form-orders/form-orders'
 
+import { ITFProductionOrder } from 'types/production-order.type'
+
 import { useSaveProductionPlanOrders } from 'hooks/useSaveProductionPlanOrders'
+
+import { useGetProductionOrderByIDQuery } from 'services/production-order'
 
 const { Title } = Typography
 

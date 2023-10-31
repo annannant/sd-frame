@@ -62,7 +62,7 @@ export const router = createBrowserRouter([
         path: 'waiting/:orderId',
         element: <ProductionOrdersWaitingInfoPage />,
         errorElement: <ErrorPage />,
-        loader: createOrderLoader,
+        loader: editOrderLoader,
       },
     ],
   },

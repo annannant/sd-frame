@@ -1,6 +1,10 @@
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLoaderData } from 'react-router-dom'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
+
+import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 
 import { filterOption } from 'helper/select-input'
 import { convertUnitToText } from 'helper/unit'
@@ -9,13 +13,18 @@ import {
   productionOrdersSelector,
   setSelected,
 } from 'app/slice/production-orders'
+import { useGetProductionOrderByIDQuery } from 'services/production-order'
 import { useGetAllWoodsQuery } from 'services/wood'
 
 const { Text } = Typography
 export const FormOrdersInfo = () => {
   const dispatch = useDispatch()
+  const form = Form.useFormInstance()
+
+  const { id, action }: any = useLoaderData()
   const { data } = useGetAllWoodsQuery()
   const { selected } = useSelector(productionOrdersSelector)
+  const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
   const handleChange = (value: string, option: any) => {
     dispatch(setSelected(option?.data ?? null))
@@ -25,7 +34,17 @@ export const FormOrdersInfo = () => {
     dispatch(setSelected(null))
   }
 
-  const options = data?.options ?? []
+  const options = useMemo(() => data?.options ?? [], [data])
+
+  useEffect(() => {
+    if (id && orderInfo) {
+      dispatch(setSelected(orderInfo?.wood ?? null))
+      form?.setFieldValue('woodId', orderInfo?.wood?.id ?? '')
+    } else {
+      dispatch(setSelected(null))
+      form?.setFieldValue('woodId', '')
+    }
+  }, [options, id, orderInfo, form, dispatch])
 
   return (
     <div className="grid gap-y-[20px]">
@@ -66,76 +85,7 @@ export const FormOrdersInfo = () => {
           </Row>
         </Col>
         <Col span={12}>
-          <Row className="mb-[15px]">
-            <Col span={24}>
-              <Text strong>รายละเอียดไม้</Text>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={18}>
-              <Row gutter={[0, 10]}>
-                <Col span={24}>
-                  <Row>
-                    <Col span={5} className="text-right">
-                      <Text type="secondary">รหัส</Text>
-                    </Col>
-                    <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">{selected?.code}</Text>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row>
-                    <Col span={5} className="text-right">
-                      <Text type="secondary">ประเภท</Text>
-                    </Col>
-                    <Col span={18} className="pl-[40px] ">
-                      {selected?.woodType?.code && (
-                        <Text className="text-font-title">
-                          {selected?.woodType?.name} ({selected?.woodType?.code}
-                          )
-                        </Text>
-                      )}
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row>
-                    <Col span={5} className="text-right">
-                      <Text type="secondary">ชื่อไม้</Text>
-                    </Col>
-                    <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">{selected?.name}</Text>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row>
-                    <Col span={5} className="text-right">
-                      <Text type="secondary">ขนาดหน้าไม้</Text>
-                    </Col>
-                    <Col span={18} className="pl-[40px] ">
-                      <Text className="text-font-title">
-                        {selected?.woodType?.width}{' '}
-                        {convertUnitToText(selected?.woodType?.sizeUnit ?? '')}
-                      </Text>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={6}>
-              <div className="aspect-[1/1] w-full bg-gray-50">
-                {selected?.woodType?.imageUrl && (
-                  <img
-                    className="h-full w-full object-cover"
-                    src={selected?.woodType?.imageUrl ?? '#'}
-                    alt={selected?.woodType?.name ?? ''}
-                  />
-                )}
-              </div>
-            </Col>
-          </Row>
+          <OrderWoodDetailIndex data={selected} />
         </Col>
       </Row>
     </div>
