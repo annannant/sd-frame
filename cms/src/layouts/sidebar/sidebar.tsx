@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
@@ -8,6 +8,8 @@ import { Button, Menu } from 'antd'
 import { menus } from './menus'
 import { Container } from './sidebar.styles'
 import { ITFSidebarItem } from './sidebar.type'
+
+import { keyBy } from 'lodash'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -78,7 +80,25 @@ const transformMenu = (menus: ITFSidebarItem[], collapsed: boolean) => {
 }
 
 export const Sidebar = () => {
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
+
+  const selectedKeys = useMemo(() => {
+    const items = keyBy(menus.map((menu) => menu.items).flat(), 'key')
+    if (items[location.pathname]) {
+      return [location.pathname]
+    }
+
+    const pathList = location.pathname.split('/')
+    for (let index = pathList.length; index > 0; index--) {
+      const path = pathList.slice(0, index).join('/')
+      if (items[path]) {
+        return [path]
+      }
+    }
+
+    return [location.pathname]
+  }, [location.pathname])
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed)
@@ -101,6 +121,7 @@ export const Sidebar = () => {
       </Button>
       <Menu
         defaultSelectedKeys={['list-orders']}
+        selectedKeys={selectedKeys}
         defaultOpenKeys={menus.map((item) => item.key.toString())}
         mode="inline"
         theme="dark"

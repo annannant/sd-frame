@@ -22,6 +22,7 @@ export interface ITFTableProductionOrder extends ITFTable, ITFProductionOrder {}
 
 export interface ITFCreateProductionOrder {
   woodId?: number
+  status?: string
   orderItems?: ITFUpdateProductionOrderItem[]
 }
 

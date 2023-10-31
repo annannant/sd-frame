@@ -16,7 +16,7 @@ export const ProductionOrdersInfoIndex = () => {
   const [form] = Form.useForm()
   const { id, action }: any = useLoaderData()
 
-  const { create } = useSaveProductionPlanOrders()
+  const { create, save } = useSaveProductionPlanOrders()
   const [api, contextHolder] = notification.useNotification()
 
   const openNotification = (placement: NotificationPlacement) => {
@@ -33,7 +33,7 @@ export const ProductionOrdersInfoIndex = () => {
       openNotification('top')
       await form.validateFields()
       const values = form.getFieldsValue()
-      console.log('values:', values)
+      await save(values)
     } catch (error: any) {
       console.log('error:', error)
     }
@@ -43,7 +43,6 @@ export const ProductionOrdersInfoIndex = () => {
       await form.validateFields()
       const values = form.getFieldsValue()
       await create(values)
-      console.log('values:', values)
     } catch (error: any) {
       console.log('error:', error)
     }
@@ -70,15 +69,15 @@ export const ProductionOrdersInfoIndex = () => {
             <FormOrders />
           </Card>
         </div>
-        <div className="mt-5 flex justify-end gap-x-[10px]">
-          {/* <Button
+        <div className="mb-10 mt-5 flex justify-end gap-x-[10px]">
+          <Button
             type="default"
             htmlType="button"
             className="w-[120px]"
             onClick={handleSave}
           >
             บันทึก
-          </Button> */}
+          </Button>
           <Button
             type="primary"
             htmlType="button"

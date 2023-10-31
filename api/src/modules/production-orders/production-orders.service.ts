@@ -4,12 +4,10 @@ import { UpdateProductionOrderDto } from './dto/update-production-order.dto';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { ProductionOrder } from './entities/production-order.entity';
 import { EntityManager, Repository } from 'typeorm';
-import { DRAFT } from '@/common/constants/current-status.constant';
 import { ProductionOrderItem } from '../production-order-items/entities/production-order-item.entity';
 import { CreateProductionOrderItemDto } from '../production-order-items/dto/create-production-order-item.dto';
 import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 import { plainToInstance } from 'class-transformer';
-import { Wood } from '../woods/entities/wood.entity';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -26,7 +24,6 @@ export class ProductionOrdersService {
     const created = await this.productionOrdersRepository.save(
       plainToInstance(ProductionOrder, {
         ...createProductionOrderDto,
-        status: DRAFT,
       }),
     );
 
@@ -64,8 +61,19 @@ export class ProductionOrdersService {
     return orders;
   }
 
-  findOne(id: number) {
-    return this.productionOrdersRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const queryOrders =
+      this.productionOrdersRepository.createQueryBuilder('pod');
+    const data = await queryOrders
+      .leftJoinAndSelect('pod.productionOrderItems', 'productionOrderItems')
+      .leftJoinAndSelect('productionOrderItems.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('pod.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute')
+      .where('pod.id = :id', { id })
+      .getOne();
+
+    return data;
   }
 
   update(id: number, updateProductionOrderDto: UpdateProductionOrderDto) {

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
+import { DRAFT, WAIT_FOR_CUTTING } from 'constants/current-status.constant'
 import { ITFCreateProductionOrderForm } from 'types/production-order-form'
 import { ITFUpdateProductionOrder } from 'types/production-order.type'
 
@@ -41,10 +42,27 @@ export const useSaveProductionPlanOrders = () => {
     }
   }
 
+  const save = async (values: ITFCreateProductionOrderForm) => {
+    try {
+      const payload = transformPayload(values)
+      const response = await postCreate({
+        ...payload,
+        status: DRAFT,
+      })
+      navigate('/production-orders')
+      console.log('response:', response)
+    } catch (error) {
+      console.log('error:', error)
+    }
+  }
+
   const create = async (values: ITFCreateProductionOrderForm) => {
     try {
       const payload = transformPayload(values)
-      const response = await postCreate(payload)
+      const response = await postCreate({
+        ...payload,
+        status: WAIT_FOR_CUTTING,
+      })
       navigate('/production-orders')
       console.log('response:', response)
     } catch (error) {
@@ -56,5 +74,6 @@ export const useSaveProductionPlanOrders = () => {
     transformPayload,
     saveDraft,
     create,
+    save,
   }
 }

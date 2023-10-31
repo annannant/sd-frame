@@ -37,6 +37,7 @@ export const FormOrders = () => {
   const [selectedSize, setSelectedSize] = useState<any>({})
 
   const { data } = useGetAllStandardFramesQuery()
+  console.log('data:', data)
   const options = useMemo(() => {
     return data?.options?.map((item) => {
       return {
@@ -57,12 +58,18 @@ export const FormOrders = () => {
 
   useEffect(() => {
     const data = [
-      { isCustomSize: false, size: 20, qty: 1 },
-      { isCustomSize: false, size: 22, qty: 1 },
-      { isCustomSize: true, size: 2, qty: 1 },
+      { isCustomSize: true, width: 24, height: 25, qty: 1 },
+      { isCustomSize: true, width: 12, height: 24, qty: 2 },
+      { isCustomSize: true, width: 12, height: 23, qty: 1 },
+      { isCustomSize: true, width: 20, height: 20, qty: 1 },
+      { isCustomSize: false, size: 26, name: '10x12', qty: 3 },
+      { isCustomSize: false, size: 27, name: '10x15', qty: 5 },
+      { isCustomSize: false, size: 24, name: '8x10', qty: 6 },
     ]
     setSelectedSize(keyBy(data?.filter(Boolean), 'size'))
 
+    // for (const iterator of Object.keys(data)) {
+    // }
     form?.setFieldValue('orderItems', data)
   }, [])
 

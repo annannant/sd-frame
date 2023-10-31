@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductionOrder } from '@/modules/production-orders/entities/production-order.entity';
+import { StandardFrame } from '@/modules/standard-frames/entities/standard-frame.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('production_order_item')
 export class ProductionOrderItem {
@@ -31,4 +41,18 @@ export class ProductionOrderItem {
 
   @Column({ name: 'production_order_id' })
   productionOrderId: number;
+
+  @ManyToOne(() => ProductionOrder, (order) => order.productionOrderItems)
+  @JoinColumn({ name: 'production_order_id', referencedColumnName: 'id' })
+  productionOrder: ProductionOrder;
+
+  @OneToMany(() => StandardFrame, (item) => item.productionOrderItem)
+  standardFrames: StandardFrame[];
+
+  @OneToOne(() => StandardFrame)
+  @JoinColumn([
+    { name: 'width', referencedColumnName: 'width' },
+    { name: 'height', referencedColumnName: 'height' },
+  ])
+  standardFrame: StandardFrame;
 }

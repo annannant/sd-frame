@@ -1,5 +1,5 @@
 import { generateOrderNo } from '@/common/helpers/generator';
-import { padWithLeadingZeros } from '@/common/helpers/stringFormat';
+import { ProductionOrderItem } from '@/modules/production-order-items/entities/production-order-item.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import {
   Entity,
@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
-  OneToOne,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('production_order')
@@ -57,4 +57,7 @@ export class ProductionOrder {
   @ManyToOne(() => Wood, (wood) => wood.productionOrders)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
   wood: Wood;
+
+  @OneToMany(() => ProductionOrderItem, (item) => item.productionOrder)
+  productionOrderItems: ProductionOrderItem[];
 }

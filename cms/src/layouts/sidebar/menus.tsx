@@ -19,13 +19,13 @@ export const menus: ITFSidebarItem[] = [
     permission: [],
     items: [
       {
-        key: 'create-order',
+        key: '/production-orders/create',
         url: '/production-orders/create',
         label: 'สั่งผลิต',
         icon: <PlusOutlined />,
       },
       {
-        key: 'list-orders',
+        key: '/production-orders',
         url: '/production-orders',
         label: 'รายการสั่งผลิต',
         icon: <FileTextOutlined />,
@@ -39,16 +39,16 @@ export const menus: ITFSidebarItem[] = [
     permission: [],
     items: [
       {
-        key: 'production-inprogress',
-        url: 'production-inprogress',
-        label: 'รายการกำลังผลิต',
-        icon: <FormOutlined />,
-      },
-      {
-        key: 'production-waiting',
-        url: 'production-waiting',
+        key: '/production-orders/waiting',
+        url: '/production-orders/waiting',
         label: 'รายการรอผลิต',
         icon: <ContainerOutlined />,
+      },
+      {
+        key: '/production-plans',
+        url: '/production-plans',
+        label: 'รายการกำลังผลิต',
+        icon: <FormOutlined />,
       },
     ],
   },

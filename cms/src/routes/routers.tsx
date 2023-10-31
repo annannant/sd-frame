@@ -7,6 +7,8 @@ import {
   editOrderLoader,
 } from 'pages/production-orders/production-orders-info'
 import { ProductionOrdersListPage } from 'pages/production-orders/production-orders-list'
+import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
+import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
 
 import MainLayout from 'layouts/main-layout/main-layout'
 
@@ -50,8 +52,44 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
       },
+      {
+        path: 'waiting',
+        element: <ProductionOrdersWaitingPage />,
+        errorElement: <ErrorPage />,
+        loader: createOrderLoader,
+      },
+      {
+        path: 'waiting/:orderId',
+        element: <ProductionOrdersWaitingInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: createOrderLoader,
+      },
     ],
   },
+  // {
+  //   path: '/production-plans',
+  //   element: <MainLayout />,
+  //   errorElement: <ErrorPage />,
+  //   children: [
+  //     {
+  //       index: true,
+  //       element: <ProductionOrdersListPage />,
+  //       errorElement: <ErrorPage />,
+  //     },
+  //     {
+  //       path: '/orders',
+  //       element: <ProductionOrdersInfoPage />,
+  //       errorElement: <ErrorPage />,
+  //       // loader: createOrderLoader,
+  //     },
+  //     // {
+  //     //   path: 'edit/:orderId',
+  //     //   element: <ProductionOrdersInfoPage />,
+  //     //   errorElement: <ErrorPage />,
+  //     //   loader: editOrderLoader,
+  //     // },
+  //   ],
+  // },
   // {
   //   path: "/production-orders/create",
   //   element: <ProductionOrders />,
