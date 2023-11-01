@@ -85,11 +85,20 @@ export const Sidebar = () => {
 
   const selectedKeys = useMemo(() => {
     const items = keyBy(menus.map((menu) => menu.items).flat(), 'key')
+    const pathList = location.pathname.split('/')
+    const path3 = pathList.slice(0, 3).join('/')
+    switch (path3) {
+      case '/production-orders/plan':
+      case '/production-orders/waiting':
+        return ['/production-orders/waiting']
+      default:
+        break
+    }
+
     if (items[location.pathname]) {
       return [location.pathname]
     }
 
-    const pathList = location.pathname.split('/')
     for (let index = pathList.length; index > 0; index--) {
       const path = pathList.slice(0, index).join('/')
       if (items[path]) {

@@ -1,6 +1,7 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+import { ITFProductionOrderPlanResponse } from 'types/production-order-plan'
 import {
   ITFProductionOrder,
   ITFProductionOrderQueryParams,
@@ -34,10 +35,24 @@ export const productionOrderApiSlice = createApi({
         method: 'GET',
       }),
     }),
+    postProductionCreatePlan: builder.query<
+      ITFProductionOrderPlanResponse,
+      string
+    >({
+      query: (id: string | number | undefined) => ({
+        url: `production-orders/create-plan`,
+        method: 'POST',
+        body: {
+          id,
+          sparePart: 0.25,
+        },
+      }),
+    }),
   }),
 })
 
 export const {
   useGetAllProductionOrdersQuery,
   useGetProductionOrderByIDQuery,
+  usePostProductionCreatePlanQuery,
 } = productionOrderApiSlice

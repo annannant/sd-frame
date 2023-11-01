@@ -7,6 +7,7 @@ import {
   editOrderLoader,
 } from 'pages/production-orders/production-orders-info'
 import { ProductionOrdersListPage } from 'pages/production-orders/production-orders-list'
+import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production-orders-plan-info'
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
 
@@ -61,6 +62,12 @@ export const router = createBrowserRouter([
       {
         path: 'waiting/:orderId',
         element: <ProductionOrdersWaitingInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editOrderLoader,
+      },
+      {
+        path: 'plan/:orderId',
+        element: <ProductionOrdersPlanInfoPage />,
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
       },

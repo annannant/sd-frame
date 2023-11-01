@@ -1,13 +1,24 @@
 import { useState } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 
 import { CalculatorOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Row, Tabs, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Col,
+  ConfigProvider,
+  Divider,
+  Row,
+  Tabs,
+  Typography,
+} from 'antd'
 import type { TabsProps } from 'antd'
 
 import { TagStatus } from 'common/tag-status'
 import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
+
+import { colors } from 'constants/colors'
 
 import { TableOrderItems } from './table-order-items/table-order-items'
 
@@ -17,6 +28,8 @@ import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 const { Title } = Typography
 
 export const ProductionOrdersWaitingInfo = () => {
+  const navigate = useNavigate()
+
   const { id, action }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
@@ -29,21 +42,28 @@ export const ProductionOrdersWaitingInfo = () => {
           <span className="ml-[10px]">รอผลิต</span>
         </Title>
       </div>
-      <div className="grid gap-y-[20px]">
+      <div className="grid gap-y-[30px]">
         <Card bordered={false}>
           <div className="flex items-center justify-between">
             <Title level={5} style={{ margin: 0 }}>
               Production Order No. : {orderInfo?.orderNo}
             </Title>
-
-            <Button
-              type="primary"
-              htmlType="button"
-              onClick={() => console.log('click')}
-              icon={<CalculatorOutlined style={{ marginTop: 2 }} />}
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: colors.green,
+                },
+              }}
             >
-              วางแผนการผลิต
-            </Button>
+              <Button
+                type="primary"
+                htmlType="button"
+                onClick={() => navigate(`/production-orders/plan/${id}`)}
+                icon={<CalculatorOutlined style={{ marginTop: 2 }} />}
+              >
+                วางแผนการผลิต
+              </Button>
+            </ConfigProvider>
           </div>
           <Divider />
           <div className="grid gap-y-[20px]">

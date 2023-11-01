@@ -8,6 +8,9 @@ export const colors = {
   fontTitle: '#010101',
   fontDescription: '#76838f',
   fontLabel: '#1F1F1F',
+  green: '#57B657',
+  danger: '#FF4747',
+  yellow: '#FFC100',
   // fontBase: '#535453',
   // dark
   dark: {
@@ -25,5 +28,4 @@ export const colors = {
   // 'fontDarkBase': '#fff',
   // 'fontDarkActive': '#fff',
   // 'fontDark': '#ffffffa6',
-  danger: '#FF4747',
 }

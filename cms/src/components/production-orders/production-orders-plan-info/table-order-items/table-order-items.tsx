@@ -20,7 +20,7 @@ export const TableOrderItems = () => {
       title: 'No',
       dataIndex: 'no',
       key: 'no',
-      width: '12%',
+      width: '8%',
       align: 'center',
       onHeaderCell: () => ({
         style: { textAlign: 'center' },
@@ -37,19 +37,19 @@ export const TableOrderItems = () => {
       render: (text: any, record: ITFProductionOrderItem, count: any) => {
         if (record?.isCustomSize) {
           return (
-            <div className="pl-5">
+            <div className="">
               {`${record?.width}x${record?.height}`.replaceAll('.00', '')}
             </div>
           )
         }
-        return <div className="pl-5">{`${record?.standardFrame?.name}`}</div>
+        return <div className="">{`${record?.standardFrame?.name}`}</div>
       },
     },
     {
       title: 'จำนวน',
       dataIndex: 'qty',
       key: 'qty',
-      width: '20%',
+      width: '15%',
       align: 'center',
       onHeaderCell: () => ({
         style: { textAlign: 'center' },

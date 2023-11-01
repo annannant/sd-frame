@@ -33,6 +33,7 @@ module.exports = {
         'dark-font-base': '#fff',
         'dark-font-nuetral': '#ffffffa6',
         'danger': '#FF4747',
+        'yellow': '#FFC100',
       },
     },
   },

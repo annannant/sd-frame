@@ -56,7 +56,10 @@ export class ProductionOrdersService {
   }
 
   async createPlan(createProductionOrderPlanDto: CreateProductionOrderPlanDto) {
-    const { productionOrderId, sparePart } = createProductionOrderPlanDto;
+    // const str = `{"plans":[{"no":1,"wood":97.5,"list":[32.5,32.5,32.5]},{"no":2,"wood":105.5,"list":[32.5,22.5,22.5,22.5]},{"no":3,"wood":22,"list":[18.5]},{"no":4,"wood":120,"list":[22.5,22.5,22.5,17.5,17.5,17.5]},{"no":5,"wood":120,"list":[31.5,22.5,18.5,18.5,14.5,14.5]},{"no":6,"wood":120,"list":[18.5,14.5,14.5,14.5,14.5,14.5,14.5,14.5]},{"no":7,"wood":14,"list":[12.5]},{"no":8,"wood":120,"list":[17.5,17.5,14.5,14.5,14.5,14.5,14.5,12.5]},{"no":9,"wood":120,"list":[31.5,17.5,12.5,12.5,12.5,12.5,10.5,10.5]},{"no":10,"wood":120,"list":[14.19,10.77,10.77,10.77,10.5,10.5,10.5,10.5,10.5,10.5,10.5]},{"no":11,"wood":120,"list":[14.19,10.77,10.77,10.77,10.5,10.5,10.5,10.5,10.5,10.5,10.5]},{"no":12,"wood":120,"list":[10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5]},{"no":13,"wood":120,"list":[10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5]},{"no":14,"wood":120,"list":[12.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5,8.5]},{"no":15,"wood":120,"list":[12.5,12.5,12.5,12.5,10.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5]},{"no":16,"wood":120,"list":[22.5,12.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5]},{"no":17,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,8.5,8.5,8.5,6.5,6.5,6.5]},{"no":18,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,12.5,6.5,6.5,6.5,6.5,6.5]},{"no":19,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,12.5,6.5,6.5,6.5,6.5,6.5]},{"no":20,"wood":120,"list":[7.5,7.5,9.5,9.5,12.5,12.5,12.5,12.5,12.5,8.5,8.5,6.5]},{"no":21,"wood":120,"list":[14.19,14.19,14.19,14.19,12.5]}],"suggest":[{"no":1,"size":"5x7","qty":1,"list":[7.5,7.5,9.5,9.5],"info":{"standardFrameId":21,"woodId":4,"size":"5x7","width":5,"height":7,"woodWidth":1,"qty":1,"dimensionW":7.5,"dimensionH":9.5,"woodList":[7.5,7.5,9.5,9.5],"totalLength":34,"orderNo":1,"set":1,"cuttingName":"h1","cutting":9.5,"key":"uuidv4","combinations":[[],[7.5],[7.5,7.5],[9.5],[7.5,9.5],[7.5,7.5,9.5],[9.5,9.5],[7.5,9.5,9.5],[7.5,7.5,9.5,9.5]]}}]}`;
+    // return JSON.parse(str);
+
+    const { id: productionOrderId, sparePart } = createProductionOrderPlanDto;
     const queryOrders =
       this.productionOrdersRepository.createQueryBuilder('pod');
     const data = await queryOrders
@@ -98,6 +101,11 @@ export class ProductionOrdersService {
     );
     core.printResult(pattern, zeroPattern, suggestPattern);
 
+    const { response, responseSuggest } = await core.prepareResponse(
+      pattern,
+      zeroPattern,
+      suggestPattern,
+    );
     // const data = await algorithm(numbers, [], [], 'desc');
     // console.log('data:', data);
     // console.log('pattern:', pattern);
@@ -112,7 +120,11 @@ export class ProductionOrdersService {
     // console.log('suggestPattern:', suggestPattern);
 
     // console.log('createProductionOrderPlanDto:');
-    return data;
+    return {
+      plans: response,
+      suggest: responseSuggest,
+      minLength,
+    };
   }
 
   async findAll(query: QueryProductionOrderDto) {
