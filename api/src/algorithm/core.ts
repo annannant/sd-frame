@@ -114,6 +114,7 @@ class CoreAlgorithm {
       });
     }
 
+    console.log(sum(cutting));
     return cutting;
   };
 

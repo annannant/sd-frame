@@ -42,6 +42,9 @@ export class ProductionOrderItem {
   @Column({ name: 'production_order_id' })
   productionOrderId: number;
 
+  @Column({ name: 'standard_frame_id' })
+  standardFrameId: number;
+
   @ManyToOne(() => ProductionOrder, (order) => order.productionOrderItems)
   @JoinColumn({ name: 'production_order_id', referencedColumnName: 'id' })
   productionOrder: ProductionOrder;
@@ -50,9 +53,10 @@ export class ProductionOrderItem {
   standardFrames: StandardFrame[];
 
   @OneToOne(() => StandardFrame)
-  @JoinColumn([
-    { name: 'width', referencedColumnName: 'width' },
-    { name: 'height', referencedColumnName: 'height' },
-  ])
+  @JoinColumn([{ name: 'standard_frame_id', referencedColumnName: 'id' }])
+  // @JoinColumn([
+  //   { name: 'width', referencedColumnName: 'width' },
+  //   { name: 'height', referencedColumnName: 'height' },
+  // ])
   standardFrame: StandardFrame;
 }

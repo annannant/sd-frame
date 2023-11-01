@@ -18,6 +18,9 @@ export class StandardFramesService {
 
   findAll() {
     return this.standardFramesRepository.find({
+      where: {
+        isActive: true,
+      },
       order: {
         width: 'ASC',
         height: 'ASC',

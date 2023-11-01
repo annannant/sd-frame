@@ -1,4 +1,4 @@
-import { padWithLeadingZeros } from './stringFormat';
+import { padWithLeadingZeros } from './string-format';
 
 export const generateOrderNo = () => {
   const now = new Date();

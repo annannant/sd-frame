@@ -4,4 +4,8 @@ export class CreateProductionOrderPlanDto {
   @IsOptional()
   @IsNumber()
   productionOrderId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  sparePart?: number;
 }

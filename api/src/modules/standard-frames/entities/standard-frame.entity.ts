@@ -22,7 +22,7 @@ export class StandardFrame {
     precision: 10,
     scale: 2,
   })
-  width: string;
+  width: number;
 
   @Column({
     name: 'height',
@@ -31,7 +31,7 @@ export class StandardFrame {
     precision: 10,
     scale: 2,
   })
-  height: string;
+  height: number;
 
   @Column({ name: 'is_active' })
   isActive: boolean;

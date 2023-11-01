@@ -20,4 +20,8 @@ export class CreateProductionOrderItemDto {
   @IsOptional()
   @IsNumber()
   productionOrderId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  standardFrameId?: number;
 }

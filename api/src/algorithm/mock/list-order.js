@@ -1,4 +1,4 @@
-const { orderBy, groupBy } = require('lodash');
+const { orderBy, groupBy, sum } = require('lodash');
 const PrepareCutting = require('../helper/prepare-cutting');
 const { SPARE_PARTS } = require('./config');
 
@@ -7,7 +7,7 @@ const orders = [
   { size: '4x6', woodWidth: 1, qty: 7 },
   { size: '8.27x11.69', woodWidth: 1, qty: 3 },
   { size: '8x12', woodWidth: 1, qty: 2 },
-  { size: '10x12 ', woodWidth: 1, qty: 5 },
+  { size: '10x12', woodWidth: 1, qty: 5 },
   { size: '8x10', woodWidth: 1, qty: 10 },
   { size: '29x10', woodWidth: 1, qty: 1 },
   { size: '20x30', woodWidth: 1, qty: 2 },
@@ -116,6 +116,8 @@ const totalCutting = (print = false, list = orders) => {
       });
     });
   }
+
+  console.log(sum(cutting));
 
   return cutting;
 };

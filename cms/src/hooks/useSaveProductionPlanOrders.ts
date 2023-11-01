@@ -28,6 +28,7 @@ export const useSaveProductionPlanOrders = () => {
           qty: item.qty,
           isCustomSize: item.isCustomSize,
           ...pick(standardFrame, ['width', 'height']),
+          standardFrameId: item.isCustomSize ? null : item.size,
         }
       }),
     }

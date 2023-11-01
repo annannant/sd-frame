@@ -10,8 +10,9 @@ import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateProductionOrderPlanDto } from './dto/create-production-order-plan.dto';
 
-import algorithm from '@/algorithm/main';
 import CoreAlgorithm from '@/algorithm/core';
+import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
+import { parser } from '@/common/helpers/number';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -20,6 +21,8 @@ export class ProductionOrdersService {
     private productionOrdersRepository: Repository<ProductionOrder>,
     @InjectRepository(ProductionOrderItem)
     private productionOrderItemsRepository: Repository<ProductionOrderItem>,
+    @InjectRepository(StandardFrame)
+    private standardFramesRepository: Repository<StandardFrame>,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
@@ -46,10 +49,10 @@ export class ProductionOrdersService {
   }
 
   async createPlan(createProductionOrderPlanDto: CreateProductionOrderPlanDto) {
-    const { productionOrderId } = createProductionOrderPlanDto;
+    const { productionOrderId, sparePart } = createProductionOrderPlanDto;
     const queryOrders =
       this.productionOrdersRepository.createQueryBuilder('pod');
-    const productionOrder = await queryOrders
+    const data = await queryOrders
       .leftJoinAndSelect('pod.productionOrderItems', 'productionOrderItems')
       .leftJoinAndSelect('productionOrderItems.standardFrame', 'standardFrame')
       .leftJoinAndSelect('pod.wood', 'wood')
@@ -58,9 +61,26 @@ export class ProductionOrdersService {
       .where('pod.id = :id', { id: productionOrderId })
       .getOne();
 
-    const test = new CoreAlgorithm(120, 10, 0.5);
-    test.test(1);
-    // const data = await algorithm([], [], [], 'desc');
+    const woodLength = data?.wood?.woodType?.length;
+    const minLength = await this.getMinLength(
+      data.wood.woodType.width,
+      sparePart,
+    );
+    const core = new CoreAlgorithm(
+      parser(woodLength),
+      parser(minLength),
+      parser(sparePart),
+    );
+    core.test(0);
+
+    const formatter = await this.formatItems(
+      data.productionOrderItems,
+      data.wood.woodType.width,
+    );
+    const numbers = core.totalCutting(formatter);
+    console.log('numbers:', numbers);
+
+    // const data = await algorithm(numbers, [], [], 'desc');
     // console.log('data:', data);
     // console.log('pattern:', pattern);
     // const { pattern, zeroPattern, suggestPattern } = await go(
@@ -74,7 +94,41 @@ export class ProductionOrdersService {
     // console.log('suggestPattern:', suggestPattern);
 
     // console.log('createProductionOrderPlanDto:');
-    return productionOrder;
+    return data;
+  }
+
+  async formatItems(orderItems: ProductionOrderItem[], woodWidth: number) {
+    const formatted = orderItems.map((item: ProductionOrderItem) => {
+      return {
+        // ...item,
+        width: parser(item.width),
+        height: parser(item.height),
+        woodWidth: parser(woodWidth),
+        qty: parser(item.qty),
+      };
+    });
+    console.log('formatted:', formatted);
+
+    return formatted;
+  }
+
+  async getMinLength(face: number, sparePart: number) {
+    // min frame standard
+    const frameList = await this.standardFramesRepository.findBy({
+      isActive: true,
+    });
+    let minWood: number = 999999999;
+    for (const frame of frameList) {
+      if (parser(frame.width) < parser(minWood)) {
+        minWood = parser(frame.width);
+      }
+      if (parser(frame.height) < parser(minWood)) {
+        minWood = parser(frame.height);
+      }
+    }
+    const sum = (parser(face) + parser(sparePart)) * 2;
+    const result = minWood + sum;
+    return result;
   }
 
   async findAll(query: QueryProductionOrderDto) {

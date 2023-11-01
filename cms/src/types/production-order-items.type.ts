@@ -8,6 +8,7 @@ export interface ITFProductionOrderItem {
   qty?: number | null
   isCustomSize?: boolean | null
   productionOrderId?: number | null
+  standardFrameId?: number | null
   standardFrame?: ITFStandardFrame | null
 }
 

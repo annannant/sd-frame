@@ -65,13 +65,21 @@ export const FormOrders = () => {
   useEffect(() => {
     if (isEdit) {
       if (id && orderInfo) {
-        console.log('orderInfo:', orderInfo?.productionOrderItems)
+        // console.log('orderInfo:', orderInfo?.productionOrderItems)
         form?.setFieldValue(
           'orderItems',
           orderInfo?.productionOrderItems?.map((item) => ({
             ...item,
             size: item?.standardFrame?.id,
           }))
+        )
+
+        // set selected size
+        setSelectedSize(
+          keyBy(
+            orderInfo?.productionOrderItems?.filter(Boolean),
+            'standardFrameId'
+          )
         )
       } else {
         form?.setFieldValue('orderItems', [])
