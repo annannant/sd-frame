@@ -13,6 +13,9 @@ import { CreateProductionOrderPlanDto } from './dto/create-production-order-plan
 import CoreAlgorithm from '@/algorithm/core';
 import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
 import { parser } from '@/common/helpers/number';
+import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
+import { StandardFrameStock } from '../standard_frame_stocks/entities/standard_frame_stock.entity';
+import { pick } from 'lodash';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -23,6 +26,10 @@ export class ProductionOrdersService {
     private productionOrderItemsRepository: Repository<ProductionOrderItem>,
     @InjectRepository(StandardFrame)
     private standardFramesRepository: Repository<StandardFrame>,
+    @InjectRepository(WoodItemStock)
+    private woodItemStocksRepository: Repository<WoodItemStock>,
+    @InjectRepository(StandardFrameStock)
+    private standardFrameStocksRepository: Repository<StandardFrameStock>,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
@@ -73,12 +80,23 @@ export class ProductionOrdersService {
     );
     core.test(0);
 
+    // const [] = await Promise.all([])
     const formatter = await this.formatItems(
       data.productionOrderItems,
       data.wood.woodType.width,
     );
-    const numbers = core.totalCutting(formatter);
-    console.log('numbers:', numbers);
+    const numbers = await core.totalCutting(formatter);
+    const woodStock = await this.getWoodStock(data.woodId);
+    const stocks = await this.getStdOrderList(data.woodId);
+    const stdOrderList = await core.totalStdList(stocks);
+
+    const { pattern, zeroPattern, suggestPattern } = await core.core(
+      numbers,
+      woodStock,
+      stdOrderList,
+      'desc',
+    );
+    core.printResult(pattern, zeroPattern, suggestPattern);
 
     // const data = await algorithm(numbers, [], [], 'desc');
     // console.log('data:', data);
@@ -95,40 +113,6 @@ export class ProductionOrdersService {
 
     // console.log('createProductionOrderPlanDto:');
     return data;
-  }
-
-  async formatItems(orderItems: ProductionOrderItem[], woodWidth: number) {
-    const formatted = orderItems.map((item: ProductionOrderItem) => {
-      return {
-        // ...item,
-        width: parser(item.width),
-        height: parser(item.height),
-        woodWidth: parser(woodWidth),
-        qty: parser(item.qty),
-      };
-    });
-    console.log('formatted:', formatted);
-
-    return formatted;
-  }
-
-  async getMinLength(face: number, sparePart: number) {
-    // min frame standard
-    const frameList = await this.standardFramesRepository.findBy({
-      isActive: true,
-    });
-    let minWood: number = 999999999;
-    for (const frame of frameList) {
-      if (parser(frame.width) < parser(minWood)) {
-        minWood = parser(frame.width);
-      }
-      if (parser(frame.height) < parser(minWood)) {
-        minWood = parser(frame.height);
-      }
-    }
-    const sum = (parser(face) + parser(sparePart)) * 2;
-    const result = minWood + sum;
-    return result;
   }
 
   async findAll(query: QueryProductionOrderDto) {
@@ -172,5 +156,77 @@ export class ProductionOrdersService {
 
   remove(id: number) {
     return this.productionOrdersRepository.delete(id);
+  }
+
+  async formatItems(orderItems: ProductionOrderItem[], woodWidth: number) {
+    const formatted = orderItems.map((item: ProductionOrderItem) => {
+      return {
+        // ...item,
+        width: parser(item.width),
+        height: parser(item.height),
+        woodWidth: parser(woodWidth),
+        qty: parser(item.qty),
+      };
+    });
+    console.log('formatted:', formatted);
+
+    return formatted;
+  }
+  async getMinLength(face: number, sparePart: number) {
+    // min frame standard
+    const frameList = await this.standardFramesRepository.findBy({
+      isActive: true,
+    });
+    let minWood: number = 999999999;
+    for (const frame of frameList) {
+      if (parser(frame.width) < parser(minWood)) {
+        minWood = parser(frame.width);
+      }
+      if (parser(frame.height) < parser(minWood)) {
+        minWood = parser(frame.height);
+      }
+    }
+    const sum = (parser(face) + parser(sparePart)) * 2;
+    const result = minWood + sum;
+    return result;
+  }
+
+  async getWoodStock(woodId: number) {
+    const data = await this.woodItemStocksRepository.findBy({
+      woodId: woodId,
+    });
+    const res = data.map((item) => parser(item.woodLength));
+    return res;
+  }
+
+  async getStdOrderList(woodId: number) {
+    const data = await this.standardFrameStocksRepository
+      .createQueryBuilder('std')
+      .leftJoinAndSelect('std.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('std.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .where('std.wood_id = :woodId', { woodId })
+      .getMany();
+
+    const res = data
+      .map((item) => {
+        return {
+          standardFrameId: item.standardFrameId,
+          woodId: item.woodId,
+          // size: item.standardFrame.name,
+          size: `${parser(item.standardFrame.width)}x${parser(
+            item.standardFrame.height,
+          )}`,
+          width: parser(item.standardFrame.width),
+          height: parser(item.standardFrame.height),
+          woodWidth: parser(item.wood.woodType.width),
+          qty:
+            item.reorderPoint && item.reorderPoint > 0
+              ? parser(item.reorderPoint) - parser(item.stock)
+              : 0,
+        };
+      })
+      .filter((item) => item.qty > 0);
+    return res;
   }
 }

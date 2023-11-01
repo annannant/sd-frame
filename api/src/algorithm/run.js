@@ -64,6 +64,8 @@ function printResult(allPattern, zeroPattern, suggestPattern) {
 async function execute() {
   // const algo = new CoreAlgo(120, MIN_LENGTH, SPARE_PARTS);
   const algo = new CoreAlgo(WOOD_LENGTH, MIN_LENGTH, SPARE_PARTS);
+  console.log('stdOrderListInput:', stdOrderListInput);
+  console.log('woodStock:', woodStock);
   const { pattern, zeroPattern, suggestPattern } = await algo.core(
     numbers,
     woodStock,

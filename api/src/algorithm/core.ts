@@ -118,6 +118,32 @@ class CoreAlgorithm {
     return cutting;
   };
 
+  totalStdList = (stocks) => {
+    const copySuggest = cloneDeep(stocks).map((item) => {
+      const ordered = this.prepare([
+        {
+          ...item,
+          // qty: 1,
+        },
+      ]);
+
+      const { dimensionW, dimensionH } = ordered[0];
+
+      return {
+        ...item,
+        dimensionW,
+        dimensionH,
+        woodList: [dimensionW, dimensionW, dimensionH, dimensionH],
+        totalLength: dimensionW * 2 + dimensionH * 2,
+        ...ordered[0],
+      };
+    });
+
+    const sorting = orderBy(copySuggest, ['width', 'height'], ['desc']);
+    return sorting;
+    // return copySuggest;
+  };
+
   // ----------------- START: ALGO -----------------
   findCombinations(
     numbers,
@@ -827,6 +853,57 @@ class CoreAlgorithm {
       stdList: stdSelectedList,
     };
   };
+
+  printResult(allPattern, zeroPattern, suggestPattern) {
+    console.log('==================== result ====================');
+
+    if (suggestPattern) {
+      let sumStd = 0;
+      let sumZero = 0;
+      let sumSuggest = 0;
+
+      if (zeroPattern) {
+        for (const item of zeroPattern) {
+          const wood = item.from_stock ? `, :wood , ${item.wood}` : '';
+          console.log(item.pattern, wood);
+          sumZero += sum(item.pattern.split(',').map((val) => +val));
+        }
+      }
+
+      console.log('==================== suggest ====================');
+      for (const item of suggestPattern.pattern) {
+        const wood = item.from_stock ? `, :wood , ${item.wood}` : '';
+        console.log(item.pattern, wood);
+        sumSuggest += sum(item.pattern.split(',').map((val) => +val));
+      }
+      console.log('==================== STD LIST ====================');
+      for (const iterator of suggestPattern.stdList) {
+        sumStd += sum(iterator.woodList);
+        console.log(
+          '',
+          iterator.size,
+          ',',
+          iterator.qty,
+          ',',
+          iterator.woodList,
+          ',',
+          sum(iterator.woodList),
+        );
+      }
+
+      console.log('sum: ', sumZero + sumSuggest - sumStd);
+      console.log('sumStd:', sumStd);
+      console.log('sumSuggest:', sumSuggest);
+      console.log('sumZero:', sumZero);
+    } else {
+      if (allPattern) {
+        for (const item of allPattern) {
+          const wood = item.from_stock ? `, :wood , ${item.wood}` : '';
+          console.log(item.pattern, wood);
+        }
+      }
+    }
+  }
 }
 
 // class CoreAlgorithm {
