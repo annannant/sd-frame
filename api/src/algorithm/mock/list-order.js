@@ -1,8 +1,6 @@
 const { orderBy, groupBy } = require('lodash');
-const PrepareCutting = require('./helper/prepare-cutting');
-const helper = require('./helper');
-
-const sparePart = 0.25;
+const PrepareCutting = require('../helper/prepare-cutting');
+const { SPARE_PARTS } = require('./config');
 
 const orders = [
   { size: '6x8', woodWidth: 1, qty: 9 },
@@ -82,7 +80,7 @@ const orders = [
 ];
 
 const test = () => {
-  const ordered = PrepareCutting.prepare(orders);
+  const ordered = PrepareCutting.prepare(orders, SPARE_PARTS);
   // return ordered.map((item)=> {
   //   return item.cutting
   // })
@@ -90,7 +88,7 @@ const test = () => {
 };
 
 const totalCutting = (print = false, list = orders) => {
-  const ordered = PrepareCutting.prepare(list);
+  const ordered = PrepareCutting.prepare(list, SPARE_PARTS);
   const cutting = ordered.map((item) => {
     return item.cutting;
   });

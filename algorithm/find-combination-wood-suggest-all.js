@@ -28,18 +28,18 @@ const { totalCutting } = require("./list-order");
 console.log("woodStock:", woodStock);
 
 const findOriginalNumbers = (numbers, tryPatternList) => {
-  let result = []
-  let tryList = [...tryPatternList]
+  let result = [];
+  let tryList = [...tryPatternList];
   for (const number of numbers) {
-    const index =  tryList.indexOf(number)
+    const index = tryList.indexOf(number);
     if (index < 0) {
-      result.push(number)
+      result.push(number);
     } else {
-      tryList.splice(index, 1)
+      tryList.splice(index, 1);
     }
   }
-  return result
-}
+  return result;
+};
 
 const checkPatternHasNumbers = (numbers, pattern) => {
   for (const item of pattern) {
@@ -50,9 +50,16 @@ const checkPatternHasNumbers = (numbers, pattern) => {
   return false;
 };
 
-function findCombinations(numbers, remainWoodStock, copyStdOrderList, tryPatternList = [], sumWoodRemaingSuggest = 0, sumWoodRemaingNonzero = 0) {
-// console.log('sumWoodRemaingNonzero:', sumWoodRemaingNonzero)
-// console.log('sumWoodRemaingSuggest:', sumWoodRemaingSuggest)
+function findCombinations(
+  numbers,
+  remainWoodStock,
+  copyStdOrderList,
+  tryPatternList = [],
+  sumWoodRemaingSuggest = 0,
+  sumWoodRemaingNonzero = 0
+) {
+  // console.log('sumWoodRemaingNonzero:', sumWoodRemaingNonzero)
+  // console.log('sumWoodRemaingSuggest:', sumWoodRemaingSuggest)
   const combinations = [[]];
 
   let lowest = 99999999;
@@ -167,23 +174,27 @@ function findCombinations(numbers, remainWoodStock, copyStdOrderList, tryPattern
           // if (afterUseWood > 0 && copyStdOrderList.length && afterUseWood <= maxWoodItemStd &&  (maxWoodItemStd - afterUseWood <= minLength)) {
           const find = compareWithStd(data, copyStdOrderList);
 
-          const ok = sumWoodRemaingSuggest + find?.after_cut <= sumWoodRemaingNonzero
+          const ok =
+            sumWoodRemaingSuggest + find?.after_cut <= sumWoodRemaingNonzero;
           if (find && ok) {
-            const newPattern = [...find.pattern, ...data.pattern.split(',').map(val => +val)]
+            const newPattern = [
+              ...find.pattern,
+              ...data.pattern.split(",").map((val) => +val),
+            ];
             const newData = {
               ...data,
-              std: {...find},
+              std: { ...find },
               original_pattern: data.pattern,
-              pattern: newPattern.join(','),
+              pattern: newPattern.join(","),
               sum: sum(newPattern),
               remaning: find.after_cut,
               remain_pattern: find.remain_pattern,
-              use_std_wood: true
-            }
+              use_std_wood: true,
+            };
             if (find?.after_cut === 0) {
               return {
                 use_std_wood: true,
-                ...newData
+                ...newData,
               };
             }
             // if (find?.after_cut < lowestStd) {
@@ -287,7 +298,7 @@ function removeSelectedPatternFromList(copyNumber, selected) {
 
   // return removeSelectedPatternFromList(copyNumber, selected);
   // ===================== END: DELETE WITH MULTI =================
- 
+
   let selectedArray = selected.pattern.split(",");
   if (selected?.use_std_wood) {
     selectedArray = selected.original_pattern.split(",");
@@ -306,7 +317,7 @@ function removeSelectedPatternFromList(copyNumber, selected) {
   }
 
   return {
-    copyNumber: [...copyNumber, ...selected?.remain_pattern ?? []],
+    copyNumber: [...copyNumber, ...(selected?.remain_pattern ?? [])],
     multiply: 1,
   };
 }
@@ -375,9 +386,8 @@ function getRemainingPattern(pattern, woodList) {
   return woodListCopy;
 }
 
-
 function compareWithStd(data, copyStdOrderList) {
-// console.log('============ strt compare with std ============')
+  // console.log('============ strt compare with std ============')
   const remaining = data.remaning;
   const minValue = 999999;
   let selected = undefined;
@@ -389,7 +399,7 @@ function compareWithStd(data, copyStdOrderList) {
       if (total == 0) {
         continue;
       }
-     
+
       const remain = remaining - total;
       // console.log(
       //   pattern,
@@ -584,20 +594,30 @@ async function go(numbers, woodStock, ordering = "desc") {
     //   "sum remainingCopyNumber:",
     //   sum(remainingCopyNumber) + sumBy(zeroPattern, "sum")
     // );
-    const sumWoodRemaingNonzero = sumBy(nonZeroPattern.filter((item) => item.remaning < minLength), 'remaning');
+    const sumWoodRemaingNonzero = sumBy(
+      nonZeroPattern.filter((item) => item.remaning < minLength),
+      "remaning"
+    );
 
-    console.log('remainingCopyNumber:', remainingCopyNumber)
+    console.log("remainingCopyNumber:", remainingCopyNumber);
     console.log("remainWoodStock:", remainWoodStock);
-    suggestPattern = await suggestV2(remainingCopyNumber, remainWoodStock, sumWoodRemaingNonzero);
+    suggestPattern = await suggestV2(
+      remainingCopyNumber,
+      remainWoodStock,
+      sumWoodRemaingNonzero
+    );
 
-    const sumWoodRemaingSuggest = sumBy(suggestPattern.pattern.filter((item) => item.remaning < minLength), 'remaning');
-    console.log('sumWoodRemaingSuggest:', sumWoodRemaingSuggest)
-    console.log('sumWoodRemaingNonzero:', sumWoodRemaingNonzero)
+    const sumWoodRemaingSuggest = sumBy(
+      suggestPattern.pattern.filter((item) => item.remaning < minLength),
+      "remaning"
+    );
+    console.log("sumWoodRemaingSuggest:", sumWoodRemaingSuggest);
+    console.log("sumWoodRemaingNonzero:", sumWoodRemaingNonzero);
 
     if (sumWoodRemaingSuggest > sumWoodRemaingNonzero) {
-      suggestPattern = null
+      suggestPattern = null;
     }
-}
+  }
 
   return {
     keptList,
@@ -633,9 +653,12 @@ const findUseStd = (copyStdOrderList, data) => {
   };
 };
 
-
-
-const suggestV2 = async (numbers, woodStock, sumWoodRemaingNonzero, ordering = "desc") => {
+const suggestV2 = async (
+  numbers,
+  woodStock,
+  sumWoodRemaingNonzero,
+  ordering = "desc"
+) => {
   let copyNumber = cloneDeep(numbers);
   let remainWoodStock = cloneDeep(woodStock);
   let copyStdOrderList = cloneDeep(stdOrderList);
@@ -649,12 +672,12 @@ const suggestV2 = async (numbers, woodStock, sumWoodRemaingNonzero, ordering = "
   let zeroPattern = [];
   let stdSelectedList = [];
 
-  let tryPatternList = []
+  let tryPatternList = [];
 
-  let originalNumbers = cloneDeep(copyNumber)
+  let originalNumbers = cloneDeep(copyNumber);
 
-  let sumWoodRemaingSuggest = 0
-  console.log('sumWoodRemaingNonzero:', sumWoodRemaingNonzero)
+  let sumWoodRemaingSuggest = 0;
+  console.log("sumWoodRemaingNonzero:", sumWoodRemaingNonzero);
 
   while (copyNumber.length) {
     // เรียง
@@ -662,8 +685,8 @@ const suggestV2 = async (numbers, woodStock, sumWoodRemaingNonzero, ordering = "
     if (ordering === "desc") {
       ordered = sortBy(copyNumber).reverse();
     }
-    
-    const tryCopyStdOrderList = copyStdOrderList.filter((val) => val.qty > 0)
+
+    const tryCopyStdOrderList = copyStdOrderList.filter((val) => val.qty > 0);
 
     // // compare orginal vs std
     const selected = findCombinations(
@@ -675,17 +698,16 @@ const suggestV2 = async (numbers, woodStock, sumWoodRemaingNonzero, ordering = "
       sumWoodRemaingNonzero
     );
     pattern.push(selected);
-    // 
-    sumWoodRemaingSuggest += selected.remaning ?? 0
-// console.log('xxsumWoodRemaingSuggest:', sumWoodRemaingSuggest)
+    //
+    sumWoodRemaingSuggest += selected.remaning ?? 0;
+    // console.log('xxsumWoodRemaingSuggest:', sumWoodRemaingSuggest)
     if (selected?.use_std_wood) {
       // remove qty from std
-     const {
-      newCopyStdOrderList,
-      stdSelected
-      } = findUseStd(copyStdOrderList, selected);
+      const { newCopyStdOrderList, stdSelected } = findUseStd(
+        copyStdOrderList,
+        selected
+      );
       copyStdOrderList = [...newCopyStdOrderList];
-
 
       // if remaing pattern push to number
 
@@ -940,15 +962,15 @@ function printResult(allPattern, zeroPattern, suggestPattern) {
   console.log("==================== result ====================");
 
   if (suggestPattern) {
-    let sumStd = 0
-    let sumZero = 0
-    let sumSuggest = 0
+    let sumStd = 0;
+    let sumZero = 0;
+    let sumSuggest = 0;
 
     if (zeroPattern) {
       for (const item of zeroPattern) {
         const wood = item.from_stock ? `, :wood , ${item.wood}` : "";
         console.log(item.pattern, wood);
-        sumZero += sum(item.pattern.split(',').map(val => +val))
+        sumZero += sum(item.pattern.split(",").map((val) => +val));
       }
     }
 
@@ -956,11 +978,11 @@ function printResult(allPattern, zeroPattern, suggestPattern) {
     for (const item of suggestPattern.pattern) {
       const wood = item.from_stock ? `, :wood , ${item.wood}` : "";
       console.log(item.pattern, wood);
-      sumSuggest += sum(item.pattern.split(',').map(val => +val))
+      sumSuggest += sum(item.pattern.split(",").map((val) => +val));
     }
     console.log("==================== STD LIST ====================");
     for (const iterator of suggestPattern.stdList) {
-      sumStd += sum(iterator.woodList)
+      sumStd += sum(iterator.woodList);
       console.log(
         "",
         iterator.size,
@@ -973,10 +995,10 @@ function printResult(allPattern, zeroPattern, suggestPattern) {
       );
     }
 
-    console.log('sum: ', sumZero + sumSuggest - sumStd)
-    console.log('sumStd:', sumStd)
-    console.log('sumSuggest:', sumSuggest)
-    console.log('sumZero:', sumZero)
+    console.log("sum: ", sumZero + sumSuggest - sumStd);
+    console.log("sumStd:", sumStd);
+    console.log("sumSuggest:", sumSuggest);
+    console.log("sumZero:", sumZero);
   } else {
     if (allPattern) {
       for (const item of allPattern) {

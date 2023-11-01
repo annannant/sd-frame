@@ -10,6 +10,9 @@ import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateProductionOrderPlanDto } from './dto/create-production-order-plan.dto';
 
+import algorithm from '@/algorithm/main';
+import CoreAlgorithm from '@/algorithm/core';
+
 @Injectable()
 export class ProductionOrdersService {
   constructor(
@@ -54,6 +57,21 @@ export class ProductionOrdersService {
       .leftJoinAndSelect('wood.attribute', 'attribute')
       .where('pod.id = :id', { id: productionOrderId })
       .getOne();
+
+    const test = new CoreAlgorithm(120, 10, 0.5);
+    test.test(1);
+    // const data = await algorithm([], [], [], 'desc');
+    // console.log('data:', data);
+    // console.log('pattern:', pattern);
+    // const { pattern, zeroPattern, suggestPattern } = await go(
+    //   [],
+    //   [],
+    //   [],
+    //   'desc',
+    // );
+    // console.log('pattern:', pattern);
+    // console.log('zeroPattern:', zeroPattern);
+    // console.log('suggestPattern:', suggestPattern);
 
     // console.log('createProductionOrderPlanDto:');
     return productionOrder;

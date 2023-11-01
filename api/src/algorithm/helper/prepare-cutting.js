@@ -1,16 +1,19 @@
 const { orderBy } = require('lodash');
-// const { v4: uuidv4 } = require('uuid');
 
-const sparePart = 0.25;
-
-const prepare = (orders) => {
+const prepare = (orders, sparePart) => {
   const formatted = [];
   for (const [index, item] of orders.entries()) {
-    const splitSize = item.size
-      .split('x')
-      .map((v) => Number(v.trim()))
-      .sort((a, b) => Number(a) - Number(b));
-    const [width, height] = splitSize;
+    let width = item.width;
+    let height = item.height;
+    if (item.width == undefined && item.height == undefined) {
+      const splitSize = item.size
+        .split('x')
+        .map((v) => Number(v.trim()))
+        .sort((a, b) => Number(a) - Number(b));
+      const [w, h] = splitSize;
+      width = w;
+      height = h;
+    }
 
     const dimensionW = parseFloat(
       (width + (item.woodWidth + sparePart) * 2).toFixed(2),
