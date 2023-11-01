@@ -33,7 +33,7 @@ export const ProductionOrdersWaitingInfo = () => {
         <Card bordered={false}>
           <div className="flex items-center justify-between">
             <Title level={5} style={{ margin: 0 }}>
-              Production Order No. : 100100
+              Production Order No. : {orderInfo?.orderNo}
             </Title>
 
             <Button

@@ -12,6 +12,7 @@ import { ProductionOrdersService } from './production-orders.service';
 import { CreateProductionOrderDto } from './dto/create-production-order.dto';
 import { UpdateProductionOrderDto } from './dto/update-production-order.dto';
 import { QueryProductionOrderDto } from './dto/query-production-order.dto';
+import { CreateProductionOrderPlanDto } from './dto/create-production-order-plan.dto';
 
 @Controller('production-orders')
 export class ProductionOrdersController {
@@ -22,6 +23,11 @@ export class ProductionOrdersController {
   @Post()
   create(@Body() createProductionOrderDto: CreateProductionOrderDto) {
     return this.productionOrdersService.create(createProductionOrderDto);
+  }
+
+  @Post('create-plan')
+  createPlan(@Body() createProductionOrderDto: CreateProductionOrderPlanDto) {
+    return this.productionOrdersService.createPlan(createProductionOrderDto);
   }
 
   @Get()

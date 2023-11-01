@@ -39,6 +39,8 @@ export const FormOrders = () => {
   const [selectedSize, setSelectedSize] = useState<any>({})
 
   const { id, action }: any = useLoaderData()
+  const isEdit = action === 'edit'
+  const isCreate = action === 'create'
   const { data } = useGetAllStandardFramesQuery()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
@@ -61,19 +63,25 @@ export const FormOrders = () => {
   }, [formValues])
 
   useEffect(() => {
-    if (id && orderInfo) {
-      console.log('orderInfo:', orderInfo?.productionOrderItems)
-      form?.setFieldValue(
-        'orderItems',
-        orderInfo?.productionOrderItems?.map((item) => ({
-          ...item,
-          size: item?.standardFrame?.id,
-        }))
-      )
-    } else {
-      form?.setFieldValue('orderItems', [])
+    if (isEdit) {
+      if (id && orderInfo) {
+        console.log('orderInfo:', orderInfo?.productionOrderItems)
+        form?.setFieldValue(
+          'orderItems',
+          orderInfo?.productionOrderItems?.map((item) => ({
+            ...item,
+            size: item?.standardFrame?.id,
+          }))
+        )
+      } else {
+        form?.setFieldValue('orderItems', [])
+      }
     }
-  }, [options, id, orderInfo, form])
+  }, [options, id, orderInfo, form, isEdit])
+
+  useEffect(() => {
+    form?.setFieldValue('orderItems', [])
+  }, [isCreate])
 
   useEffect(() => {
     // const data = [

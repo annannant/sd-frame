@@ -11,7 +11,7 @@ export const ProductionOrdersWaitingIndex = () => {
   return (
     <>
       <Title level={3}>รายการผลิต</Title>
-      <Card title={`รายการอผลิต`} bordered={false}>
+      <Card title={`รายการรอผลิต`} bordered={false}>
         <TableOrders />
       </Card>
     </>

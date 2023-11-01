@@ -8,6 +8,7 @@ import { ProductionOrderItem } from '../production-order-items/entities/producti
 import { CreateProductionOrderItemDto } from '../production-order-items/dto/create-production-order-item.dto';
 import { QueryProductionOrderDto } from './dto/query-production-order.dto';
 import { plainToInstance } from 'class-transformer';
+import { CreateProductionOrderPlanDto } from './dto/create-production-order-plan.dto';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -39,6 +40,23 @@ export class ProductionOrdersService {
     return {
       status: 'success',
     };
+  }
+
+  async createPlan(createProductionOrderPlanDto: CreateProductionOrderPlanDto) {
+    const { productionOrderId } = createProductionOrderPlanDto;
+    const queryOrders =
+      this.productionOrdersRepository.createQueryBuilder('pod');
+    const productionOrder = await queryOrders
+      .leftJoinAndSelect('pod.productionOrderItems', 'productionOrderItems')
+      .leftJoinAndSelect('productionOrderItems.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('pod.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute')
+      .where('pod.id = :id', { id: productionOrderId })
+      .getOne();
+
+    // console.log('createProductionOrderPlanDto:');
+    return productionOrder;
   }
 
   async findAll(query: QueryProductionOrderDto) {
