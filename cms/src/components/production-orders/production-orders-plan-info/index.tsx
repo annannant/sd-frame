@@ -20,12 +20,13 @@ import { TagStatus } from 'common/tag-status'
 import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 
+import { CREATE, EDIT } from 'constants/common'
+
 import { PlanItems } from './plan-items/plan-items'
 import { TableOrderItems } from './table-order-items/table-order-items'
 import { TableOrderStdItems } from './table-order-std-items/table-order-std-items'
 
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
-import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 const { Title } = Typography
 
@@ -33,20 +34,13 @@ export const ProductionOrdersPlanInfo = () => {
   const [form] = Form.useForm()
 
   const { id, action }: any = useLoaderData()
-  const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
-  const [api, contextHolder] = notification.useNotification()
+  const isEdit = action === EDIT
+  const isCreate = action === CREATE
 
-  const openNotification = (placement: NotificationPlacement) => {
-    api.info({
-      message: `Notification ${placement}`,
-      description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-      placement,
-    })
-  }
+  const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
+
   return (
     <>
-      {contextHolder}
       <div className="flex w-full items-center justify-between">
         <Title level={3}>รายละเอียดการผลิต</Title>
         <Title level={5} className="pr-[26px]">

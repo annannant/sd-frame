@@ -1,4 +1,5 @@
 export interface ITFCreateProductionOrderItemForm {
+  id?: number | null
   size?: number | null
   width?: number | null
   height?: number | null

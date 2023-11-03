@@ -101,7 +101,9 @@ export const PlanItems = () => {
                         width: `${percent}%`,
                       }}
                     >
-                      <div className="mt-[10px]">{width}</div>
+                      <div className="mt-[10px]">
+                        {parser(width).toFixed(2)}
+                      </div>
                     </div>
                   )
                 })}
@@ -112,7 +114,9 @@ export const PlanItems = () => {
                       width: `${percentRemaining}%`,
                     }}
                   >
-                    <div className="mt-[10px]">{parser(remaining)}</div>
+                    <div className="mt-[10px]">
+                      {parser(remaining).toFixed(2)}
+                    </div>
                   </div>
                 )}
                 {/* {sumWidth} */}

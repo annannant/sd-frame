@@ -15,7 +15,8 @@ import { StandardFrame } from '../standard-frames/entities/standard-frame.entity
 import { parser } from '@/common/helpers/number';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
 import { StandardFrameStock } from '../standard_frame_stocks/entities/standard_frame_stock.entity';
-import { pick } from 'lodash';
+import { generateOrderNo } from '@/common/helpers/generator';
+import { DRAFT } from '@/common/constants/current-status.constant';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -35,9 +36,12 @@ export class ProductionOrdersService {
   ) {}
 
   async create(createProductionOrderDto: CreateProductionOrderDto) {
+    const isSaveDraft = createProductionOrderDto.status === DRAFT;
+    const orderNo = isSaveDraft ? null : generateOrderNo();
     const created = await this.productionOrdersRepository.save(
       plainToInstance(ProductionOrder, {
         ...createProductionOrderDto,
+        orderNo,
       }),
     );
 
@@ -162,8 +166,32 @@ export class ProductionOrdersService {
     return data;
   }
 
-  update(id: number, updateProductionOrderDto: UpdateProductionOrderDto) {
-    return this.productionOrdersRepository.update(id, updateProductionOrderDto);
+  async update(id: number, updateProductionOrderDto: UpdateProductionOrderDto) {
+    console.log('updateProductionOrderDto:', updateProductionOrderDto);
+    console.log('id:', id);
+    // const isSaveDraft = updateProductionOrderDto.status === DRAFT;
+    // const orderNo = isSaveDraft ? null : generateOrderNo();
+    // const updated = await this.productionOrdersRepository.update(
+    //   id,
+    //   plainToInstance(ProductionOrder, {
+    //     ...updateProductionOrderDto,
+    //     orderNo,
+    //   }),
+    // );
+
+    // const items = updateProductionOrderDto?.orderItems?.map(
+    //   (item: CreateProductionOrderItemDto) => {
+    //     return plainToInstance(ProductionOrderItem, {
+    //       ...item,
+    //       productionOrderId: created.id,
+    //     });
+    //   },
+    // );
+
+    // await this.productionOrderItemsRepository.save(items);
+    return {
+      status: 'success',
+    };
   }
 
   remove(id: number) {

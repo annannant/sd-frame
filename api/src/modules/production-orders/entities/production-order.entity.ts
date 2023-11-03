@@ -44,10 +44,10 @@ export class ProductionOrder {
     this.updatedAt = new Date();
   }
 
-  @BeforeInsert()
-  async generateOrderNoHash(): Promise<void> {
-    this.orderNo = generateOrderNo();
-  }
+  // @BeforeInsert()
+  // async generateOrderNoHash(): Promise<void> {
+  // this.orderNo = generateOrderNo();
+  // }
 
   @BeforeUpdate()
   updateDates() {

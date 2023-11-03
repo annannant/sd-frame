@@ -4,6 +4,7 @@ import { useLoaderData } from 'react-router-dom'
 
 import { Col, Form, Row, Select, Typography } from 'antd'
 
+import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 
 import { filterOption } from 'helper/select-input'

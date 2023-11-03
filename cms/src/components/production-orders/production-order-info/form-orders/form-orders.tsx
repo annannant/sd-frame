@@ -21,6 +21,7 @@ import {
 } from 'antd'
 
 import { colors } from 'constants/colors'
+import { CREATE, EDIT } from 'constants/common'
 
 import { filterOption } from 'helper/select-input'
 
@@ -39,10 +40,11 @@ export const FormOrders = () => {
   const [selectedSize, setSelectedSize] = useState<any>({})
 
   const { id, action }: any = useLoaderData()
-  const isEdit = action === 'edit'
-  const isCreate = action === 'create'
   const { data } = useGetAllStandardFramesQuery()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
+
+  const isEdit = action === EDIT
+  const isCreate = action === CREATE
 
   const options = useMemo(() => {
     return data?.options?.map((item) => {
@@ -63,33 +65,32 @@ export const FormOrders = () => {
   }, [formValues])
 
   useEffect(() => {
-    if (isEdit) {
-      if (id && orderInfo) {
-        // console.log('orderInfo:', orderInfo?.productionOrderItems)
-        form?.setFieldValue(
-          'orderItems',
-          orderInfo?.productionOrderItems?.map((item) => ({
-            ...item,
-            size: item?.standardFrame?.id,
-          }))
+    if (isEdit && orderInfo) {
+      console.log('isEdit:', isEdit)
+      console.log('orderInfo:', orderInfo)
+      form?.setFieldValue(
+        'orderItems',
+        orderInfo?.productionOrderItems?.map((item) => ({
+          ...item,
+          size: item?.standardFrame?.id,
+        }))
+      )
+      // set selected size
+      setSelectedSize(
+        keyBy(
+          orderInfo?.productionOrderItems?.filter(Boolean),
+          'standardFrameId'
         )
-
-        // set selected size
-        setSelectedSize(
-          keyBy(
-            orderInfo?.productionOrderItems?.filter(Boolean),
-            'standardFrameId'
-          )
-        )
-      } else {
-        form?.setFieldValue('orderItems', [])
-      }
+      )
+    } else {
+      form?.setFieldValue('orderItems', [])
     }
-  }, [options, id, orderInfo, form, isEdit])
+    // }, [options, id, orderInfo, form, isEdit])
+  }, [isEdit, orderInfo, form])
 
-  useEffect(() => {
-    form?.setFieldValue('orderItems', [])
-  }, [isCreate])
+  // useEffect(() => {
+  //   form?.setFieldValue('orderItems', [])
+  // }, [isCreate])
 
   useEffect(() => {
     // const data = [
@@ -264,6 +265,13 @@ export const FormOrders = () => {
                         </Form.Item>
                       </Col>
                       <Col span={2} className="flex items-center justify-start">
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'id']}
+                          className="flex-1"
+                        >
+                          <Input type="hidden" />
+                        </Form.Item>
                         <MinusCircleTwoTone
                           twoToneColor={colors.danger}
                           onClick={() => remove(name)}

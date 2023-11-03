@@ -460,7 +460,6 @@ class CoreAlgo {
     // return ordered[0];
   }
   core = async (numbers, woodStock, stdOrderList, ordering = 'desc') => {
-    console.log('stdOrderList:', stdOrderList);
     let copyNumber = cloneDeep(numbers);
     let remainWoodStock = cloneDeep(woodStock);
     let copyStdOrderList = cloneDeep(stdOrderList);
@@ -634,7 +633,6 @@ class CoreAlgo {
     let stdSelectedList = [];
 
     let sumWoodRemaingSuggest = 0;
-    console.log('sumWoodRemaingNonzero:', sumWoodRemaingNonzero);
 
     while (copyNumber.length) {
       // เรียง

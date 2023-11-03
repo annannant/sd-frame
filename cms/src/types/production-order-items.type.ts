@@ -17,6 +17,7 @@ export interface ITFTableProductionOrderItem
     ITFTable {}
 
 export interface ITFCreateProductionOrderItem {
+  id?: number | null
   width?: number | null
   height?: number | null
   qty?: number | null

@@ -1,15 +1,19 @@
 import React, { useEffect } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 
-import { Button, Card, Form } from 'antd'
+import { Button, Card, Col, Form, Row } from 'antd'
 import { Typography, notification } from 'antd'
 import type { NotificationPlacement } from 'antd/es/notification/interface'
 
+import { OrderInfoDetailIndex } from 'components/orders-info-detail'
+import { OrderStatusDetailIndex } from 'components/orders-status-detail'
 import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info/form-orders-info'
 import { FormOrders } from 'components/production-orders/production-order-info/form-orders/form-orders'
 
+import { CREATE, EDIT } from 'constants/common'
 import { ITFProductionOrder } from 'types/production-order.type'
 
+import useMessage from 'hooks/useMessage'
 import { useSaveProductionPlanOrders } from 'hooks/useSaveProductionPlanOrders'
 
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
@@ -17,38 +21,46 @@ import { useGetProductionOrderByIDQuery } from 'services/production-order'
 const { Title } = Typography
 
 export const ProductionOrdersInfoIndex = () => {
+  const navigate = useNavigate()
+
   const [form] = Form.useForm()
   const { id, action }: any = useLoaderData()
 
-  const { create, save } = useSaveProductionPlanOrders()
-  const [api, contextHolder] = notification.useNotification()
+  const { create, createSaveDraft, update, updateSaveDraft } =
+    useSaveProductionPlanOrders()
+  const { contextHolder, success, error } = useMessage()
+  const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
-  const openNotification = (placement: NotificationPlacement) => {
-    api.info({
-      message: `Notification ${placement}`,
-      description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-      placement,
-    })
-  }
+  const isEdit = action === EDIT
 
-  const handleSave = async () => {
-    try {
-      openNotification('top')
-      await form.validateFields()
-      const values = form.getFieldsValue()
-      await save(values)
-    } catch (error: any) {
-      console.log('error:', error)
-    }
-  }
-  const handleSubmit = async () => {
+  const onClickButton = async (action: string) => {
     try {
       await form.validateFields()
       const values = form.getFieldsValue()
-      await create(values)
-    } catch (error: any) {
-      console.log('error:', error)
+      switch (action) {
+        case 'create-save-draft':
+          await createSaveDraft(values)
+          break
+        case 'update-save-draft':
+          await updateSaveDraft(values)
+          break
+        case 'create':
+          await create(values)
+          break
+        case 'update':
+          await update(values)
+          break
+      }
+      success()
+      // setTimeout(() => {
+      //   navigate('/production-orders')
+      // }, 1200)
+    } catch (e: any) {
+      console.log('error:', e)
+      if (e.errorFields) {
+        return
+      }
+      error()
     }
   }
 
@@ -64,12 +76,29 @@ export const ProductionOrdersInfoIndex = () => {
         }}
         // className="px-[30px]"
       >
-        <Title level={3}>สั่งผลิต / สร้างคำสั่งผลิต</Title>
+        <div className="flex justify-between">
+          <Title level={3}>สั่งผลิต / สร้างคำสั่งผลิต</Title>
+          <div className="flex-1"></div>
+        </div>
+
         <div className="grid gap-y-[20px]">
+          {isEdit && (
+            <Card title="ข้อมูลคำสั่งผลิต">
+              <Row>
+                <Col span={12}>
+                  <OrderInfoDetailIndex data={orderInfo} />
+                </Col>
+                <Col span={12}>
+                  <OrderStatusDetailIndex data={orderInfo} />
+                </Col>
+              </Row>
+            </Card>
+          )}
           <Card title="ข้อมูลไม้กรอบ" bordered={false}>
             <FormOrdersInfo />
           </Card>
-          <Card title="ข้อมูลคำสั่งผลิต" bordered={false}>
+
+          <Card title="รายการสั่งผลิต" bordered={false}>
             <FormOrders />
           </Card>
         </div>
@@ -78,15 +107,31 @@ export const ProductionOrdersInfoIndex = () => {
             type="default"
             htmlType="button"
             className="w-[120px]"
-            onClick={handleSave}
+            onClick={() =>
+              isEdit
+                ? onClickButton('update-save-draft')
+                : onClickButton('create-save-draft')
+            }
           >
             บันทึก
           </Button>
+          {isEdit && (
+            <Button
+              type="primary"
+              htmlType="button"
+              className="w-[120px]"
+              danger
+            >
+              ยกเลิก
+            </Button>
+          )}
           <Button
             type="primary"
             htmlType="button"
             className="w-[120px]"
-            onClick={handleSubmit}
+            onClick={() =>
+              isEdit ? onClickButton('update') : onClickButton('create')
+            }
           >
             ยืนยัน
           </Button>
