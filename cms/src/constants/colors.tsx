@@ -11,6 +11,7 @@ export const colors = {
   green: '#57B657',
   danger: '#FF4747',
   yellow: '#FFC100',
+  blue: '#007bff',
   // fontBase: '#535453',
   // dark
   dark: {

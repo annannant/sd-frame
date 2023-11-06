@@ -13,3 +13,15 @@ sum:  2183.76
 sumStd: 164
 sumSuggest: 319.26
 sumZero: 2028.5
+
+ 5x7 , 1 , [ 7.5, 7.5, 9.5, 9.5 ] , 34
+sum:  2183.76
+sumStd: 34
+sumSuggest: 189.26
+sumZero: 2028.5
+
+ 5x7 , 1 , [ 7.5, 7.5, 9.5, 9.5 ] , 34
+sum:  2183.76
+sumStd: 34
+sumSuggest: 189.26
+sumZero: 2028.5

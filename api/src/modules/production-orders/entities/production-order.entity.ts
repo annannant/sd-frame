@@ -1,6 +1,7 @@
 import { generateOrderNo } from '@/common/helpers/generator';
 import { ProductionOrderItem } from '@/modules/production-order-items/entities/production-order-item.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
+import { Expose } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -17,24 +18,31 @@ export class ProductionOrder {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Expose()
   @Column({ name: 'wood_id' })
   woodId: number;
 
+  @Expose()
   @Column({ name: 'order_no' })
   orderNo: string;
 
+  @Expose()
   @Column({ name: 'status' })
   status: string;
 
+  @Expose()
   @Column({ name: 'created_at' })
   createdAt: Date;
 
+  @Expose()
   @Column({ name: 'created_by' })
   createdBy: string;
 
+  @Expose()
   @Column({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Expose()
   @Column({ name: 'updated_by' })
   updatedBy: string;
 

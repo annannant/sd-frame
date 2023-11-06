@@ -4,13 +4,17 @@ import { DRAFT, WAIT_FOR_CUTTING } from 'constants/current-status.constant'
 import { ITFCreateProductionOrderForm } from 'types/production-order-form'
 import { ITFUpdateProductionOrder } from 'types/production-order.type'
 
-import { patchUpdate, postCreate } from 'api/production-orders'
+import {
+  deleteProductionOrder,
+  patchUpdateProductionOrder,
+  postCreateProductionOrder,
+} from 'api/production-orders'
 
 import { pick } from 'lodash'
 import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 export const useSaveProductionPlanOrders = () => {
-  const { id, action }: any = useLoaderData()
+  const { id }: any = useLoaderData()
   const { data } = useGetAllStandardFramesQuery()
   const transformPayload = (
     payload: ITFCreateProductionOrderForm
@@ -46,7 +50,7 @@ export const useSaveProductionPlanOrders = () => {
   const createSaveDraft = async (values: ITFCreateProductionOrderForm) => {
     try {
       const payload = transformPayload(values)
-      const response = await postCreate({
+      const response = await postCreateProductionOrder({
         ...payload,
         status: DRAFT,
       })
@@ -59,7 +63,7 @@ export const useSaveProductionPlanOrders = () => {
   const create = async (values: ITFCreateProductionOrderForm) => {
     try {
       const payload = transformPayload(values)
-      const response = await postCreate({
+      const response = await postCreateProductionOrder({
         ...payload,
         status: WAIT_FOR_CUTTING,
       })
@@ -72,7 +76,7 @@ export const useSaveProductionPlanOrders = () => {
   const updateSaveDraft = async (values: ITFCreateProductionOrderForm) => {
     try {
       const payload = transformPayload(values)
-      const response = await patchUpdate(id, {
+      const response = await patchUpdateProductionOrder(id, {
         ...payload,
         status: DRAFT,
       })
@@ -85,10 +89,19 @@ export const useSaveProductionPlanOrders = () => {
   const update = async (values: ITFCreateProductionOrderForm) => {
     try {
       const payload = transformPayload(values)
-      const response = await patchUpdate(id, {
+      const response = await patchUpdateProductionOrder(id, {
         ...payload,
         status: WAIT_FOR_CUTTING,
       })
+      console.log('response:', response)
+    } catch (error) {
+      console.log('error:', error)
+    }
+  }
+
+  const remove = async () => {
+    try {
+      const response = await deleteProductionOrder(id)
       console.log('response:', response)
     } catch (error) {
       console.log('error:', error)
@@ -102,5 +115,6 @@ export const useSaveProductionPlanOrders = () => {
     createSaveDraft,
     update,
     updateSaveDraft,
+    remove,
   }
 }

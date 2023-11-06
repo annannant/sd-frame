@@ -24,7 +24,7 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
           <Row gutter={[0, 10]}>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">รหัส</Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">
@@ -34,7 +34,7 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">ประเภท</Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">
@@ -48,7 +48,7 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">ชื่อไม้</Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">
@@ -60,7 +60,7 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">ขนาดหน้าไม้</Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">

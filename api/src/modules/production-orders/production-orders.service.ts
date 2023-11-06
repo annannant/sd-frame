@@ -167,35 +167,37 @@ export class ProductionOrdersService {
   }
 
   async update(id: number, updateProductionOrderDto: UpdateProductionOrderDto) {
-    console.log('updateProductionOrderDto:', updateProductionOrderDto);
-    console.log('id:', id);
-    // const isSaveDraft = updateProductionOrderDto.status === DRAFT;
-    // const orderNo = isSaveDraft ? null : generateOrderNo();
-    // const updated = await this.productionOrdersRepository.update(
-    //   id,
-    //   plainToInstance(ProductionOrder, {
-    //     ...updateProductionOrderDto,
-    //     orderNo,
-    //   }),
-    // );
+    const isSaveDraft = updateProductionOrderDto.status === DRAFT;
+    const orderNo = isSaveDraft ? null : generateOrderNo();
 
-    // const items = updateProductionOrderDto?.orderItems?.map(
-    //   (item: CreateProductionOrderItemDto) => {
-    //     return plainToInstance(ProductionOrderItem, {
-    //       ...item,
-    //       productionOrderId: created.id,
-    //     });
-    //   },
-    // );
+    const data = plainToInstance(
+      ProductionOrder,
+      {
+        ...updateProductionOrderDto,
+        orderNo,
+      },
+      { strategy: 'excludeAll' },
+    );
 
-    // await this.productionOrderItemsRepository.save(items);
+    await this.productionOrdersRepository.update(id, data);
+    const items = updateProductionOrderDto?.orderItems?.map(
+      (item: CreateProductionOrderItemDto) => {
+        return plainToInstance(ProductionOrderItem, {
+          ...item,
+          productionOrderId: id,
+        });
+      },
+    );
+    await this.productionOrderItemsRepository.delete({ productionOrderId: id });
+    await this.productionOrderItemsRepository.save(items);
     return {
       status: 'success',
     };
   }
 
-  remove(id: number) {
-    return this.productionOrdersRepository.delete(id);
+  async remove(id: number) {
+    await this.productionOrderItemsRepository.delete({ productionOrderId: id });
+    return await this.productionOrdersRepository.delete(id);
   }
 
   async formatItems(orderItems: ProductionOrderItem[], woodWidth: number) {

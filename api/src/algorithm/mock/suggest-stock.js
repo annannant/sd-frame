@@ -18,6 +18,10 @@ const stocks = [
   { size: '12x15', woodWidth: 1, qty: 3 },
   { size: '15x21', woodWidth: 1, qty: 5 },
 
+  // SELECT *, (reorder_point - stock) as qty FROM standard_frame_stock
+  // INNER JOIN standard_frame ON standard_frame_stock.standard_frame_id = standard_frame.id
+  // where standard_frame_stock.wood_id = 4
+
   // {size: '12x15',woodWidth: 1,qty: 2,},
   // {size: '10x15',woodWidth: 1,qty: 2,},
   // {size: '8.24x11.69',woodWidth: 1,qty: 2,},

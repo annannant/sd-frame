@@ -25,7 +25,7 @@ export const OrderInfoDetailIndex = (props: ITFProps) => {
           <Row gutter={[0, 10]}>
             <Col span={24}>
               <Row>
-                <Col span={8} className="text-right">
+                <Col span={8} className="text-left">
                   <Text type="secondary">รหัสคำสั่งผลิต (PO No.)</Text>
                 </Col>
                 <Col span={15} className="pl-[40px] ">
@@ -37,7 +37,7 @@ export const OrderInfoDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={8} className="text-right">
+                <Col span={8} className="text-left">
                   <Text type="secondary">วันที่สั่งผลิต </Text>
                 </Col>
                 <Col span={15} className="pl-[40px] ">
@@ -51,7 +51,7 @@ export const OrderInfoDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={8} className="text-right">
+                <Col span={8} className="text-left">
                   <Text type="secondary">ผู้สั่งผลิต</Text>
                 </Col>
                 <Col span={15} className="pl-[40px] ">

@@ -28,7 +28,7 @@ export const OrderStatusDetailIndex = (props: ITFProps) => {
           <Row gutter={[0, 10]}>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">สถานะ</Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">
@@ -40,7 +40,7 @@ export const OrderStatusDetailIndex = (props: ITFProps) => {
             </Col>
             <Col span={24}>
               <Row>
-                <Col span={5} className="text-right">
+                <Col span={5} className="text-left">
                   <Text type="secondary">แก้ไขล่าสุด </Text>
                 </Col>
                 <Col span={18} className="pl-[40px] ">
@@ -54,7 +54,7 @@ export const OrderStatusDetailIndex = (props: ITFProps) => {
             </Col>
             {/* <Col span={24}>
               <Row>
-                <Col span={8} className="text-right">
+                <Col span={8} className="text-left">
                   <Text type="secondary">ผู้สั่งผลิต</Text>
                 </Col>
                 <Col span={15} className="pl-[40px] ">
