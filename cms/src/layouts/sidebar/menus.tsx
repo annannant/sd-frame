@@ -93,8 +93,8 @@ export const menus: ITFSidebarItem[] = [
     permission: [],
     items: [
       {
-        key: 'wood-info',
-        url: 'wood-info',
+        key: '/wood-types',
+        url: '/wood-types',
         label: 'ข้อมูลไม้กรอบ',
         icon: <ProjectOutlined />,
       },

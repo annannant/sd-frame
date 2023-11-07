@@ -51,7 +51,7 @@ export const PlanItems = () => {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: colors.green,
+              colorPrimary: colors.success,
             },
           }}
         >
@@ -96,7 +96,7 @@ export const PlanItems = () => {
                   return (
                     <div
                       key={idx}
-                      className={`bg-yellow mr-[6px] flex h-[8px] justify-center`}
+                      className={`bg-warning mr-[6px] flex h-[8px] justify-center`}
                       style={{
                         width: `${percent}%`,
                       }}

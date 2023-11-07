@@ -10,6 +10,12 @@ import { ProductionOrdersListPage } from 'pages/production-orders/production-ord
 import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production-orders-plan-info'
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
+import {
+  WoodTypesInfoPage,
+  createWoodTypeLoader,
+  editWoodTypeLoader,
+} from 'pages/wood-types/wood-types-info'
+import { WoodTypesListPage } from 'pages/wood-types/wood-types-list'
 
 import MainLayout from 'layouts/main-layout/main-layout'
 
@@ -71,6 +77,60 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
       },
+    ],
+  },
+  {
+    path: '/wood-types',
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    loader: () => {
+      console.log('loader')
+      return {
+        data: 'loader',
+      }
+    },
+    action: () => {
+      console.log('action')
+      return {
+        data: 'action',
+      }
+    },
+    children: [
+      {
+        index: true,
+        element: <WoodTypesListPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'create',
+        element: <WoodTypesInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: createWoodTypeLoader,
+      },
+      {
+        path: 'edit/:orderId',
+        element: <WoodTypesInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editWoodTypeLoader,
+      },
+      // {
+      //   path: 'waiting',
+      //   element: <ProductionOrdersWaitingPage />,
+      //   errorElement: <ErrorPage />,
+      //   loader: createOrderLoader,
+      // },
+      // {
+      //   path: 'waiting/:orderId',
+      //   element: <ProductionOrdersWaitingInfoPage />,
+      //   errorElement: <ErrorPage />,
+      //   loader: editOrderLoader,
+      // },
+      // {
+      //   path: 'plan/:orderId',
+      //   element: <ProductionOrdersPlanInfoPage />,
+      //   errorElement: <ErrorPage />,
+      //   loader: editOrderLoader,
+      // },
     ],
   },
   // {

@@ -110,7 +110,7 @@ export const ProductionOrdersInfoIndex = () => {
     okButtonProps: {},
     cancelText: 'ยกเลิก',
     content: <>ต้องการแก้ไขคำสั่งผลิต ?</>,
-    icon: <InfoCircleOutlined style={{ color: colors.yellow }} />,
+    icon: <InfoCircleOutlined style={{ color: colors.warning }} />,
   }
 
   return (

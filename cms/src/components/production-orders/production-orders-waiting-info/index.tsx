@@ -51,7 +51,7 @@ export const ProductionOrdersWaitingInfo = () => {
             <ConfigProvider
               theme={{
                 token: {
-                  colorPrimary: colors.green,
+                  colorPrimary: colors.success,
                 },
               }}
             >
