@@ -66,8 +66,6 @@ export const FormOrders = () => {
 
   useEffect(() => {
     if (isEdit && orderInfo) {
-      console.log('isEdit:', isEdit)
-      console.log('orderInfo:', orderInfo)
       form?.setFieldValue(
         'orderItems',
         orderInfo?.productionOrderItems?.map((item) => ({

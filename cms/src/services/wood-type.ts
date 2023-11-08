@@ -18,4 +18,5 @@ export const woodTypeApiSlice = createApi({
   }),
 })
 
-export const { useGetAllWoodTypesQuery } = woodTypeApiSlice
+export const { useGetAllWoodTypesQuery, useGetWoodTypesByIDQuery } =
+  woodTypeApiSlice

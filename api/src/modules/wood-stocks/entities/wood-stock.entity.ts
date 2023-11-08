@@ -19,7 +19,7 @@ export class WoodStock {
     nullable: true,
     type: 'decimal',
     precision: 10,
-    scale: 2,
+    scale: 4,
   })
   actualWoodWidth: number;
 

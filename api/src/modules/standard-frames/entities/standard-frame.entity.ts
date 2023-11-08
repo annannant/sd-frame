@@ -20,7 +20,7 @@ export class StandardFrame {
     nullable: true,
     type: 'decimal',
     precision: 10,
-    scale: 2,
+    scale: 4,
   })
   width: number;
 
@@ -29,7 +29,7 @@ export class StandardFrame {
     nullable: true,
     type: 'decimal',
     precision: 10,
-    scale: 2,
+    scale: 4,
   })
   height: number;
 

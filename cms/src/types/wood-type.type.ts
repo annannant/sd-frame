@@ -1,7 +1,6 @@
 import { ITFTable } from './table.type'
 
-export interface ITFWoodType {
-  id?: number
+export interface ITFCreateWoodType {
   name?: string | null
   description?: string | null
   code?: string | null
@@ -11,6 +10,10 @@ export interface ITFWoodType {
   sizeUnit?: string | null
   qtyPerbox?: number | null
   imageUrl?: string | null
+}
+
+export interface ITFWoodType extends ITFCreateWoodType {
+  id?: number
 }
 
 export interface ITFTableWoodType extends ITFTable, ITFWoodType {}

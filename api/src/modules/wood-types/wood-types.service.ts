@@ -4,6 +4,7 @@ import { UpdateWoodTypeDto } from './dto/update-wood-type.dto';
 import { EntityManager, Repository } from 'typeorm';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { WoodType } from './entities/wood-type.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class WoodTypesService {
@@ -14,8 +15,12 @@ export class WoodTypesService {
     private readonly entityManager: EntityManager,
   ) {}
 
-  create(createWoodTypeDto: CreateWoodTypeDto) {
-    return 'This action adds a new woodType';
+  async create(createWoodTypeDto: CreateWoodTypeDto) {
+    await this.woodTypesRepository.save(
+      plainToInstance(WoodType, {
+        ...createWoodTypeDto,
+      }),
+    );
   }
 
   findAll() {
@@ -31,10 +36,10 @@ export class WoodTypesService {
   }
 
   update(id: number, updateWoodTypeDto: UpdateWoodTypeDto) {
-    return `This action updates a #${id} woodType`;
+    return this.woodTypesRepository.update(id, updateWoodTypeDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} woodType`;
+    return this.woodTypesRepository.delete(id);
   }
 }
