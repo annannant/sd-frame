@@ -3,6 +3,7 @@ import { ITFTable } from './table.type'
 export interface ITFWoodType {
   id?: number
   name?: string | null
+  description?: string | null
   code?: string | null
   width?: string | null
   height?: string | null
