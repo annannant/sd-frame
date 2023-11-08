@@ -50,14 +50,12 @@ code {
     monospace;
 }
 
-/* .ant-btn-primary {
-  background-color: #4b49ac;
+.ant-form-item.custom-required .ant-form-item-label > label::before {
+  display: inline-block;
+  margin-inline-end: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
 }
-
-.ant-btn-default {
-  background-color: #ffffff;
-}
-
-.ant-switch {
-  background-color: rgba(0, 0, 0, 0.25);
-} */
