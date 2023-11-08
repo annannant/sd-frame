@@ -40,7 +40,6 @@ export const ProductionOrdersInfoIndex = () => {
   const { data: orderInfo, refetch } = useGetProductionOrderByIDQuery(id, {
     skip: !id,
   })
-  console.log('orderInfo:', orderInfo)
 
   const isEdit = action === EDIT
   const isCreate = action === CREATE
