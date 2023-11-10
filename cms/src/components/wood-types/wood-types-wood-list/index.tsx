@@ -5,25 +5,21 @@ import { Button, Card, Col, Row, Typography } from 'antd'
 
 import { ButtonBack } from 'common/button/back-button'
 
-import { toFixed } from 'helper/number'
-
-import { TableWoods } from './table-woods/table-woods'
-import { WoodTypesInfo } from './wood-types-info/wood-types-info'
+import { TableWoods } from '../../woods/wood-list/table-woods/table-woods'
+import { WoodTypesInfo } from '../../woods/wood-list/wood-types-info/wood-types-info'
 
 import { useGetWoodsByWoodTypeIDQuery } from 'services/wood-type'
 
 const { Title } = Typography
 
 export const WoodTypesWoodListIndex = () => {
-  const { id, action }: any = useLoaderData()
+  const { id }: any = useLoaderData()
   const { data, refetch } = useGetWoodsByWoodTypeIDQuery(id)
-  const title = `${data?.code ?? ''}-${data?.name ?? ''} หน้า`
-  console.log('data:', data)
 
   return (
     <>
       <Title level={3}>
-        ประเภทไม้กรอบ / {data?.code} - {data?.name} / ไม้กรอบ
+        ประเภทไม้กรอบ / {data?.name} ({data?.code}) / รายการไม้กรอบ
       </Title>
       <Row gutter={[20, 20]}>
         <Col span={17}>
@@ -31,9 +27,9 @@ export const WoodTypesWoodListIndex = () => {
             title={
               <div className="flex justify-between">
                 <div>รายการไม้กรอบ</div>
-                <Link to="/wood-types/create">
+                <Link to={`/wood-types/${id}/woods/create`}>
                   <Button type="primary" icon={<PlusOutlined />}>
-                    สร้างไม้กรอบ
+                    เพิ่มไม้กรอบ
                   </Button>
                 </Link>
               </div>
@@ -59,7 +55,7 @@ export const WoodTypesWoodListIndex = () => {
       <Row>
         <Col span={24}>
           <div className="mt-[30px]">
-            <ButtonBack />
+            <ButtonBack size="large" />
           </div>
         </Col>
       </Row>

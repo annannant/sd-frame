@@ -5,7 +5,6 @@ import {
   AppstoreOutlined,
   DeleteOutlined,
   LeftOutlined,
-  UnorderedListOutlined,
 } from '@ant-design/icons'
 import {
   Button,
@@ -27,7 +26,12 @@ import useMessage from 'hooks/useMessage'
 import useModal from 'hooks/useModal'
 import { useSaveWoodTypes } from 'hooks/useSaveWoodTypes'
 
-import { useGetWoodTypesByIDQuery } from 'services/wood-type'
+import {
+  useGetAllWoodTypesOptionsQuery,
+  useGetAllWoodTypesQuery,
+  useGetWoodTypesByIDQuery,
+  useGetWoodsByWoodTypeIDQuery,
+} from 'services/wood-type'
 
 const { Title } = Typography
 
@@ -41,23 +45,22 @@ export const WoodTypesInfoIndex = () => {
     skip: !id,
   })
   const { create, update, remove } = useSaveWoodTypes()
-  const navigate = useNavigate()
 
+  const navigate = useNavigate()
   const isEdit = action === EDIT
 
   const onFinish = async () => {
     try {
       const values = form.getFieldsValue()
-      console.log('values:', values)
-      const confirmed = await modal.confirm(configSubmit)
-      if (!confirmed) {
-        return
-      }
-
       if (isEdit) {
         await update(id, values)
         refetch()
       } else {
+        const confirmed = await modal.confirm(configSubmit)
+        if (!confirmed) {
+          return
+        }
+
         await create(values)
       }
       success()
@@ -112,7 +115,7 @@ export const WoodTypesInfoIndex = () => {
         width: '',
         height: '',
         length: '',
-        sizeUnit: '',
+        // sizeUnit: '',
         qtyPerbox: null,
       })
     }
@@ -125,7 +128,7 @@ export const WoodTypesInfoIndex = () => {
       <div className="flex items-center justify-between">
         <Title level={3}>ประเภทไม้กรอบ / {isEdit ? 'แก้ไข' : 'สร้าง'}</Title>
         <Button
-          type="default"
+          type="primary"
           htmlType="button"
           icon={<AppstoreOutlined />}
           onClick={() => {
@@ -244,21 +247,20 @@ export const WoodTypesInfoIndex = () => {
                   </Form.Item>
                 </Form.Item>
                 <Form.Item name="sizeUnit" label="หน่วยวัด">
-                  <Row gutter={[10, 0]}>
-                    <Col span={16}>
-                      <Select
-                        defaultValue={'inch'}
-                        options={[{ value: 'inch', label: 'นิ้ว "' }]}
-                      />
-                    </Col>
-                  </Row>
+                  <Select
+                    defaultValue={'inch'}
+                    options={[{ value: 'inch', label: 'นิ้ว' }]}
+                  />
                 </Form.Item>
-                <Form.Item label="จำนวนไม้ / กล่อง">
+                <Form.Item label="1 กล่องบรรจุ">
                   <Row gutter={[10, 0]}>
                     <Col span={16}>
-                      <Form.Item name="qtyPerbox" noStyle>
-                        <InputNumber className="w-full" max={1000} />
-                      </Form.Item>
+                      <div className="flex items-center">
+                        <Form.Item name="qtyPerbox" noStyle>
+                          <InputNumber className="w-full" max={1000} />
+                        </Form.Item>
+                        <span className="ml-4">เส้น</span>
+                      </div>
                     </Col>
                   </Row>
                 </Form.Item>
@@ -268,18 +270,6 @@ export const WoodTypesInfoIndex = () => {
         </Card>
         <div className="mb-10 mt-5 flex justify-between">
           <div>
-            <Button
-              type="default"
-              htmlType="button"
-              icon={<LeftOutlined />}
-              onClick={() => {
-                navigate(-1)
-              }}
-            >
-              กลับไปก่อนหน้า
-            </Button>
-          </div>
-          <div className=" flex justify-end gap-x-[10px]">
             {isEdit && (
               <Button
                 type="primary"
@@ -292,6 +282,18 @@ export const WoodTypesInfoIndex = () => {
                 ลบ
               </Button>
             )}
+          </div>
+          <div className=" flex justify-end gap-x-[10px]">
+            <Button
+              type="default"
+              htmlType="button"
+              icon={<LeftOutlined />}
+              onClick={() => {
+                navigate(-1)
+              }}
+            >
+              กลับไปก่อนหน้า
+            </Button>
             <Button type="primary" htmlType="submit" className="w-[120px]">
               บันทึก
             </Button>

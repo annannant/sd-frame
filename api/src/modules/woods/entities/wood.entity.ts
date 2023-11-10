@@ -1,3 +1,4 @@
+import { generateWoodCode } from '@/common/helpers/generator';
 import { Attribute } from '@/modules/attributes/entities/attribute.entity';
 import { ProductionOrder } from '@/modules/production-orders/entities/production-order.entity';
 import { WoodType } from '@/modules/wood-types/entities/wood-type.entity';
@@ -9,6 +10,7 @@ import {
   JoinColumn,
   OneToMany,
   ManyToOne,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity('wood')

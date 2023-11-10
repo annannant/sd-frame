@@ -8,8 +8,6 @@ import { ButtionPrimaryInfo } from 'common/button/single-color-button'
 
 import { ITFWood } from 'types/wood.type'
 
-import { convertSizeSymbol } from 'helper/wood'
-
 const columns: ColumnsType<ITFWood> = [
   {
     title: 'No',
@@ -35,7 +33,7 @@ const columns: ColumnsType<ITFWood> = [
       style: { textAlign: 'center' },
     }),
     render: (text: any, record: ITFWood, count: any) => {
-      return record.attribute?.name
+      return `${record.attribute?.description} (${record.attribute?.code})`
     },
   },
   {
@@ -64,18 +62,9 @@ const columns: ColumnsType<ITFWood> = [
     render: (text: any, record: ITFWood, count: any) => {
       return (
         <div className="flex justify-center gap-x-4">
-          {/* <Link to={`/wood-types/${record?.id}/woods`}>
-            <ButtionPrimaryInfo
-              type="primary"
-              shape="circle"
-              icon={<FileSearchOutlined />}
-              size="small"
-              style={{
-                padding: '1px 1px 1px 3px',
-              }}
-            />
-          </Link> */}
-          <Link to={`/wood-types/edit/${record?.id}`}>
+          <Link
+            to={`/wood-types/${record?.woodTypeId}/woods/edit/${record?.id}`}
+          >
             <Button
               type="primary"
               shape="circle"

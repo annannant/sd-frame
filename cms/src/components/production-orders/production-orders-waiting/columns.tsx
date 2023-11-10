@@ -16,7 +16,7 @@ const columns = [
     key: 'no',
   },
   {
-    title: 'PO No.',
+    title: 'หมายเลขใบสั่งผลิต',
     dataIndex: 'orderNo',
     key: 'orderNo',
   },
@@ -25,7 +25,11 @@ const columns = [
     dataIndex: 'address',
     key: 'address',
     render: (text: any, record: ITFTableProductionOrder, count: any) => {
-      return <div>{`${record?.wood?.name} - ${record?.wood?.description}`}</div>
+      return (
+        <div>{`${record?.wood?.name ?? ''} - ${
+          record?.wood?.description ?? ''
+        }`}</div>
+      )
     },
   },
   {

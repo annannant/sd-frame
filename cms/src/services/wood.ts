@@ -20,16 +20,22 @@ export const woodApiSlice = createApi({
       transformResponse: (response: ITFWood[], meta, arg) => {
         return {
           list: response,
-          options: TransformToOptions(response),
+          options: transformToOptions(response),
         }
       },
+    }),
+    getWoodByID: builder.query<ITFWood, string>({
+      query: (id: string | number | undefined) => ({
+        url: `woods/${id}`,
+        method: 'GET',
+      }),
     }),
   }),
 })
 
-export const { useGetAllWoodsQuery } = woodApiSlice
+export const { useGetAllWoodsQuery, useGetWoodByIDQuery } = woodApiSlice
 
-export const TransformToOptions = (woods: ITFWood[]): ITFWoodOption[] => {
+export const transformToOptions = (woods: ITFWood[]): ITFWoodOption[] => {
   return orderBy(woods, ['name']).map((item: ITFWood) => ({
     value: item.id,
     label: `${item.name} - ${item.description}`,

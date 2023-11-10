@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 
 import { LeftOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, ButtonProps } from 'antd'
 
-export const ButtonBack = () => {
+export const ButtonBack = (props: ButtonProps) => {
   const navigate = useNavigate()
 
   return (
@@ -14,6 +14,7 @@ export const ButtonBack = () => {
       onClick={() => {
         navigate(-1)
       }}
+      {...props}
     >
       กลับไปก่อนหน้า
     </Button>

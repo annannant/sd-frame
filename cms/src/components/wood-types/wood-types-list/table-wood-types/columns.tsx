@@ -68,6 +68,14 @@ const columns: ColumnsType<ITFWoodType> = [
     render: (text: any, record: ITFWoodType, count: any) => {
       return (
         <div className="flex justify-center gap-x-4">
+          <Link to={`/wood-types/edit/${record?.id}`}>
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+              size="small"
+            />
+          </Link>
           <Link to={`/wood-types/${record?.id}/woods`}>
             <ButtionPrimaryInfo
               type="primary"
@@ -77,14 +85,6 @@ const columns: ColumnsType<ITFWoodType> = [
               style={{
                 padding: '1px 1px 1px 3px',
               }}
-            />
-          </Link>
-          <Link to={`/wood-types/edit/${record?.id}`}>
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EditOutlined />}
-              size="small"
             />
           </Link>
         </div>

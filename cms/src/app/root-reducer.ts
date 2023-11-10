@@ -1,6 +1,7 @@
 import woodReducer from './slice/master/wood'
 import productionOrdersSelector from './slice/production-orders'
 
+import { attributeApiSlice } from 'services/attribute'
 import { productionOrderApiSlice } from 'services/production-order'
 import { standardFrameApiSlice } from 'services/standard-frame'
 import { woodApiSlice } from 'services/wood'
@@ -13,6 +14,7 @@ export const rootReducer = {
   [standardFrameApiSlice.reducerPath]: standardFrameApiSlice.reducer,
   [productionOrderApiSlice.reducerPath]: productionOrderApiSlice.reducer,
   [woodTypeApiSlice.reducerPath]: woodTypeApiSlice.reducer,
+  [attributeApiSlice.reducerPath]: attributeApiSlice.reducer,
 }
 
 export default rootReducer

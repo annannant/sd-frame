@@ -12,10 +12,13 @@ import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
 import {
   WoodTypesInfoPage,
+  createWoodLoader,
   createWoodTypeLoader,
+  editWoodLoader,
   editWoodTypeLoader,
 } from 'pages/wood-types/wood-types-info'
 import { WoodTypesListPage } from 'pages/wood-types/wood-types-list'
+import { WoodTypesWoodInfoPage } from 'pages/wood-types/wood-types-wood-info'
 import { WoodTypesWoodListPage } from 'pages/wood-types/wood-types-wood-list'
 
 import MainLayout from 'layouts/main-layout/main-layout'
@@ -119,6 +122,18 @@ export const router = createBrowserRouter([
         element: <WoodTypesWoodListPage />,
         errorElement: <ErrorPage />,
         loader: editWoodTypeLoader,
+      },
+      {
+        path: ':woodTypeId/woods/create',
+        element: <WoodTypesWoodInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: createWoodLoader,
+      },
+      {
+        path: ':woodTypeId/woods/edit/:id',
+        element: <WoodTypesWoodInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editWoodLoader,
       },
       // {
       //   path: 'waiting',

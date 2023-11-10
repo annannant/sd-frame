@@ -26,7 +26,9 @@ export const OrderInfoDetailIndex = (props: ITFProps) => {
             <Col span={24}>
               <Row>
                 <Col span={8} className="text-left">
-                  <Text type="secondary">รหัสคำสั่งผลิต (PO No.)</Text>
+                  <Text type="secondary">
+                    รหัสคำสั่งผลิต (หมายเลขใบสั่งผลิต)
+                  </Text>
                 </Col>
                 <Col span={15} className="pl-[40px] ">
                   <Text className="text-font-title">

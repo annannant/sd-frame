@@ -17,3 +17,19 @@ export async function editWoodTypeLoader({ params }: any) {
     action: 'edit',
   }
 }
+
+export async function createWoodLoader({ params }: any) {
+  return {
+    woodTypeId: params?.woodTypeId,
+    action: 'create',
+  }
+}
+
+export async function editWoodLoader({ params }: any) {
+  // const contact = await getContact(params?.contactId)
+  return {
+    woodTypeId: params?.woodTypeId,
+    id: params?.id,
+    action: 'edit',
+  }
+}
