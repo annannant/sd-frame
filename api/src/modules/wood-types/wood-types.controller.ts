@@ -30,6 +30,11 @@ export class WoodTypesController {
     return this.woodTypesService.findOne(+id);
   }
 
+  @Get(':id/woods')
+  findAllWood(@Param('id') id: string) {
+    return this.woodTypesService.findAllWood(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

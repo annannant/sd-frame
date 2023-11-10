@@ -1,3 +1,4 @@
+import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';
 import {
   Entity,
@@ -5,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('wood_type')
@@ -93,6 +96,6 @@ export class WoodType {
     this.updatedAt = new Date();
   }
 
-  // @ManyToOne(() => Wood, (wood) => wood.photos)
-  // woods: Wood;
+  @OneToMany(() => Wood, (wood) => wood.woodType)
+  woods: Wood[];
 }

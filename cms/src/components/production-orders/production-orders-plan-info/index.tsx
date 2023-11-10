@@ -1,7 +1,11 @@
 import { useState } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 
-import { CalculatorOutlined, PlayCircleOutlined } from '@ant-design/icons'
+import {
+  CalculatorOutlined,
+  LeftOutlined,
+  PlayCircleOutlined,
+} from '@ant-design/icons'
 import {
   Button,
   Card,
@@ -36,6 +40,7 @@ export const ProductionOrdersPlanInfo = () => {
   const { id, action }: any = useLoaderData()
   const isEdit = action === EDIT
   const isCreate = action === CREATE
+  const navigate = useNavigate()
 
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
@@ -66,7 +71,10 @@ export const ProductionOrdersPlanInfo = () => {
                 <Button
                   type="default"
                   htmlType="button"
-                  onClick={() => console.log('click')}
+                  icon={<LeftOutlined />}
+                  onClick={() => {
+                    navigate(`/wood-types/${id}/woods`)
+                  }}
                 >
                   กลับไปก่อนหน้า
                 </Button>

@@ -8,6 +8,7 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('wood')
@@ -33,8 +34,8 @@ export class Wood {
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl: string;
 
-  @OneToOne(() => WoodType)
-  @JoinColumn({ name: 'wood_type_id' })
+  @ManyToOne(() => WoodType, (user) => user.woods)
+  @JoinColumn({ name: 'wood_type_id', referencedColumnName: 'id' })
   woodType: WoodType;
 
   @OneToOne(() => Attribute)

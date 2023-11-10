@@ -13,7 +13,7 @@ export async function createWoodTypeLoader() {
 export async function editWoodTypeLoader({ params }: any) {
   // const contact = await getContact(params?.contactId)
   return {
-    id: params?.orderId,
+    id: params?.id,
     action: 'edit',
   }
 }

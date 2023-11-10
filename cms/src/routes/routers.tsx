@@ -16,6 +16,7 @@ import {
   editWoodTypeLoader,
 } from 'pages/wood-types/wood-types-info'
 import { WoodTypesListPage } from 'pages/wood-types/wood-types-list'
+import { WoodTypesWoodListPage } from 'pages/wood-types/wood-types-wood-list'
 
 import MainLayout from 'layouts/main-layout/main-layout'
 
@@ -108,8 +109,14 @@ export const router = createBrowserRouter([
         loader: createWoodTypeLoader,
       },
       {
-        path: 'edit/:orderId',
+        path: 'edit/:id',
         element: <WoodTypesInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editWoodTypeLoader,
+      },
+      {
+        path: ':id/woods',
+        element: <WoodTypesWoodListPage />,
         errorElement: <ErrorPage />,
         loader: editWoodTypeLoader,
       },

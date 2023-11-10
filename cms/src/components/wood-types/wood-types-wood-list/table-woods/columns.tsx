@@ -6,12 +6,11 @@ import { ColumnsType } from 'antd/es/table'
 
 import { ButtionPrimaryInfo } from 'common/button/single-color-button'
 
-import { ITFWoodType } from 'types/wood-type.type'
+import { ITFWood } from 'types/wood.type'
 
-import { parser } from 'helper/number'
 import { convertSizeSymbol } from 'helper/wood'
 
-const columns: ColumnsType<ITFWoodType> = [
+const columns: ColumnsType<ITFWood> = [
   {
     title: 'No',
     dataIndex: 'no',
@@ -29,7 +28,18 @@ const columns: ColumnsType<ITFWoodType> = [
     }),
   },
   {
-    title: 'ชื่อประเภท',
+    title: 'ลักษณะ',
+    dataIndex: 'attribute',
+    key: 'attribute',
+    onHeaderCell: () => ({
+      style: { textAlign: 'center' },
+    }),
+    render: (text: any, record: ITFWood, count: any) => {
+      return record.attribute?.name
+    },
+  },
+  {
+    title: 'ชื่อ',
     dataIndex: 'name',
     key: 'name',
     onHeaderCell: () => ({
@@ -37,26 +47,12 @@ const columns: ColumnsType<ITFWoodType> = [
     }),
   },
   {
-    title: 'ขนาดหน้าไม้',
-    dataIndex: 'width',
-    key: 'width',
+    title: 'รายละเอียด',
+    dataIndex: 'description',
+    key: 'description',
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    render: (text: any, record: ITFWoodType, count: any) => {
-      return convertSizeSymbol(text, record?.sizeUnit ?? '')
-    },
-  },
-  {
-    title: 'ความยาว',
-    dataIndex: 'length',
-    key: 'length',
-    onHeaderCell: () => ({
-      style: { textAlign: 'center' },
-    }),
-    render: (text: any, record: ITFWoodType, count: any) => {
-      return convertSizeSymbol(text, record?.sizeUnit ?? '')
-    },
   },
   {
     title: 'Action',
@@ -65,10 +61,10 @@ const columns: ColumnsType<ITFWoodType> = [
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    render: (text: any, record: ITFWoodType, count: any) => {
+    render: (text: any, record: ITFWood, count: any) => {
       return (
         <div className="flex justify-center gap-x-4">
-          <Link to={`/wood-types/${record?.id}/woods`}>
+          {/* <Link to={`/wood-types/${record?.id}/woods`}>
             <ButtionPrimaryInfo
               type="primary"
               shape="circle"
@@ -78,7 +74,7 @@ const columns: ColumnsType<ITFWoodType> = [
                 padding: '1px 1px 1px 3px',
               }}
             />
-          </Link>
+          </Link> */}
           <Link to={`/wood-types/edit/${record?.id}`}>
             <Button
               type="primary"

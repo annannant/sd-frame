@@ -42,4 +42,13 @@ export class WoodTypesService {
   remove(id: number) {
     return this.woodTypesRepository.delete(id);
   }
+
+  async findAllWood(id: number) {
+    return this.woodTypesRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['woods', 'woods.woodType', 'woods.attribute'],
+    });
+  }
 }

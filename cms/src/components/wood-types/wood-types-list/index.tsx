@@ -10,14 +10,14 @@ const { Title } = Typography
 export const WoodTypesListIndex = () => {
   return (
     <>
-      <Title level={3}>ข้อมูลไม้กรอบ</Title>
+      <Title level={3}>ประเภทไม้กรอบ</Title>
       <Card
         title={
           <div className="flex justify-between">
-            <div>ข้อมูลไม้กรอบ</div>
+            <div>รายการประเภทไม้กรอบ</div>
             <Link to="/wood-types/create">
               <Button type="primary" icon={<PlusOutlined />}>
-                เพิ่มประเภทไม้กรอบ
+                สร้าง
               </Button>
             </Link>
           </div>

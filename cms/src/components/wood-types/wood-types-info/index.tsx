@@ -1,7 +1,12 @@
 import { useEffect } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 
-import { DeleteOutlined } from '@ant-design/icons'
+import {
+  AppstoreOutlined,
+  DeleteOutlined,
+  LeftOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons'
 import {
   Button,
   Card,
@@ -117,9 +122,19 @@ export const WoodTypesInfoIndex = () => {
     <>
       {contextHolder}
       {contextHolderModal}
-      <Title level={3}>
-        ข้อมูลไม้กรอบ / {isEdit ? 'แก้ไขประเภทไม้กรอบ' : 'สร้างประเภทไม้กรอบ'}
-      </Title>
+      <div className="flex items-center justify-between">
+        <Title level={3}>ประเภทไม้กรอบ / {isEdit ? 'แก้ไข' : 'สร้าง'}</Title>
+        <Button
+          type="default"
+          htmlType="button"
+          icon={<AppstoreOutlined />}
+          onClick={() => {
+            navigate(`/wood-types/${id}/woods`)
+          }}
+        >
+          รายการไม้กรอบ
+        </Button>
+      </div>
       <Form
         form={form}
         labelCol={{ span: 6, style: { textAlign: 'left' } }}
@@ -132,7 +147,7 @@ export const WoodTypesInfoIndex = () => {
           sizeUnit: 'inch',
         }}
       >
-        <Card title="ข้อมูลไม้กรอบ" bordered={false}>
+        <Card title="ข้อมูลประเภทไม้กรอบ" bordered={false}>
           <div className="grid gap-y-[50px]">
             <Row gutter={[20, 20]}>
               <Col offset={5} span={12}>
@@ -251,32 +266,36 @@ export const WoodTypesInfoIndex = () => {
             </Row>
           </div>
         </Card>
-        <div className="mb-10 mt-5 flex justify-end gap-x-[10px]">
-          <Button
-            type="default"
-            htmlType="button"
-            className="w-[120px]"
-            onClick={() => {
-              navigate('/wood-types')
-            }}
-          >
-            ยกเลิก
-          </Button>
-          {isEdit && (
+        <div className="mb-10 mt-5 flex justify-between">
+          <div>
             <Button
-              type="primary"
+              type="default"
               htmlType="button"
-              className="w-[120px]"
-              icon={<DeleteOutlined style={{ fontSize: 14 }} />}
-              onClick={onDelete}
-              danger
+              icon={<LeftOutlined />}
+              onClick={() => {
+                navigate(-1)
+              }}
             >
-              ลบ
+              กลับไปก่อนหน้า
             </Button>
-          )}
-          <Button type="primary" htmlType="submit" className="w-[120px]">
-            บันทึก
-          </Button>
+          </div>
+          <div className=" flex justify-end gap-x-[10px]">
+            {isEdit && (
+              <Button
+                type="primary"
+                htmlType="button"
+                className="w-[120px]"
+                icon={<DeleteOutlined style={{ fontSize: 14 }} />}
+                onClick={onDelete}
+                danger
+              >
+                ลบ
+              </Button>
+            )}
+            <Button type="primary" htmlType="submit" className="w-[120px]">
+              บันทึก
+            </Button>
+          </div>
         </div>
       </Form>
     </>

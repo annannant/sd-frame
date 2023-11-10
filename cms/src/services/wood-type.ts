@@ -15,8 +15,17 @@ export const woodTypeApiSlice = createApi({
         method: 'GET',
       }),
     }),
+    getWoodsByWoodTypeID: builder.query<ITFWoodType, string>({
+      query: (id: string | number | undefined) => ({
+        url: `wood-types/${id}/woods`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
-export const { useGetAllWoodTypesQuery, useGetWoodTypesByIDQuery } =
-  woodTypeApiSlice
+export const {
+  useGetAllWoodTypesQuery,
+  useGetWoodTypesByIDQuery,
+  useGetWoodsByWoodTypeIDQuery,
+} = woodTypeApiSlice

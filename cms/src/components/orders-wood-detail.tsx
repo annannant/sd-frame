@@ -2,7 +2,9 @@ import { Col, Form, Row, Select, Typography } from 'antd'
 
 import { ITFWood } from 'types/wood.type'
 
+import { parser } from 'helper/number'
 import { convertUnitToText } from 'helper/unit'
+import { convertSizeSymbol } from 'helper/wood'
 
 const { Text } = Typography
 
@@ -65,8 +67,10 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
                 </Col>
                 <Col span={18} className="pl-[40px] ">
                   <Text className="text-font-title">
-                    {selected?.woodType?.width}{' '}
-                    {convertUnitToText(selected?.woodType?.sizeUnit ?? '')}
+                    {convertSizeSymbol(
+                      selected?.woodType?.width,
+                      selected?.woodType?.sizeUnit
+                    )}
                   </Text>
                 </Col>
               </Row>

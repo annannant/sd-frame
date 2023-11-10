@@ -6,3 +6,12 @@ export const convertUnitToText = (unit: string) => {
 
   return master[unit] ?? ''
 }
+
+export const convertUnitToSymbol = (unit: string) => {
+  const master: Record<string, string> = {
+    'inch': '"',
+    'mm': unit,
+  }
+
+  return master[unit] ?? ''
+}

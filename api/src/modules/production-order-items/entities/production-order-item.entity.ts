@@ -54,9 +54,5 @@ export class ProductionOrderItem {
 
   @OneToOne(() => StandardFrame)
   @JoinColumn([{ name: 'standard_frame_id', referencedColumnName: 'id' }])
-  // @JoinColumn([
-  //   { name: 'width', referencedColumnName: 'width' },
-  //   { name: 'height', referencedColumnName: 'height' },
-  // ])
   standardFrame: StandardFrame;
 }
