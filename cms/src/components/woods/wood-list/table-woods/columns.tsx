@@ -44,14 +44,14 @@ const columns: ColumnsType<ITFWood> = [
       style: { textAlign: 'center' },
     }),
   },
-  {
-    title: 'รายละเอียด',
-    dataIndex: 'description',
-    key: 'description',
-    onHeaderCell: () => ({
-      style: { textAlign: 'center' },
-    }),
-  },
+  // {
+  //   title: 'รายละเอียด',
+  //   dataIndex: 'description',
+  //   key: 'description',
+  //   onHeaderCell: () => ({
+  //     style: { textAlign: 'center' },
+  //   }),
+  // },
   {
     title: 'Action',
     dataIndex: 'action',

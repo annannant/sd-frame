@@ -59,3 +59,9 @@ code {
   line-height: 1;
   content: '*';
 }
+
+.ant-select .ant-select-selection-item {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: default;
+}

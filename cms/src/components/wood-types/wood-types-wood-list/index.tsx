@@ -22,7 +22,7 @@ export const WoodTypesWoodListIndex = () => {
         ประเภทไม้กรอบ / {data?.name} ({data?.code}) / รายการไม้กรอบ
       </Title>
       <Row gutter={[20, 20]}>
-        <Col span={17}>
+        <Col span={18}>
           <Card
             title={
               <div className="flex justify-between">
@@ -39,7 +39,7 @@ export const WoodTypesWoodListIndex = () => {
             <TableWoods />
           </Card>
         </Col>
-        <Col span={7}>
+        <Col span={6}>
           <Card
             title={
               <div className="flex justify-between">
@@ -54,7 +54,7 @@ export const WoodTypesWoodListIndex = () => {
       </Row>
       <Row>
         <Col span={24}>
-          <div className="mt-[30px]">
+          <div className="mt-[30px] flex justify-end">
             <ButtonBack size="large" />
           </div>
         </Col>
