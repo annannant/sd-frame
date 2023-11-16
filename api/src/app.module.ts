@@ -22,6 +22,12 @@ import { ProductionOrderItem } from './modules/production-order-items/entities/p
 import { WoodItemStock } from './modules/wood-item-stocks/entities/wood-item-stock.entity';
 import { WoodItemStocksModule } from './modules/wood-item-stocks/wood-item-stocks.module';
 import { StandardFrameStock } from './modules/standard_frame_stocks/entities/standard_frame_stock.entity';
+import { WoodStockLocation } from './modules/wood-stock-locations/entities/wood-stock-location.entity';
+import { Location } from './modules/locations/entities/location.entity';
+import { WoodStockLocationsModule } from './modules/wood-stock-locations/wood-stock-locations.module';
+import { LocationsModule } from './modules/locations/locations.module';
+import { WoodStock } from './modules/wood-stocks/entities/wood-stock.entity';
+import { WoodStocksModule } from './modules/wood-stocks/wood-stocks.module';
 
 @Module({
   imports: [
@@ -42,6 +48,9 @@ import { StandardFrameStock } from './modules/standard_frame_stocks/entities/sta
         ProductionOrderItem,
         WoodItemStock,
         StandardFrameStock,
+        WoodStock,
+        WoodStockLocation,
+        Location,
       ],
       autoLoadEntities: true,
       // synchronize: true,
@@ -58,6 +67,9 @@ import { StandardFrameStock } from './modules/standard_frame_stocks/entities/sta
     ProductionOrderItemsModule,
     WoodItemStocksModule,
     StandardFramesModule,
+    WoodStocksModule,
+    WoodStockLocationsModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

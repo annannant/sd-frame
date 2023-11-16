@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { WoodStocksService } from './wood-stocks.service';
 import { WoodStocksController } from './wood-stocks.controller';
+import { WoodStock } from './entities/wood-stock.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Wood } from '../woods/entities/wood.entity';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([WoodStock, Wood])],
   controllers: [WoodStocksController],
   providers: [WoodStocksService],
 })

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { WoodStocksService } from './wood-stocks.service';
 import { CreateWoodStockDto } from './dto/create-wood-stock.dto';
 import { UpdateWoodStockDto } from './dto/update-wood-stock.dto';
@@ -17,13 +25,26 @@ export class WoodStocksController {
     return this.woodStocksService.findAll();
   }
 
+  @Get('woods')
+  findAllWood() {
+    return this.woodStocksService.findAllByWoods();
+  }
+
+  @Get('woods/:woodId')
+  findByWood(@Param('woodId') id: string) {
+    return this.woodStocksService.findByWoods(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.woodStocksService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWoodStockDto: UpdateWoodStockDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateWoodStockDto: UpdateWoodStockDto,
+  ) {
     return this.woodStocksService.update(+id, updateWoodStockDto);
   }
 

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Wood } from '@/modules/woods/entities/wood.entity';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('wood_stock')
 export class WoodStock {
@@ -8,21 +9,22 @@ export class WoodStock {
   @PrimaryColumn({ name: 'lot' })
   lot: number;
 
-  @Column({ name: 'total_stock_qty', nullable: true })
-  totalStockQty: number;
+  @Column({ name: 'total_stock', nullable: true })
+  totalStock: number;
 
   @Column({ name: 'imported_at', nullable: true })
   importedAt: Date;
 
-  @Column({
-    name: 'actual_wood_width',
-    nullable: true,
-    type: 'decimal',
-    precision: 10,
-    scale: 4,
-  })
-  actualWoodWidth: number;
+  @PrimaryColumn({ name: 'remark' })
+  remark: string;
 
-  @PrimaryColumn({ name: 'actual_wood_width_unit' })
-  actualWoodWidthUnit: string;
+  @PrimaryColumn({ name: 'stock_unit' })
+  stockUnit: string;
+
+  @Column({ name: 'total_used', nullable: true })
+  totalUsed: number;
+
+  @ManyToOne(() => Wood, (wood) => wood.woodStocks)
+  @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
+  wood: Wood;
 }

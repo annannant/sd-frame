@@ -210,7 +210,6 @@ export class ProductionOrdersService {
         qty: parser(item.qty),
       };
     });
-    console.log('formatted:', formatted);
 
     return formatted;
   }

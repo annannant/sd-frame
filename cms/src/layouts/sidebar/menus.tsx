@@ -99,8 +99,8 @@ export const menus: ITFSidebarItem[] = [
         icon: <ProjectOutlined />,
       },
       {
-        key: 'wood-stock',
-        url: 'wood-stock',
+        key: '/wood-stocks',
+        url: '/wood-stocks',
         label: 'สต๊อก',
         icon: <CodeSandboxOutlined />,
       },

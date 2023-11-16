@@ -10,6 +10,7 @@ import { ProductionOrdersListPage } from 'pages/production-orders/production-ord
 import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production-orders-plan-info'
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
+import { WoodStocksListPage } from 'pages/wood-stocks/wood-stocks-list'
 import {
   WoodTypesInfoPage,
   createWoodLoader,
@@ -153,6 +154,30 @@ export const router = createBrowserRouter([
       //   errorElement: <ErrorPage />,
       //   loader: editOrderLoader,
       // },
+    ],
+  },
+  {
+    path: '/wood-stocks',
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    loader: () => {
+      console.log('loader')
+      return {
+        data: 'loader',
+      }
+    },
+    action: () => {
+      console.log('action')
+      return {
+        data: 'action',
+      }
+    },
+    children: [
+      {
+        index: true,
+        element: <WoodStocksListPage />,
+        errorElement: <ErrorPage />,
+      },
     ],
   },
   // {
