@@ -1,6 +1,10 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ImportWoodStockDto {
+  @IsOptional()
+  @IsNumber()
+  woodId?: number;
+
   @IsOptional()
   @IsString()
   woodCode?: string;
@@ -18,10 +22,22 @@ export class ImportWoodStockDto {
   lot?: number;
 
   @IsOptional()
+  @IsNumber()
+  locationId?: number;
+
+  @IsOptional()
   @IsString()
   locationCode?: string;
 
   @IsOptional()
   @IsString()
   locationName?: string;
+
+  @IsOptional()
+  @IsString()
+  remark?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isNewLot?: boolean;
 }

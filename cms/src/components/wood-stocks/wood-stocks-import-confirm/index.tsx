@@ -9,6 +9,7 @@ import { ButtonBack } from 'common/button/back-button'
 import { postImportStock } from 'api/wood-stocks'
 import useMessage from 'hooks/useMessage'
 import useModal from 'hooks/useModal'
+import { useWoodStocks } from 'hooks/useWoodStocks'
 
 import { TableConfirm } from './table-confirm/table-confirm'
 
@@ -23,12 +24,9 @@ export const WoodStocksImportConfirmComponent = () => {
 
   const { importList } = useSelector(woodStockSelector)
   const { contextHolder, success, error } = useMessage()
-
-  const { id }: any = useLoaderData()
-  const { data } = useGetWoodByIDQuery(id, {
-    skip: !id,
-  })
   const { configSubmit } = useModal()
+  const { transformDataImport } = useWoodStocks()
+
   const onClickNext = async () => {
     const confirmed = await modal.confirm({
       ...configSubmit,
@@ -44,7 +42,7 @@ export const WoodStocksImportConfirmComponent = () => {
     }
 
     try {
-      await postImportStock(importList)
+      await postImportStock(transformDataImport(importList))
       success()
       setTimeout(() => {
         navigate('/wood-stocks')

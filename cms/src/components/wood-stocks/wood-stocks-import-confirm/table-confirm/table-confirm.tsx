@@ -20,8 +20,13 @@ export const TableConfirm = () => {
         </Title>
         <Text className="m-0">โปรดตรวจสอบความถูกต้่อง</Text>
       </div>
-      <div className="mt-4">
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <div className="mt-4 w-[1070px]">
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ x: 1500 }}
+        />
       </div>
     </>
   )

@@ -58,4 +58,9 @@ export class WoodStocksController {
   importValidation(@Body() importWoodStockDtoList: ImportWoodStockDto[]) {
     return this.woodStocksService.importValidation(importWoodStockDtoList);
   }
+
+  @Post('import')
+  import(@Body() importWoodStockDtoList: ImportWoodStockDto[]) {
+    return this.woodStocksService.import(importWoodStockDtoList);
+  }
 }

@@ -36,7 +36,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    width: '12%',
+    width: '8%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('wood_not_found')
       return (
@@ -65,7 +65,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
       style: { textAlign: 'center' },
     }),
     ellipsis: true,
-    width: '20%',
+    width: '15%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('wood_not_found')
       return (
@@ -75,9 +75,13 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
             style={{ visibility: error ? 'visible' : 'hidden' }}
           >
             {error ? (
-              <Text type="danger">{record?.woodName}</Text>
+              <Text title={record?.woodName ?? ''} type="danger">
+                {record?.woodName}
+              </Text>
             ) : (
-              <Text>{convertWoodName(record?.wood)}</Text>
+              <Text title={convertWoodName(record?.wood) ?? ''}>
+                {convertWoodName(record?.wood)}
+              </Text>
             )}
           </Tooltip>
         </>
@@ -98,7 +102,6 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
       )
     },
   },
-
   {
     title: 'Lot',
     dataIndex: 'lot',
@@ -111,10 +114,19 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     }),
     width: '8%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
-      const error = record.errors?.includes('lot_must_be_number')
+      const errorNotFound = record.errors?.includes('lot_not_found')
+      const errorType = record.errors?.includes('lot_must_be_number')
+
+      let error = ''
+      if (errorNotFound) {
+        error = 'ไม่พบข้อมูล Lot'
+      } else if (errorType) {
+        error = 'Lot ต้องเป็นตัวเลข'
+      }
+
       return (
         <Tooltip
-          title={error ? 'Lot ต้องเป็นตัวเลข' : ''}
+          title={error ? error : ''}
           style={{ visibility: error ? 'visible' : 'hidden' }}
         >
           <Text type={error ? 'danger' : undefined}>
@@ -180,7 +192,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    width: '15%',
+    width: '12%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('location_not_found')
       return (
@@ -208,7 +220,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    width: '20%',
+    width: '15%',
     ellipsis: true,
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('location_not_found')
@@ -241,6 +253,41 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     },
   },
   {
+    title: 'หมายเหตุ',
+    dataIndex: 'remark',
+    key: 'remark',
+    onHeaderCell: () => ({
+      style: { textAlign: 'center' },
+    }),
+    width: '15%',
+    ellipsis: true,
+    render: (text: any, record: ITFTableImportWoodStock, count: any) => {
+      const error = record.errors?.includes('remark_too_long')
+      return (
+        <Tooltip
+          title={error ? 'หมายเหตุไม่ถูกต้อง' : ''}
+          style={{ visibility: error ? 'visible' : 'hidden' }}
+        >
+          <Text title={text ?? ''}>{text}</Text>
+        </Tooltip>
+        //   <div className="flex flex-col">
+        //     {error ? (
+        //       <>
+        //         <div className="overflow-hidden text-ellipsis">
+        //           {record?.locationName}
+        //         </div>
+        //         <Text type="danger" style={{ fontSize: 12 }}>
+        //           ไม่พบข้อมูลไม้
+        //         </Text>
+        //       </>
+        //     ) : (
+        //       <Text>{record?.location?.name}</Text>
+        //     )}
+        //   </div>
+      )
+    },
+  },
+  {
     title: 'สถานะ',
     dataIndex: 'status',
     key: 'status',
@@ -250,27 +297,9 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onCell: () => ({
       style: { textAlign: 'center' },
     }),
+    fixed: 'right',
+    width: '5%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
-      // const items: MenuProps['items'] = record?.errors?.map((item, index) => {
-      //   return {
-      //     key: index.toString,
-      //     label: item,
-      //   }
-      // })
-      // const items: MenuProps['items'] = [
-      //   {
-      //     key: '1',
-      //     label: 'Item 1',
-      //   },
-      //   {
-      //     key: '2',
-      //     label: 'Item 2',
-      //   },
-      //   {
-      //     key: '3',
-      //     label: 'Item 3',
-      //   },
-      // ]
       return (
         <div className="m-auto flex justify-center gap-3">
           <div>
@@ -280,21 +309,6 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
               <CloseCircleFilled style={{ color: colors.danger }} />
             )}
           </div>
-          {/* <Dropdown
-            placement="bottomRight"
-            overlayStyle={{ borderRadius: 10 }}
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ['3'],
-            }}
-          >
-            <Typography.Link>
-              <Space>
-                <DownOutlined />
-              </Space>
-            </Typography.Link>
-          </Dropdown> */}
         </div>
       )
     },

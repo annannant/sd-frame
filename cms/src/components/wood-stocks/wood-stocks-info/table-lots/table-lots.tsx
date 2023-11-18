@@ -46,9 +46,14 @@ export const TableLots = () => {
             )}
           </div>
         </Table.Summary.Cell>
-        <Table.Summary.Cell index={2} align="right">
+        <Table.Summary.Cell index={4} align="right">
           <div className="px-[20px]">เส้น</div>
         </Table.Summary.Cell>
+        <Table.Summary.Cell
+          index={5}
+          colSpan={2}
+          align="right"
+        ></Table.Summary.Cell>
       </Table.Summary.Row>
     )
   }

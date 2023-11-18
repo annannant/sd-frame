@@ -75,6 +75,21 @@ export const useWoodStocks = () => {
     }, [])
   }
 
+  const transformDataImport = (data: any[]): ITFImportWoodStock[] => {
+    return data.map((item: ITFImportWoodStock) => {
+      return {
+        woodId: item.wood?.id,
+        locationId: item.location?.id,
+        woodCode: item.woodCode,
+        qty: item.qty,
+        lot: item.importToLot,
+        locationCode: item.locationCode,
+        isNewLot: item.isNewLot,
+        remark: item.remark,
+      }
+    })
+  }
+
   const validateImportStock = async (input: any[]) => {
     try {
       const formatted = transformTableValidate(input)
@@ -96,5 +111,6 @@ export const useWoodStocks = () => {
     transformTableLots,
     transformTableValidate,
     transformTableImport,
+    transformDataImport,
   }
 }

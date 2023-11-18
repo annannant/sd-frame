@@ -9,6 +9,7 @@ export interface ITFCreateImportWoodStock {
   lot?: number | null
   locationCode?: string | null
   locationName?: string | null
+  remark?: string | null
 }
 
 export interface ITFImportWoodStock extends ITFCreateImportWoodStock {
@@ -20,6 +21,8 @@ export interface ITFImportWoodStock extends ITFCreateImportWoodStock {
   currentStock?: number | null
   newStock?: number | null
   isNewLot?: boolean | null
+  woodId?: number | null
+  locationId?: number | null
 }
 
 export interface ITFTableImportWoodStock extends ITFTable, ITFImportWoodStock {}

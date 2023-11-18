@@ -6,8 +6,6 @@ import type { UploadProps } from 'antd'
 import { Alert, Col, Row, Table, Tag, Upload, message } from 'antd'
 import { Space, Typography } from 'antd'
 
-import { colors } from 'constants/colors'
-
 import columns from './columns'
 
 import { woodStockSelector } from 'app/slice/wood-stocks'
@@ -42,20 +40,30 @@ export const TableData = () => {
         </>
       )}
       {!!dataFailed.length && (
-        <div className="mt-4">
+        <div className="mt-4 w-[1070px]">
           {/* <Tag className="mb-2 rounded-[10px]" color={colors.danger}>
             Failed
           </Tag> */}
-          <Table dataSource={dataFailed} columns={columns} pagination={false} />
+          <Table
+            dataSource={dataFailed}
+            columns={columns}
+            pagination={false}
+            scroll={{ x: 1500 }}
+          />
         </div>
       )}
       {!!dataPass.length && (
         <>
-          <div className="mt-4">
+          <div className="mt-4 w-[1070px]">
             {/* <Tag className="mb-2 rounded-[10px]" color={colors.success}>
               Pass
             </Tag> */}
-            <Table dataSource={dataPass} columns={columns} pagination={false} />
+            <Table
+              dataSource={dataPass}
+              columns={columns}
+              pagination={false}
+              scroll={{ x: 1500 }}
+            />
           </div>
         </>
       )}

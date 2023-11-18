@@ -9,12 +9,16 @@ import { sumBy, keyBy, maxBy } from 'lodash';
 import * as humps from 'humps';
 import { ImportWoodStockDto } from './dto/import-wood-stock.dto';
 import { Location } from '../locations/entities/location.entity';
+import { plainToInstance } from 'class-transformer';
+import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
 
 @Injectable()
 export class WoodStocksService {
   constructor(
     @InjectRepository(WoodStock)
     private woodStocksRepository: Repository<WoodStock>,
+    @InjectRepository(WoodStockLocation)
+    private woodStocksLocationsRepository: Repository<WoodStockLocation>,
     @InjectRepository(Wood)
     private woodRepository: Repository<Wood>,
     @InjectRepository(Location)
@@ -143,6 +147,15 @@ export class WoodStocksService {
       errors.push('location_not_found');
     }
 
+    if (data.lot) {
+      const info = data?.wood?.woodStocks?.find(
+        (item) => item.lot === data.lot,
+      );
+      if (!info) {
+        errors.push('lot_not_found');
+      }
+    }
+
     if (typeof data.qty !== 'number') {
       errors.push('qty_must_be_number');
     }
@@ -215,5 +228,98 @@ export class WoodStocksService {
       };
     });
     return response;
+  }
+
+  async importStock(item: ImportWoodStockDto) {
+    const pkey = {
+      woodId: item.woodId,
+      lot: item.lot,
+    };
+    const data = await this.woodStocksRepository.findOneBy(pkey);
+    const value = plainToInstance(
+      WoodStock,
+      {
+        ...item,
+        totalStock: (data?.totalStock ?? 0) + item.qty,
+        importedAt: new Date(),
+      },
+      { strategy: 'excludeAll' },
+    );
+    console.log('value:', value);
+
+    if (data) {
+      await this.woodStocksRepository.update(pkey, value);
+    } else {
+      await this.woodStocksRepository.save(value);
+    }
+  }
+
+  async importStockLocation(item: ImportWoodStockDto) {
+    const pkey = {
+      woodId: item.woodId,
+      lot: item.lot,
+      locationId: item.locationId,
+    };
+    const data = await this.woodStocksLocationsRepository.findOneBy(pkey);
+    const value = plainToInstance(
+      WoodStockLocation,
+      {
+        ...item,
+        totalStock: (data?.stock ?? 0) + item.qty,
+      },
+      { strategy: 'excludeAll' },
+    );
+
+    if (data) {
+      await this.woodStocksLocationsRepository.update(pkey, value);
+    } else {
+      await this.woodStocksLocationsRepository.save(value);
+    }
+  }
+
+  async import(importWoodStockDtoList: ImportWoodStockDto[]) {
+    for (const item of importWoodStockDtoList) {
+      // stock
+      await this.importStock(item);
+
+      // location
+      await this.importStockLocation(item);
+    }
+    // // new - create
+    // const newList = importWoodStockDtoList.filter((item) => item.isNewLot);
+    // // await this.woodStocksRepository.save(
+    // //   newList.map((item) => {
+    // //     return plainToInstance(WoodStock, {
+    // //       ...item,
+    // //       totalStock: item.qty,
+    // //       importedAt: new Date(),
+    // //     });
+    // //   }),
+    // // );
+    // await this.woodStocksLocationsRepository.save(
+    //   newList.map((item) => {
+    //     return plainToInstance(WoodStockLocation, {
+    //       ...item,
+    //       stock: item.qty,
+    //     });
+    //   }),
+    // );
+
+    // // // // edit - update
+    // // const editList = importWoodStockDtoList.filter((item) => !item.isNewLot);
+    // // for (const item of editList) {
+    // //   const pkey = {
+    // //     woodId: item.woodId,
+    // //     lot: item.lot,
+    // //   };
+    // //   const data = await this.woodStocksRepository.findOneBy(pkey);
+    // //   await this.woodStocksRepository.update(pkey, {
+    // //     remark: item.remark,
+    // //     totalStock: data.totalStock + item.qty,
+    // //     importedAt: new Date(),
+    // //   });
+    // // }
+
+    return {};
   }
 }

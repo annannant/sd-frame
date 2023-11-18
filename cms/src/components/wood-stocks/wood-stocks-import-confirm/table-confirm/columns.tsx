@@ -37,7 +37,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),
-    width: '10%',
+    width: '8%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('wood_not_found')
       return (
@@ -66,7 +66,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
       style: { textAlign: 'center' },
     }),
     ellipsis: true,
-    width: '20%',
+    width: '15%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       const error = record.errors?.includes('wood_not_found')
       return (
@@ -99,7 +99,6 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
       )
     },
   },
-
   {
     title: 'Lot',
     dataIndex: 'importToLot',
@@ -140,13 +139,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     },
   },
   {
-    title: (
-      <>
-        จำนวนคงเหลือ
-        <br />
-        ปัจจุบัน
-      </>
-    ),
+    title: 'จำนวนคงเหลือปัจจุบัน',
     dataIndex: 'currentStock',
     key: 'currentStock',
     onHeaderCell: () => ({
@@ -155,19 +148,13 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onCell: () => ({
       style: { textAlign: 'right' },
     }),
-    width: '10%',
+    width: '12%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       return <Text>{currency(text ?? 0)}</Text>
     },
   },
   {
-    title: (
-      <>
-        จำนวนคงเหลือ
-        <br />
-        ใหม่
-      </>
-    ),
+    title: 'จำนวนคงเหลือใหม่',
     dataIndex: 'newStock',
     key: 'newStock',
     onHeaderCell: () => ({
@@ -176,7 +163,7 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
     onCell: () => ({
       style: { textAlign: 'right' },
     }),
-    width: '10%',
+    width: '12%',
     render: (text: any, record: ITFTableImportWoodStock, count: any) => {
       return <Text>{currency(text ?? 0)}</Text>
     },
@@ -199,6 +186,20 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
           </Text>
         </>
       )
+    },
+  },
+
+  {
+    title: 'หมายเหตุ',
+    dataIndex: 'remark',
+    key: 'remark',
+    onHeaderCell: () => ({
+      style: { textAlign: 'center' },
+    }),
+    width: '15%',
+    ellipsis: true,
+    render: (text: any, record: ITFTableImportWoodStock, count: any) => {
+      return <Text title={text ?? ''}>{text}</Text>
     },
   },
 ]
