@@ -21,7 +21,7 @@ import { ProductionOrder } from './modules/production-orders/entities/production
 import { ProductionOrderItem } from './modules/production-order-items/entities/production-order-item.entity';
 import { WoodItemStock } from './modules/wood-item-stocks/entities/wood-item-stock.entity';
 import { WoodItemStocksModule } from './modules/wood-item-stocks/wood-item-stocks.module';
-import { StandardFrameStock } from './modules/standard_frame_stocks/entities/standard_frame_stock.entity';
+import { StandardFrameStock } from './modules/standard-frame-stocks/entities/standard-frame-stocks.entity';
 import { WoodStockLocation } from './modules/wood-stock-locations/entities/wood-stock-location.entity';
 import { Location } from './modules/locations/entities/location.entity';
 import { WoodStockLocationsModule } from './modules/wood-stock-locations/wood-stock-locations.module';

@@ -261,15 +261,15 @@ export class WoodStocksService {
       locationId: item.locationId,
     };
     const data = await this.woodStocksLocationsRepository.findOneBy(pkey);
+    console.log('data:', data);
     const value = plainToInstance(
       WoodStockLocation,
       {
         ...item,
-        totalStock: (data?.stock ?? 0) + item.qty,
+        stock: (data?.stock ?? 0) + item.qty,
       },
       { strategy: 'excludeAll' },
     );
-
     if (data) {
       await this.woodStocksLocationsRepository.update(pkey, value);
     } else {
@@ -281,45 +281,12 @@ export class WoodStocksService {
     for (const item of importWoodStockDtoList) {
       // stock
       await this.importStock(item);
-
       // location
       await this.importStockLocation(item);
     }
-    // // new - create
-    // const newList = importWoodStockDtoList.filter((item) => item.isNewLot);
-    // // await this.woodStocksRepository.save(
-    // //   newList.map((item) => {
-    // //     return plainToInstance(WoodStock, {
-    // //       ...item,
-    // //       totalStock: item.qty,
-    // //       importedAt: new Date(),
-    // //     });
-    // //   }),
-    // // );
-    // await this.woodStocksLocationsRepository.save(
-    //   newList.map((item) => {
-    //     return plainToInstance(WoodStockLocation, {
-    //       ...item,
-    //       stock: item.qty,
-    //     });
-    //   }),
-    // );
 
-    // // // // edit - update
-    // // const editList = importWoodStockDtoList.filter((item) => !item.isNewLot);
-    // // for (const item of editList) {
-    // //   const pkey = {
-    // //     woodId: item.woodId,
-    // //     lot: item.lot,
-    // //   };
-    // //   const data = await this.woodStocksRepository.findOneBy(pkey);
-    // //   await this.woodStocksRepository.update(pkey, {
-    // //     remark: item.remark,
-    // //     totalStock: data.totalStock + item.qty,
-    // //     importedAt: new Date(),
-    // //   });
-    // // }
-
-    return {};
+    return {
+      status: 'success',
+    };
   }
 }

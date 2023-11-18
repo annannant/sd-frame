@@ -14,7 +14,7 @@ import CoreAlgorithm from '@/algorithm/core';
 import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
 import { parser } from '@/common/helpers/number';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
-import { StandardFrameStock } from '../standard_frame_stocks/entities/standard_frame_stock.entity';
+import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
 import { generateOrderNo } from '@/common/helpers/generator';
 import { DRAFT } from '@/common/constants/current-status.constant';
 

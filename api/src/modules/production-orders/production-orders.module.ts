@@ -7,7 +7,7 @@ import { ProductionOrderItem } from '../production-order-items/entities/producti
 import { ProductionOrderItemsService } from '../production-order-items/production-order-items.service';
 import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
-import { StandardFrameStock } from '../standard_frame_stocks/entities/standard_frame_stock.entity';
+import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
 
 @Module({
   imports: [
