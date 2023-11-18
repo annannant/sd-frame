@@ -65,6 +65,9 @@ root.render(
               horizontalItemPadding: '10px 18px',
               horizontalItemPaddingLG: '16px 18px',
             },
+            Alert: {
+              borderRadiusLG: 10,
+            },
           },
         }}
       >

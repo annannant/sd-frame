@@ -10,6 +10,7 @@ import {
 import { WoodStocksService } from './wood-stocks.service';
 import { CreateWoodStockDto } from './dto/create-wood-stock.dto';
 import { UpdateWoodStockDto } from './dto/update-wood-stock.dto';
+import { ImportWoodStockDto } from './dto/import-wood-stock.dto';
 
 @Controller('wood-stocks')
 export class WoodStocksController {
@@ -51,5 +52,10 @@ export class WoodStocksController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.woodStocksService.remove(+id);
+  }
+
+  @Post('import/validation')
+  importValidation(@Body() importWoodStockDtoList: ImportWoodStockDto[]) {
+    return this.woodStocksService.importValidation(importWoodStockDtoList);
   }
 }

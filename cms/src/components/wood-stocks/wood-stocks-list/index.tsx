@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Card, Typography } from 'antd'
 
-import { TableWoodTypes } from './table-wood-types/table-wood-types'
+import { TableWoodStocks } from './table-wood-stocks/table-wood-stocks'
 
 const { Title } = Typography
 
@@ -15,16 +15,16 @@ export const WoodStocksListComponent = () => {
         title={
           <div className="flex justify-between">
             <div>รายการสต๊อกไม้กรอบ</div>
-            <Link to="/wood-types/create">
+            {/* <Link to="/wood-types/create">
               <Button type="primary" icon={<PlusOutlined />}>
                 สร้าง
               </Button>
-            </Link>
+            </Link> */}
           </div>
         }
         bordered={false}
       >
-        <TableWoodTypes />
+        <TableWoodStocks />
       </Card>
     </>
   )

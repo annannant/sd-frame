@@ -2,7 +2,7 @@ import { Button, ButtonProps, ConfigProvider } from 'antd'
 
 import { colors } from 'constants/colors'
 
-export const ButtionPrimarySecondary = (props: ButtonProps) => {
+export const ButtonPrimarySecondary = (props: ButtonProps) => {
   return (
     <ConfigProvider
       theme={{
@@ -16,7 +16,7 @@ export const ButtionPrimarySecondary = (props: ButtonProps) => {
   )
 }
 
-export const ButtionPrimarySuccess = (props: ButtonProps) => {
+export const ButtonPrimarySuccess = (props: ButtonProps) => {
   return (
     <ConfigProvider
       theme={{
@@ -30,7 +30,7 @@ export const ButtionPrimarySuccess = (props: ButtonProps) => {
   )
 }
 
-export const ButtionPrimaryWarning = (props: ButtonProps) => {
+export const ButtonPrimaryWarning = (props: ButtonProps) => {
   return (
     <ConfigProvider
       theme={{
@@ -44,7 +44,7 @@ export const ButtionPrimaryWarning = (props: ButtonProps) => {
   )
 }
 
-export const ButtionPrimaryInfo = (props: ButtonProps) => {
+export const ButtonPrimaryInfo = (props: ButtonProps) => {
   return (
     <ConfigProvider
       theme={{
@@ -57,7 +57,7 @@ export const ButtionPrimaryInfo = (props: ButtonProps) => {
     </ConfigProvider>
   )
 }
-export const ButtionPrimaryLight = (props: ButtonProps) => {
+export const ButtonPrimaryLight = (props: ButtonProps) => {
   return (
     <ConfigProvider
       theme={{

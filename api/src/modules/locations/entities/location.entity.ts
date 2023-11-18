@@ -1,5 +1,7 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { WoodStockLocation } from '@/modules/wood-stock-locations/entities/wood-stock-location.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity('location')
 export class Location {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,4 +17,7 @@ export class Location {
 
   @Column({ name: 'address', type: 'text', nullable: true })
   address: string;
+
+  @OneToMany(() => WoodStockLocation, (item) => item.location)
+  woodStockLocations: WoodStockLocation[];
 }

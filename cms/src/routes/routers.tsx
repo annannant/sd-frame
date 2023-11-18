@@ -10,7 +10,14 @@ import { ProductionOrdersListPage } from 'pages/production-orders/production-ord
 import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production-orders-plan-info'
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
+import { WoodStocksImportPage } from 'pages/wood-stocks/wood-stocks-import'
+import { WoodStocksImportConfirmPage } from 'pages/wood-stocks/wood-stocks-import-confirm'
+import {
+  WoodStocksInfoPage,
+  viewWoodStocksInfoLoader,
+} from 'pages/wood-stocks/wood-stocks-info'
 import { WoodStocksListPage } from 'pages/wood-stocks/wood-stocks-list'
+import { WoodStocksLocationsPage } from 'pages/wood-stocks/wood-stocks-location'
 import {
   WoodTypesInfoPage,
   createWoodLoader,
@@ -136,24 +143,6 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: editWoodLoader,
       },
-      // {
-      //   path: 'waiting',
-      //   element: <ProductionOrdersWaitingPage />,
-      //   errorElement: <ErrorPage />,
-      //   loader: createOrderLoader,
-      // },
-      // {
-      //   path: 'waiting/:orderId',
-      //   element: <ProductionOrdersWaitingInfoPage />,
-      //   errorElement: <ErrorPage />,
-      //   loader: editOrderLoader,
-      // },
-      // {
-      //   path: 'plan/:orderId',
-      //   element: <ProductionOrdersPlanInfoPage />,
-      //   errorElement: <ErrorPage />,
-      //   loader: editOrderLoader,
-      // },
     ],
   },
   {
@@ -178,47 +167,33 @@ export const router = createBrowserRouter([
         element: <WoodStocksListPage />,
         errorElement: <ErrorPage />,
       },
+      {
+        path: 'import',
+        element: <WoodStocksImportPage />,
+        errorElement: <ErrorPage />,
+        loader: viewWoodStocksInfoLoader,
+      },
+      {
+        path: 'import/confirm',
+        element: <WoodStocksImportConfirmPage />,
+        errorElement: <ErrorPage />,
+        loader: viewWoodStocksInfoLoader,
+      },
+      {
+        path: 'woods/:id/lot',
+        element: <WoodStocksInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: viewWoodStocksInfoLoader,
+      },
+
+      {
+        path: 'woods/:id/locations',
+        element: <WoodStocksLocationsPage />,
+        errorElement: <ErrorPage />,
+        loader: viewWoodStocksInfoLoader,
+      },
     ],
   },
-  // {
-  //   path: '/production-plans',
-  //   element: <MainLayout />,
-  //   errorElement: <ErrorPage />,
-  //   children: [
-  //     {
-  //       index: true,
-  //       element: <ProductionOrdersListPage />,
-  //       errorElement: <ErrorPage />,
-  //     },
-  //     {
-  //       path: '/orders',
-  //       element: <ProductionOrdersInfoPage />,
-  //       errorElement: <ErrorPage />,
-  //       // loader: createOrderLoader,
-  //     },
-  //     // {
-  //     //   path: 'edit/:orderId',
-  //     //   element: <ProductionOrdersInfoPage />,
-  //     //   errorElement: <ErrorPage />,
-  //     //   loader: editOrderLoader,
-  //     // },
-  //   ],
-  // },
-  // {
-  //   path: "/production-orders/create",
-  //   element: <ProductionOrders />,
-  //   errorElement: <ErrorPage />
-  // },
-  // {
-  //   path: "/production-orders/create",
-  //   element: <ProductionOrdersCreate />,
-  //   errorElement: <ErrorPage />
-  // },
-  // {
-  //   path: "/production-orders",
-  //   element: <ProductionOrdersEdit />,
-  //   errorElement: <ErrorPage />
-  // },
 ])
 
 export default router

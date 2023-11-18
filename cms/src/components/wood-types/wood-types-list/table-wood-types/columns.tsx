@@ -4,7 +4,7 @@ import { EditOutlined, FileSearchOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
-import { ButtionPrimaryInfo } from 'common/button/single-color-button'
+import { ButtonPrimaryInfo } from 'common/button/single-color-button'
 
 import { ITFWoodType } from 'types/wood-type.type'
 
@@ -77,7 +77,7 @@ const columns: ColumnsType<ITFWoodType> = [
             />
           </Link>
           <Link to={`/wood-types/${record?.id}/woods`}>
-            <ButtionPrimaryInfo
+            <ButtonPrimaryInfo
               type="primary"
               shape="circle"
               icon={<FileSearchOutlined />}

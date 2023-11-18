@@ -1,4 +1,4 @@
-import { Col, Form, Row, Select, Typography } from 'antd'
+import { Col, Form, Image, Row, Select, Typography } from 'antd'
 
 import { ITFWood } from 'types/wood.type'
 
@@ -80,7 +80,7 @@ export const OrderWoodDetailIndex = (props: ITFProps) => {
         <Col span={6}>
           <div className="aspect-[1/1] w-full bg-gray-50">
             {selected?.woodType?.imageUrl && (
-              <img
+              <Image
                 className="h-full w-full object-cover"
                 src={selected?.woodType?.imageUrl ?? '#'}
                 alt={selected?.woodType?.name ?? ''}

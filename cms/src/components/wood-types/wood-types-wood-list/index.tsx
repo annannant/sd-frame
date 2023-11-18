@@ -18,28 +18,18 @@ export const WoodTypesWoodListIndex = () => {
 
   return (
     <>
-      <Title level={3}>
-        ประเภทไม้กรอบ / {data?.name} ({data?.code}) / รายการไม้กรอบ
-      </Title>
+      <div className="flex items-center justify-between">
+        <Title level={3}>
+          ประเภทไม้กรอบ / {data?.name} ({data?.code}) / รายการไม้กรอบ
+        </Title>
+        <Link to={`/wood-types/${id}/woods/create`}>
+          <Button type="primary" icon={<PlusOutlined />}>
+            เพิ่มไม้กรอบ
+          </Button>
+        </Link>
+      </div>
       <Row gutter={[20, 20]}>
-        <Col span={18}>
-          <Card
-            title={
-              <div className="flex justify-between">
-                <div>รายการไม้กรอบ</div>
-                <Link to={`/wood-types/${id}/woods/create`}>
-                  <Button type="primary" icon={<PlusOutlined />}>
-                    เพิ่มไม้กรอบ
-                  </Button>
-                </Link>
-              </div>
-            }
-            bordered={false}
-          >
-            <TableWoods />
-          </Card>
-        </Col>
-        <Col span={6}>
+        <Col span={24}>
           <Card
             title={
               <div className="flex justify-between">
@@ -49,6 +39,18 @@ export const WoodTypesWoodListIndex = () => {
             bordered={false}
           >
             <WoodTypesInfo />
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card
+            title={
+              <div className="flex justify-between">
+                <div>รายการไม้กรอบ</div>
+              </div>
+            }
+            bordered={false}
+          >
+            <TableWoods />
           </Card>
         </Col>
       </Row>

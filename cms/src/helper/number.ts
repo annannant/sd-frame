@@ -23,3 +23,18 @@ export const toFixed = (input: string | number, fixed = 2) => {
   }
   return Number((Math.round(Number(num) * 100000) / 100000).toFixed(fixed))
 }
+
+export const currency = (input: string | number) => {
+  if (input === undefined || input == null) {
+    return ''
+  }
+
+  if (typeof input === 'string') {
+    return (+input).toLocaleString('en-US', {
+      style: 'decimal',
+    })
+  }
+  return input.toLocaleString('th-TH', {
+    style: 'decimal',
+  })
+}

@@ -28,6 +28,7 @@ import { WoodStockLocationsModule } from './modules/wood-stock-locations/wood-st
 import { LocationsModule } from './modules/locations/locations.module';
 import { WoodStock } from './modules/wood-stocks/entities/wood-stock.entity';
 import { WoodStocksModule } from './modules/wood-stocks/wood-stocks.module';
+import { UploadsModule } from './modules/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { WoodStocksModule } from './modules/wood-stocks/wood-stocks.module';
     WoodStocksModule,
     WoodStockLocationsModule,
     LocationsModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

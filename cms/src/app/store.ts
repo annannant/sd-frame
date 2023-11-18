@@ -8,6 +8,8 @@ import { attributeApiSlice } from 'services/attribute'
 import { productionOrderApiSlice } from 'services/production-order'
 import { standardFrameApiSlice } from 'services/standard-frame'
 import { woodApiSlice } from 'services/wood'
+import { woodStockApiSlice } from 'services/wood-stock'
+import { woodStockLocationApiSlice } from 'services/wood-stock-location'
 import { woodTypeApiSlice } from 'services/wood-type'
 
 const store = configureStore({
@@ -18,6 +20,8 @@ const store = configureStore({
       .concat(productionOrderApiSlice.middleware)
       .concat(standardFrameApiSlice.middleware)
       .concat(attributeApiSlice.middleware)
+      .concat(woodStockApiSlice.middleware)
+      .concat(woodStockLocationApiSlice.middleware)
       .concat(woodTypeApiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 })

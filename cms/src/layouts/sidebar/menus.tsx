@@ -105,9 +105,9 @@ export const menus: ITFSidebarItem[] = [
         icon: <CodeSandboxOutlined />,
       },
       {
-        key: 'wood-import',
-        url: 'wood-import',
-        label: 'นำเช้าสต๊อก',
+        key: '/wood-stocks/import',
+        url: '/wood-stocks/import',
+        label: 'นำเข้าสต๊อก',
         icon: <PlusOutlined />,
       },
     ],

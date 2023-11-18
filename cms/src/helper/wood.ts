@@ -1,3 +1,5 @@
+import { ITFWood } from 'types/wood.type'
+
 import { toFixed } from './number'
 import { convertUnitToSymbol } from './unit'
 
@@ -25,4 +27,12 @@ export const convertSizeText = (
   }
 
   return `${toFixed(size, 2)} ${convertUnitToSymbol(unit ?? '')}`
+}
+
+export const convertWoodName = (wood?: ITFWood) => {
+  return `${wood?.name} - ${wood?.description}`
+}
+
+export const convertWoodType = () => {
+  return ''
 }

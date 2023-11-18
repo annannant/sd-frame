@@ -39,7 +39,9 @@ export class WoodStockLocationsService {
     const data = await this.woodStockLocationsRepository
       .createQueryBuilder('st')
       .leftJoinAndSelect('st.wood', 'wood')
+      .leftJoinAndSelect('st.location', 'location')
       .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute')
       .where('st.woodId = :id', { id })
       .getMany();
 

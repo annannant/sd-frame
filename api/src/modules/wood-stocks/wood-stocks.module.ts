@@ -4,9 +4,10 @@ import { WoodStocksController } from './wood-stocks.controller';
 import { WoodStock } from './entities/wood-stock.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wood } from '../woods/entities/wood.entity';
+import { Location } from '../locations/entities/location.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WoodStock, Wood])],
+  imports: [TypeOrmModule.forFeature([WoodStock, Wood, Location])],
   controllers: [WoodStocksController],
   providers: [WoodStocksService],
 })

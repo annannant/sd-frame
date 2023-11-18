@@ -3,10 +3,12 @@ import { CreateWoodStockDto } from './dto/create-wood-stock.dto';
 import { UpdateWoodStockDto } from './dto/update-wood-stock.dto';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { WoodStock } from './entities/wood-stock.entity';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 import { Wood } from '../woods/entities/wood.entity';
-import { sumBy } from 'lodash';
+import { sumBy, keyBy, maxBy } from 'lodash';
 import * as humps from 'humps';
+import { ImportWoodStockDto } from './dto/import-wood-stock.dto';
+import { Location } from '../locations/entities/location.entity';
 
 @Injectable()
 export class WoodStocksService {
@@ -15,6 +17,8 @@ export class WoodStocksService {
     private woodStocksRepository: Repository<WoodStock>,
     @InjectRepository(Wood)
     private woodRepository: Repository<Wood>,
+    @InjectRepository(Location)
+    private locationsRepository: Repository<Location>,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
@@ -75,7 +79,8 @@ export class WoodStocksService {
       .createQueryBuilder('wood')
       .innerJoinAndSelect('wood.woodStocks', 'woodStocks')
       .innerJoinAndSelect('wood.woodType', 'woodType')
-      .select(['wood', 'woodType'])
+      .innerJoinAndSelect('wood.attribute', 'attribute')
+      .select(['wood', 'woodType', 'attribute'])
       .addSelect('SUM(woodStocks.totalStock)', 'total_stock')
       .addSelect('COUNT(woodStocks.lot)', 'total_lot')
       .addSelect('SUM(woodStocks.totalUsed)', 'total_used')
@@ -96,6 +101,12 @@ export class WoodStocksService {
             code: item.woodTypeCode,
             description: item.woodTypeDescription,
             width: item.woodTypeWidth,
+          },
+          attribute: {
+            id: item.attributeId,
+            name: item.attributeName,
+            code: item.attributeCode,
+            description: item.attributeDescription,
           },
           totalStock: parseInt(item.totalStock),
           totalLot: parseInt(item.totalLot),
@@ -120,5 +131,89 @@ export class WoodStocksService {
       data,
       summary,
     };
+  }
+
+  validateImport(data: any) {
+    const errors = [];
+    if (data.wood === undefined) {
+      errors.push('wood_not_found');
+    }
+
+    if (data.location === undefined) {
+      errors.push('location_not_found');
+    }
+
+    if (typeof data.qty !== 'number') {
+      errors.push('qty_must_be_number');
+    }
+
+    if (data.lot && typeof data.lot !== 'number') {
+      errors.push('lot_must_be_number');
+    }
+
+    return {
+      status: errors.length ? 'failed' : 'pass',
+      errors,
+    };
+  }
+
+  getLotInfo(data: any) {
+    const inputLot = data.lot;
+    if (inputLot) {
+      const info = data?.wood?.woodStocks?.find(
+        (item) => item.lot === inputLot,
+      );
+      return {
+        importToLot: info?.lot,
+        currentStock: info?.totalStock,
+        newStock: info?.totalStock + data.qty,
+        isNewLot: false,
+      };
+    }
+
+    const latestLot = maxBy(data?.wood?.woodStocks, 'lot');
+    return {
+      importToLot: (latestLot?.lot ?? 0) + 1,
+      currentStock: 0,
+      newStock: data.qty,
+      isNewLot: true,
+    };
+  }
+
+  async importValidation(importWoodStockDtoList: ImportWoodStockDto[]) {
+    const locationCodes = importWoodStockDtoList.map(
+      (item) => item.locationCode,
+    );
+    const woodCodes = importWoodStockDtoList.map((item) => item.woodCode);
+    const [locations, woods] = await Promise.all([
+      this.locationsRepository.findBy({
+        code: In(locationCodes),
+      }),
+      this.woodRepository.find({
+        where: {
+          code: In(woodCodes),
+        },
+        relations: {
+          woodType: true,
+          attribute: true,
+          woodStocks: true,
+        },
+      }),
+    ]);
+    const locationInfo = keyBy(locations, 'code');
+    const woodInfo = keyBy(woods, 'code');
+    const response = importWoodStockDtoList.map((item) => {
+      const formatted = {
+        ...item,
+        wood: woodInfo[item.woodCode],
+        location: locationInfo[item.locationCode],
+      };
+      return {
+        ...formatted,
+        ...this.validateImport(formatted),
+        ...this.getLotInfo(formatted),
+      };
+    });
+    return response;
   }
 }

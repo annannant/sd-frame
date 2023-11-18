@@ -1,6 +1,6 @@
 import { useLoaderData } from 'react-router-dom'
 
-import { Col, Row, Typography } from 'antd'
+import { Col, Image, Row, Typography } from 'antd'
 
 import { parser, toFixed } from 'helper/number'
 import { convertUnitToText } from 'helper/unit'
@@ -13,6 +13,7 @@ const { Text } = Typography
 export const WoodTypesInfo = () => {
   const { id, action }: any = useLoaderData()
   const { data, refetch } = useGetWoodsByWoodTypeIDQuery(id)
+  console.log('data:', data)
 
   const list = [
     {
@@ -34,34 +35,28 @@ export const WoodTypesInfo = () => {
   ]
 
   return (
-    <>
-      <Row gutter={[0, 14]}>
-        {list.map((item, index) => {
-          return (
-            <Col key={`${item.title}${index}`} span={24}>
-              <Row>
-                <Col span={10} className="text-left">
-                  <Text type="secondary">{item.title}</Text>
-                  {/* {item?.hint && (
-                    <div>
-                      <Text
-                        disabled
-                        className="text-font-title"
-                        style={{ fontSize: 12 }}
-                      >
-                        ({item.hint})
-                      </Text>
-                    </div>
-                  )} */}
-                </Col>
-                <Col span={14}>
-                  <Text className="text-font-title">{item.value}</Text>
-                </Col>
-              </Row>
-            </Col>
-          )
-        })}
-      </Row>
-    </>
+    <Row>
+      <Col span={12}>
+        <Row gutter={[0, 14]}>
+          {list.map((item, index) => {
+            return (
+              <Col key={`${item.title}${index}`} span={24}>
+                <Row>
+                  <Col span={7} className="text-left">
+                    <Text type="secondary">{item.title}</Text>
+                  </Col>
+                  <Col span={15}>
+                    <Text className="text-font-title">{item.value}</Text>
+                  </Col>
+                </Row>
+              </Col>
+            )
+          })}
+        </Row>
+      </Col>
+      <Col span={12} className="flex justify-end">
+        <Image src={data?.imageUrl ?? ''} style={{ height: 130 }} />
+      </Col>
+    </Row>
   )
 }

@@ -4,7 +4,7 @@ import { EditOutlined, FileSearchOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
-import { ButtionPrimaryInfo } from 'common/button/single-color-button'
+import { ButtonPrimaryInfo } from 'common/button/single-color-button'
 
 import { ITFWood } from 'types/wood.type'
 
