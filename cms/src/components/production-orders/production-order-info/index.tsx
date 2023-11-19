@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 
 import {
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
@@ -11,6 +12,7 @@ import {
 import { Button, Card, Col, Form, Modal, Row } from 'antd'
 import { Typography } from 'antd'
 
+import { ButtonBack } from 'common/button/back-button'
 import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderStatusDetailIndex } from 'components/orders-status-detail'
 import FormOrdersInfo from 'components/production-orders/production-order-info/form-orders-info/form-orders-info'
@@ -18,7 +20,7 @@ import { FormOrders } from 'components/production-orders/production-order-info/f
 
 import { colors } from 'constants/colors'
 import { CREATE, EDIT } from 'constants/common'
-import { DRAFT } from 'constants/current-status.constant'
+import { DRAFT, WAIT_FOR_CUTTING } from 'constants/current-status.constant'
 
 import useMessage from 'hooks/useMessage'
 import { useSaveProductionPlanOrders } from 'hooks/useSaveProductionPlanOrders'
@@ -43,6 +45,12 @@ export const ProductionOrdersInfoIndex = () => {
 
   const isEdit = action === EDIT
   const isCreate = action === CREATE
+
+  const showDeleteButton = isEdit && orderInfo?.status === DRAFT
+  const showSaveButton = isCreate || (isEdit && orderInfo?.status === DRAFT)
+  const showSubmitButton = isCreate || (isEdit && orderInfo?.status === DRAFT)
+  const showCancelButton = orderInfo?.status === WAIT_FOR_CUTTING
+  const disabledForm = isEdit && orderInfo?.status !== DRAFT
 
   const onClickButton = async (action: string) => {
     try {
@@ -83,6 +91,40 @@ export const ProductionOrdersInfoIndex = () => {
     }
   }
 
+  const onClickButtonDelete = async () => {
+    try {
+      await remove()
+      refetch()
+      success()
+      setTimeout(() => {
+        navigate('/production-orders')
+      }, 600)
+    } catch (e: any) {
+      console.log('error:', e)
+      if (e.errorFields) {
+        return
+      }
+      error()
+    }
+  }
+
+  const onClickButtonCancel = async () => {
+    try {
+      await remove()
+      refetch()
+      success()
+      setTimeout(() => {
+        navigate('/production-orders')
+      }, 600)
+    } catch (e: any) {
+      console.log('error:', e)
+      if (e.errorFields) {
+        return
+      }
+      error()
+    }
+  }
+
   const configDelete = {
     title: 'ยืนยันลบคำสั่งผลิต',
     okText: 'ลบ',
@@ -94,12 +136,23 @@ export const ProductionOrdersInfoIndex = () => {
     icon: <WarningOutlined style={{ color: colors.danger }} />,
   }
 
+  const configCancel = {
+    title: 'ยกเลิกคำสั่งผลิต',
+    okText: 'ยืนยัน',
+    okButtonProps: {
+      danger: true,
+    },
+    cancelText: 'ปิด',
+    content: <>ต้องการยกเลิกคำสั่งผลิตนี้ ?</>,
+    icon: <WarningOutlined style={{ color: colors.danger }} />,
+  }
+
   const configSubmit = {
     title: 'ยืนยันสั่งผลิต',
     okText: 'ยืนยัน',
     okButtonProps: {},
     cancelText: 'ยกเลิก',
-    content: <>ต้องการสร้างคำสั่งผลิต ?</>,
+    content: <>ต้องการสั่งผลิตใช่หรือไม่ ?</>,
     icon: <InfoCircleOutlined style={{ color: colors.primary }} />,
   }
 
@@ -123,6 +176,7 @@ export const ProductionOrdersInfoIndex = () => {
         scrollToFirstError={{
           block: 'center',
         }}
+        disabled={disabledForm}
       >
         <div className="flex justify-between">
           <Title level={3}>สั่งผลิต / สร้างคำสั่งผลิต</Title>
@@ -150,57 +204,88 @@ export const ProductionOrdersInfoIndex = () => {
             <FormOrders />
           </Card>
         </div>
-        <div className="mb-10 mt-5 flex justify-end gap-x-[10px]">
-          {(orderInfo?.status === DRAFT || isCreate) && (
-            <Button
-              type="default"
-              htmlType="button"
-              className="w-[120px]"
-              icon={<SaveOutlined style={{ fontSize: 14 }} />}
-              onClick={() =>
-                isEdit
-                  ? onClickButton('update-save-draft')
-                  : onClickButton('create-save-draft')
-              }
-            >
-              บันทึก
-            </Button>
-          )}
-
-          {isEdit && (
-            <Button
-              type="primary"
-              htmlType="button"
-              className="w-[120px]"
-              icon={<DeleteOutlined style={{ fontSize: 14 }} />}
-              onClick={async () => {
-                const confirmed = await modal.confirm(configDelete)
-                if (confirmed) {
-                  onClickButton('delete')
+        <div className="mb-10 mt-5 flex justify-between gap-x-[10px]">
+          <div>
+            {showDeleteButton && (
+              <Button
+                type="primary"
+                htmlType="button"
+                className="w-[120px]"
+                icon={<DeleteOutlined style={{ fontSize: 14 }} />}
+                onClick={async () => {
+                  const confirmed = await modal.confirm(configDelete)
+                  if (confirmed) {
+                    onClickButtonDelete()
+                  }
+                  console.log('Confirmed: ', confirmed)
+                }}
+                danger
+              >
+                ลบ
+              </Button>
+            )}
+          </div>
+          <div className="flex justify-end gap-x-[10px]">
+            <ButtonBack disabled={false} />
+            {showSaveButton && (
+              <Button
+                type="default"
+                htmlType="button"
+                className="w-[120px]"
+                icon={<SaveOutlined style={{ fontSize: 14 }} />}
+                onClick={() =>
+                  isEdit
+                    ? onClickButton('update-save-draft')
+                    : onClickButton('create-save-draft')
                 }
-                console.log('Confirmed: ', confirmed)
-              }}
-              danger
-            >
-              ลบ
-            </Button>
-          )}
-          <Button
-            type="primary"
-            htmlType="button"
-            className="w-[160px]"
-            // onClick={() =>
-            //   isEdit ? onClickButton('update') : onClickButton('create')
-            // }
-            onClick={async () => {
-              const confirmed = await modal.confirm(configSubmit)
-              if (confirmed) {
-                isEdit ? onClickButton('update') : onClickButton('create')
-              }
-            }}
-          >
-            ยืนยันสั่งผลิต
-          </Button>
+              >
+                บันทึก
+              </Button>
+            )}
+
+            {showSubmitButton && (
+              <Button
+                type="primary"
+                htmlType="button"
+                className="w-[160px]"
+                onClick={async () => {
+                  const confirmed = await modal.confirm(configSubmit)
+                  if (confirmed) {
+                    isEdit ? onClickButton('update') : onClickButton('create')
+                  }
+                }}
+              >
+                สั่งผลิต
+              </Button>
+            )}
+            {showCancelButton && (
+              <Button
+                type="primary"
+                htmlType="button"
+                className="w-[120px]"
+                // icon={<CloseOutlined style={{ fontSize: 14 }} />}
+                onClick={async () => {
+                  const confirmed = await modal.confirm(configCancel)
+                  if (confirmed) {
+                    onClickButtonCancel()
+                  }
+                  console.log('Confirmed: ', confirmed)
+                }}
+                danger
+                disabled={false}
+              >
+                ยกเลิก
+              </Button>
+            )}
+          </div>
+          {/* {(orderInfo?.status === DRAFT || isCreate) && (
+           
+          )} */}
+
+          {/* {isEdit && (
+         
+          )} */}
+
           {/* {orderInfo?.status === WAIT_FOR_CUTTING && isEdit && (
             <Button
               type="default"

@@ -45,6 +45,9 @@ export class ProductionOrderItem {
   @Column({ name: 'standard_frame_id' })
   standardFrameId: number;
 
+  @Column({ name: 'standard_frame_name' })
+  standardFrameName: string;
+
   @ManyToOne(() => ProductionOrder, (order) => order.productionOrderItems)
   @JoinColumn({ name: 'production_order_id', referencedColumnName: 'id' })
   productionOrder: ProductionOrder;

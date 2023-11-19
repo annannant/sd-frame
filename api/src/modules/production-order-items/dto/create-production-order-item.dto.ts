@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateProductionOrderItemDto {
   @IsOptional()
@@ -24,4 +24,8 @@ export class CreateProductionOrderItemDto {
   @IsOptional()
   @IsNumber()
   standardFrameId?: number;
+
+  @IsOptional()
+  @IsString()
+  standardFrame?: string;
 }

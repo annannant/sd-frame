@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useLoaderData } from 'react-router-dom'
 
-import { Table } from 'antd'
+import { StarFilled, StarOutlined } from '@ant-design/icons'
+import { Table, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
+import { colors } from 'constants/colors'
 import {
   ITFProductionOrderItem,
   ITFTableProductionOrderItem,
@@ -38,7 +40,8 @@ export const TableOrderItems = () => {
         if (record?.isCustomSize) {
           return (
             <div className="pl-5">
-              {`${record?.width}x${record?.height}`.replaceAll('.00', '')}
+              {`${record?.width} x ${record?.height}`}{' '}
+              <StarFilled style={{ marginLeft: 5, color: colors.warning }} />
             </div>
           )
         }

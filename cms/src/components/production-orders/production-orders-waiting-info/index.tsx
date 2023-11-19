@@ -14,6 +14,7 @@ import {
 } from 'antd'
 import type { TabsProps } from 'antd'
 
+import { ButtonBack } from 'common/button/back-button'
 import { TagStatus } from 'common/tag-status'
 import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
@@ -80,6 +81,13 @@ export const ProductionOrdersWaitingInfo = () => {
           <TableOrderItems />
         </Card>
       </div>
+      <Row>
+        <Col span={24}>
+          <div className="mb-[40px]  mt-[30px]  flex justify-end">
+            <ButtonBack size="large" />
+          </div>
+        </Col>
+      </Row>
     </>
   )
 }

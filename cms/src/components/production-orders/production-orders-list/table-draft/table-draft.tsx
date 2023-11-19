@@ -10,10 +10,10 @@ import columns from '../columns'
 
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
-export const TableOrders = () => {
+export const TableDraft = () => {
   const { transformTable } = useProductionPlanOrders()
   const { data, refetch } = useGetAllProductionOrdersQuery({
-    statuses: [WAIT_FOR_CUTTING],
+    statuses: [DRAFT],
   })
   const dataSource = transformTable(data ?? [])
 

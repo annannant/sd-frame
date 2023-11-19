@@ -94,6 +94,7 @@ export const useColumnsStandardFrames = () => {
       render: (text: any, record: ITFStandardFrame, count: any) => {
         return (
           <Switch
+            key={`${record?.id}${record?.isActive ? '1' : '0'}`}
             defaultChecked={record?.isActive ?? false}
             onChange={(val: boolean) => {
               activeStandardFrame(val, record)

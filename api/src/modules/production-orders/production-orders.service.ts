@@ -255,12 +255,12 @@ export class ProductionOrdersService {
           standardFrameId: item.standardFrameId,
           woodId: item.woodId,
           // size: item.standardFrame.name,
-          size: `${parser(item.standardFrame.width)}x${parser(
-            item.standardFrame.height,
+          size: `${parser(item.standardFrame?.width)}x${parser(
+            item.standardFrame?.height,
           )}`,
-          width: parser(item.standardFrame.width),
-          height: parser(item.standardFrame.height),
-          woodWidth: parser(item.wood.woodType.width),
+          width: parser(item.standardFrame?.width),
+          height: parser(item.standardFrame?.height),
+          woodWidth: parser(item.wood?.woodType?.width),
           qty:
             item.reorderPoint && item.reorderPoint > 0
               ? parser(item.reorderPoint) - parser(item.stock)
