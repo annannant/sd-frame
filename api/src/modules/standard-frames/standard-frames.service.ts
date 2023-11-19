@@ -4,21 +4,36 @@ import { UpdateStandardFrameDto } from './dto/update-standard-frame.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StandardFrame } from './entities/standard-frame.entity';
 import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
+import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
 
 @Injectable()
 export class StandardFramesService {
   constructor(
     @InjectRepository(StandardFrame)
     private standardFramesRepository: Repository<StandardFrame>,
+    @InjectRepository(StandardFrameStock)
+    private standardFrameStocksRepository: Repository<StandardFrameStock>,
   ) {}
 
   create(createStandardFrameDto: CreateStandardFrameDto) {
-    return this.standardFramesRepository.save(createStandardFrameDto);
+    return this.standardFramesRepository.save(
+      plainToInstance(
+        StandardFrame,
+        {
+          ...createStandardFrameDto,
+          unit: 'inch',
+          isActive: false,
+        },
+        { strategy: 'excludeAll' },
+      ),
+    );
   }
 
   findAll() {
     return this.standardFramesRepository.find({
       order: {
+        createdAt: 'DESC',
         width: 'ASC',
         height: 'ASC',
       },
@@ -46,11 +61,23 @@ export class StandardFramesService {
   }
 
   update(id: number, updateStandardFrameDto: UpdateStandardFrameDto) {
-    return this.standardFramesRepository.update(id, updateStandardFrameDto);
+    return this.standardFramesRepository.update(
+      id,
+      plainToInstance(
+        StandardFrame,
+        {
+          ...updateStandardFrameDto,
+        },
+        { strategy: 'excludeAll' },
+      ),
+    );
   }
 
   remove(id: number) {
-    return this.standardFramesRepository.delete(id);
+    return Promise.all([
+      this.standardFramesRepository.delete(id),
+      this.standardFrameStocksRepository.delete({ standardFrameId: id }),
+    ]);
   }
 
   updateActive(id: number, updateStandardFrameDto: UpdateStandardFrameDto) {

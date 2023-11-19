@@ -35,7 +35,6 @@ export class WoodStockLocationsService {
   }
 
   async findByWoods(id: number) {
-    console.log('id:', id);
     const data = await this.woodStockLocationsRepository
       .createQueryBuilder('st')
       .leftJoinAndSelect('st.wood', 'wood')

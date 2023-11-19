@@ -10,6 +10,7 @@ import {
 import { StandardFrameStocksService } from './standard-frame-stocks.service';
 import { CreateStandardFrameStockDto } from './dto/create-standard-frame-stocks.dto';
 import { UpdateStandardFrameStockDto } from './dto/update-standard-frame-stocks.dto';
+import { DeleteStandardFrameStockDto } from './dto/delete-standard-frame-stocks.dto';
 
 @Controller('standard-frame-stocks')
 export class StandardFrameStocksController {
@@ -27,24 +28,44 @@ export class StandardFrameStocksController {
     return this.standardFrameStocksService.findAll();
   }
 
+  @Get('/standard-frames')
+  findAllByStandardFrames() {
+    return this.standardFrameStocksService.findAllByStandardFrames();
+  }
+
+  @Get('/standard-frames/:id')
+  findAllByStandardFrameId(@Param('id') id: string) {
+    return this.standardFrameStocksService.findAllByStandardFrameId(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.standardFrameStocksService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateStandardFrameStockDto: UpdateStandardFrameStockDto,
-  ) {
-    return this.standardFrameStocksService.update(
-      +id,
-      updateStandardFrameStockDto,
-    );
+  @Patch()
+  update(@Body() updateStandardFrameStockDto: UpdateStandardFrameStockDto) {
+    if (
+      !updateStandardFrameStockDto.standardFrameId ||
+      !updateStandardFrameStockDto.woodId
+    ) {
+      return {
+        message: 'standardFrameId and woodId are required',
+      };
+    }
+    return this.standardFrameStocksService.update(updateStandardFrameStockDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.standardFrameStocksService.remove(+id);
+  @Delete()
+  remove(@Body() deleteStandardFrameStockDto: DeleteStandardFrameStockDto) {
+    if (
+      !deleteStandardFrameStockDto.standardFrameId ||
+      !deleteStandardFrameStockDto.woodId
+    ) {
+      return {
+        message: 'standardFrameId and woodId are required',
+      };
+    }
+    return this.standardFrameStocksService.remove(deleteStandardFrameStockDto);
   }
 }

@@ -24,12 +24,19 @@ export const standardFrameApiSlice = createApi({
         }
       },
     }),
+    getStandardFramesByID: builder.query<ITFStandardFrame, string>({
+      query: (id: string | number | undefined) => ({
+        url: `standard-frames/${id}`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
 export const {
   useGetAllStandardFramesQuery,
   useGetAllActiveStandardFramesQuery,
+  useGetStandardFramesByIDQuery,
 } = standardFrameApiSlice
 
 export const TransformToOptions = (

@@ -68,6 +68,9 @@ root.render(
             Alert: {
               borderRadiusLG: 10,
             },
+            Tag: {
+              borderRadiusSM: 8,
+            },
           },
         }}
       >

@@ -121,7 +121,7 @@ export const useColumnsStandardFrames = () => {
               shape="circle"
               icon={<EditOutlined />}
               size="small"
-              onClick={() => onClickEdit(record?.id)}
+              onClick={() => onClickEdit(record)}
             />
             <Button
               type="primary"

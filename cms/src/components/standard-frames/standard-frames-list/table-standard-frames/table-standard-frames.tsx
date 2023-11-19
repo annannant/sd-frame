@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { Table } from 'antd'
+import { Drawer, Table } from 'antd'
 
 import { useStandardFrames } from 'hooks/useStandardFrames'
 import { useWoodStocks } from 'hooks/useWoodStocks'
@@ -14,7 +14,7 @@ export const TableStandardFrames = () => {
     useColumnsStandardFrames()
   const { data, refetch } = useGetAllStandardFramesQuery()
   const { transformTable } = useStandardFrames()
-  const dataSource = transformTable(data ?? [])
+  const dataSource = useMemo(() => transformTable(data ?? []), [data])
 
   useEffect(() => {
     refetch()

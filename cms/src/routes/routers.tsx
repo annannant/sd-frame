@@ -10,6 +10,11 @@ import { ProductionOrdersListPage } from 'pages/production-orders/production-ord
 import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production-orders-plan-info'
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
+import {
+  StandardFrameStocksInfoPage,
+  viewStandardFrameStocksInfoLoader,
+} from 'pages/standard-frame-stocks/standard-frame-stocks-info'
+import { StandardFrameStocksListPage } from 'pages/standard-frame-stocks/standard-frame-stocks-list'
 import { StandardFramesListPage } from 'pages/standard-frames/standard-frames-list'
 import { WoodStocksImportPage } from 'pages/wood-stocks/wood-stocks-import'
 import { WoodStocksImportConfirmPage } from 'pages/wood-stocks/wood-stocks-import-confirm'
@@ -216,6 +221,18 @@ export const router = createBrowserRouter([
         index: true,
         element: <StandardFramesListPage />,
         errorElement: <ErrorPage />,
+      },
+      {
+        path: 'stocks',
+        element: <StandardFrameStocksListPage />,
+        errorElement: <ErrorPage />,
+        loader: viewStandardFrameStocksInfoLoader,
+      },
+      {
+        path: 'stocks/:id',
+        element: <StandardFrameStocksInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: viewStandardFrameStocksInfoLoader,
       },
     ],
   },

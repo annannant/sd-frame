@@ -1,3 +1,5 @@
+import { useDispatch, useSelector } from 'react-redux'
+
 import { Modal } from 'antd'
 
 import {
@@ -8,19 +10,28 @@ import {
 import {
   deleteStandardFrame,
   patchActiveStandardFrame,
+  patchUpdateStandardFrame,
+  postCreateStandardFrame,
 } from 'api/standard-frames'
 
 import useMessage from './useMessage'
 import useModal from './useModal'
 
+import {
+  setDataEdit,
+  setShowDrawer,
+  standardFrameSelector,
+} from 'app/slice/standard-frames'
 import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 export const useStandardFrames = () => {
+  const dispatch = useDispatch()
+
   const [modal, contextHolderModal] = Modal.useModal()
   const { contextHolder, success, error } = useMessage()
   const { configDelete } = useModal()
   const { data, refetch } = useGetAllStandardFramesQuery()
-
+  const { isEdit, dataEdit } = useSelector(standardFrameSelector)
   const activeStandardFrame = async (
     value: boolean,
     data: ITFStandardFrame
@@ -49,8 +60,14 @@ export const useStandardFrames = () => {
     }
   }
 
-  const onClickEdit = async (id: number) => {
-    console.log('onEdit:', 'onEdit')
+  const onClickEdit = async (data: ITFStandardFrame) => {
+    dispatch(setShowDrawer(true))
+    dispatch(setDataEdit(data))
+  }
+
+  const onClickCreate = async () => {
+    dispatch(setShowDrawer(true))
+    dispatch(setDataEdit({ id: 0 }))
   }
 
   const transformTable = (
@@ -67,14 +84,33 @@ export const useStandardFrames = () => {
     return result
   }
 
+  const onFinish = async (formValues: any) => {
+    try {
+      if (isEdit) {
+        await patchUpdateStandardFrame(dataEdit.id, formValues)
+      } else {
+        await postCreateStandardFrame(formValues)
+      }
+      dispatch(setShowDrawer(false))
+      dispatch(setDataEdit({} as ITFStandardFrame))
+      refetch()
+      success()
+    } catch (e: any) {
+      error()
+      console.log('e:', e)
+    }
+  }
+
   return {
     data,
-    refetch,
     contextHolder,
     contextHolderModal,
+    refetch,
     onClickDelete,
     onClickEdit,
+    onClickCreate,
     transformTable,
     activeStandardFrame,
+    onFinish,
   }
 }

@@ -6,7 +6,10 @@ export const postCreateStandardFrame = async (data: ITFCreateStandardFrame) => {
   return await httpClient.post('/standard-frames', data)
 }
 
-export const patchUpdateStandardFrame = async (id: number, data: any) => {
+export const patchUpdateStandardFrame = async (
+  id: number,
+  data: ITFCreateStandardFrame
+) => {
   return await httpClient.patch(`/standard-frames/${id}`, data)
 }
 

@@ -38,7 +38,7 @@ export const { useGetAllWoodsQuery, useGetWoodByIDQuery } = woodApiSlice
 export const transformToOptions = (woods: ITFWood[]): ITFWoodOption[] => {
   return orderBy(woods, ['name']).map((item: ITFWood) => ({
     value: item.id,
-    label: `${item.name} - ${item.description}`,
+    label: `${item.code} - ${item.name}, ${item.description}`,
     data: item,
   }))
 }
