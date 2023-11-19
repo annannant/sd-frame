@@ -11,11 +11,11 @@ import {
 } from 'api/production-orders'
 
 import { pick } from 'lodash'
-import { useGetAllStandardFramesQuery } from 'services/standard-frame'
+import { useGetAllActiveStandardFramesQuery } from 'services/standard-frame'
 
 export const useSaveProductionPlanOrders = () => {
   const { id }: any = useLoaderData()
-  const { data } = useGetAllStandardFramesQuery()
+  const { data } = useGetAllActiveStandardFramesQuery()
   const transformPayload = (
     payload: ITFCreateProductionOrderForm
   ): ITFUpdateProductionOrder => {

@@ -29,7 +29,7 @@ import { Container } from './form-orders.styles'
 
 import { keyBy } from 'lodash'
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
-import { useGetAllStandardFramesQuery } from 'services/standard-frame'
+import { useGetAllActiveStandardFramesQuery } from 'services/standard-frame'
 
 const { Text } = Typography
 
@@ -40,7 +40,7 @@ export const FormOrders = () => {
   const [selectedSize, setSelectedSize] = useState<any>({})
 
   const { id, action }: any = useLoaderData()
-  const { data } = useGetAllStandardFramesQuery()
+  const { data } = useGetAllActiveStandardFramesQuery()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
 
   const isEdit = action === EDIT

@@ -73,14 +73,14 @@ export const menus: ITFSidebarItem[] = [
     permission: [],
     items: [
       {
-        key: 'standard-frame-info',
-        url: 'standard-frame-info',
-        label: 'ข้อมูลกรอบ',
+        key: '/standard-frames',
+        url: '/standard-frames',
+        label: 'กรอบมาตรฐาน',
         icon: <AppstoreOutlined />,
       },
       {
-        key: 'standard-frame-stock',
-        url: 'standard-frame-stock',
+        key: '/standard-frames/stocks',
+        url: '/standard-frames/stocks',
         label: 'สต๊อก',
         icon: <CodeSandboxOutlined />,
       },

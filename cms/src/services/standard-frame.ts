@@ -12,7 +12,10 @@ export const standardFrameApiSlice = createApi({
   reducerPath: 'standardFrameApiSlice',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3101/api/v1/' }),
   endpoints: (builder) => ({
-    getAllStandardFrames: builder.query<ITFStandardFrameResponse, void>({
+    getAllStandardFrames: builder.query<ITFStandardFrame[], void>({
+      query: () => 'standard-frames',
+    }),
+    getAllActiveStandardFrames: builder.query<ITFStandardFrameResponse, void>({
       query: () => 'standard-frames',
       transformResponse: (response: ITFStandardFrame[], meta, arg) => {
         return {
@@ -24,7 +27,10 @@ export const standardFrameApiSlice = createApi({
   }),
 })
 
-export const { useGetAllStandardFramesQuery } = standardFrameApiSlice
+export const {
+  useGetAllStandardFramesQuery,
+  useGetAllActiveStandardFramesQuery,
+} = standardFrameApiSlice
 
 export const TransformToOptions = (
   woods: ITFStandardFrame[]

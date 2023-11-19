@@ -18,6 +18,15 @@ export class StandardFramesService {
 
   findAll() {
     return this.standardFramesRepository.find({
+      order: {
+        width: 'ASC',
+        height: 'ASC',
+      },
+    });
+  }
+
+  findAllActive() {
+    return this.standardFramesRepository.find({
       where: {
         isActive: true,
       },
@@ -42,5 +51,11 @@ export class StandardFramesService {
 
   remove(id: number) {
     return this.standardFramesRepository.delete(id);
+  }
+
+  updateActive(id: number, updateStandardFrameDto: UpdateStandardFrameDto) {
+    return this.standardFramesRepository.update(id, {
+      isActive: updateStandardFrameDto.isActive,
+    });
   }
 }

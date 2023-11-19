@@ -23,7 +23,6 @@ import { colors } from 'constants/colors'
 import { TableOrderItems } from './table-order-items/table-order-items'
 
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
-import { useGetAllStandardFramesQuery } from 'services/standard-frame'
 
 const { Title } = Typography
 

@@ -3,7 +3,7 @@ import {
   CloseCircleFilled,
   DownOutlined,
 } from '@ant-design/icons'
-import { Dropdown, MenuProps, Space, Tooltip, Typography } from 'antd'
+import { Dropdown, MenuProps, Space, Tag, Tooltip, Typography } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
 import { TagStatus } from 'common/tag-status'
@@ -304,9 +304,13 @@ const columns: ColumnsType<ITFTableImportWoodStock> = [
         <div className="m-auto flex justify-center gap-3">
           <div>
             {text === 'pass' ? (
-              <CheckCircleFilled style={{ color: colors.success }} />
+              <Tag className="mb-2 rounded-[10px]" color={colors.success}>
+                ผ่าน
+              </Tag>
             ) : (
-              <CloseCircleFilled style={{ color: colors.danger }} />
+              <Tag className="mb-2 rounded-[10px]" color={colors.danger}>
+                ไม่ผ่าน
+              </Tag>
             )}
           </div>
         </div>

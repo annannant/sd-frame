@@ -18,7 +18,7 @@ export const TableConfirm = () => {
         <Title level={5} className="m-0">
           รายการนำเข้าสต๊อกไม้กรอบ
         </Title>
-        <Text className="m-0">โปรดตรวจสอบความถูกต้่อง</Text>
+        <Text className="m-0">โปรดตรวจสอบความถูกต้อง</Text>
       </div>
       <div className="mt-4 w-[1070px]">
         <Table

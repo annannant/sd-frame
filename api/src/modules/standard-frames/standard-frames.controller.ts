@@ -25,6 +25,11 @@ export class StandardFramesController {
     return this.standardFramesService.findAll();
   }
 
+  @Get('/active')
+  findAllActive() {
+    return this.standardFramesService.findAllActive();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.standardFramesService.findOne(+id);
@@ -41,5 +46,13 @@ export class StandardFramesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.standardFramesService.remove(+id);
+  }
+
+  @Patch(':id/active')
+  updateActive(
+    @Param('id') id: string,
+    @Body() updateStandardFrameDto: UpdateStandardFrameDto,
+  ) {
+    return this.standardFramesService.update(+id, updateStandardFrameDto);
   }
 }

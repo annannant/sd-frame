@@ -100,7 +100,7 @@ export const WoodStocksImportConfirmComponent = () => {
               onClick={onClickNext}
               disabled={!importList.length}
             >
-              ดำเนินการต่อ
+              ยืนยัน
             </Button>
           </div>
         </Col>
