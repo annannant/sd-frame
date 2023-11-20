@@ -42,10 +42,6 @@ export const productionOrderApiSlice = createApi({
       query: (params: ITFProductionOrderCreatePlanParams) => ({
         url: `production-orders/create-plan`,
         method: 'POST',
-        // body: {
-        //   id,
-        //   sparePart: 0.25,
-        // },
         body: params,
       }),
     }),

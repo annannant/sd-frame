@@ -100,31 +100,26 @@ export class ProductionOrdersService {
     return result;
   }
 
-  checkEnoughWoodStock(
-    response: any,
-    responseSuggest: any,
-    woodLength: number,
-    woodStock: any,
-  ) {
-    console.log('response:', response);
-    console.log('woodLength:', woodLength);
+  checkEnoughWoodStock(response: any, woodStock: any) {
+    const countWoodResponse = response.filter((item) => !item.woodFromStock);
+    const listWoodStock = response
+      .filter((item) => item.woodFromStock)
+      .map((item) => item.wood);
 
-    const countWoodResponse = response.filter(
-      (item) => +item.wood === +woodLength,
-    );
-
-    const countWoodResponseSuggest = responseSuggest.filter(
-      (item) => +item.wood === +woodLength,
-    );
-
-    if (
-      countWoodResponse + countWoodResponseSuggest >
-      woodStock.totalRemaningStock
-    ) {
-      return false;
+    const countWood = countWoodResponse.length;
+    if (countWood > woodStock.totalRemaningStock) {
+      return {
+        isEnough: false,
+        countWood: 0,
+        listWoodStock: [],
+      };
     }
 
-    return true;
+    return {
+      isEnough: true,
+      countWood: countWood,
+      listWoodStock,
+    };
   }
 
   async createPlan(createProductionOrderPlanDto: CreateProductionOrderPlanDto) {
@@ -144,6 +139,7 @@ export class ProductionOrdersService {
       .leftJoinAndSelect('wood.woodItemStocks', 'woodItemStocks')
       .leftJoinAndSelect('woodStocks.woodStockLocations', 'woodStockLocations')
       .leftJoinAndSelect('woodStockLocations.location', 'location')
+      .leftJoinAndSelect('woodItemStocks.location', 'woodItemStockLocation')
       .where('pod.id = :id', { id: productionOrderId })
       .getOne();
 
@@ -191,19 +187,23 @@ export class ProductionOrdersService {
       );
 
       // sum
-      const isEnought = await this.checkEnoughWoodStock(
-        response,
-        responseSuggest,
-        woodLength,
-        woodStock,
-      );
+      const { isEnough, countWood, listWoodStock } =
+        await this.checkEnoughWoodStock(response, woodStock);
 
-      if (isEnought) {
+      if (isEnough) {
         return {
           plans: response,
           suggest: responseSuggest,
+          totalUsedWood: countWood,
+          listUsedWoodStock: listWoodStock.map((item: number) => {
+            const found = woodStock.woodItemStocks.find(
+              (val: WoodItemStock) => parser(val.woodLength) == parser(item),
+            );
+            return found;
+          }),
           minLength,
           woodStock,
+          woodLength,
         };
       }
     }

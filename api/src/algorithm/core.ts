@@ -923,6 +923,7 @@ class CoreAlgorithm {
           response.push({
             no,
             wood: item.from_stock ? item.wood : this.woodLength,
+            woodFromStock: !!item.from_stock,
             list: item.pattern.split(',').map((val) => +val),
           });
           no++;
@@ -937,6 +938,7 @@ class CoreAlgorithm {
         response.push({
           no,
           wood: item.from_stock ? item.wood : this.woodLength,
+          woodFromStock: !!item.from_stock,
           list: item.pattern.split(',').map((val) => +val),
         });
         no++;
@@ -978,6 +980,7 @@ class CoreAlgorithm {
           response.push({
             no,
             wood: item.from_stock ? item.wood : this.woodLength,
+            woodFromStock: !!item.from_stock,
             list: item.pattern.split(',').map((val) => +val),
           });
           no++;

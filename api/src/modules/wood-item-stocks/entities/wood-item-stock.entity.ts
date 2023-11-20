@@ -1,5 +1,6 @@
 // export class WoodItemStock {}
 
+import { Location } from '@/modules/locations/entities/location.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';
 import {
@@ -41,4 +42,9 @@ export class WoodItemStock {
   @ManyToOne(() => Wood, (location) => location.woodItemStocks)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
   wood: Wood;
+
+  @Expose()
+  @ManyToOne(() => Location, (location) => location.woodItemStockLocations)
+  @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
+  location: Location;
 }

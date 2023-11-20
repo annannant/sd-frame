@@ -38,7 +38,7 @@ export const PlanItems = () => {
   })
 
   const { plans, minLength } = data ?? {}
-  const orderedPlans = orderBy(plans ?? [], ['wood'], ['asc'])
+  const orderedPlans = orderBy([...(plans ?? [])], ['wood'], ['asc'])
   const woodLength = orderInfo?.wood?.woodType?.length ?? 0
 
   const onClickCalulate = () => {

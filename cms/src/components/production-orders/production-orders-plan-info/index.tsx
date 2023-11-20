@@ -27,6 +27,7 @@ import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 import { CREATE, EDIT } from 'constants/common'
 
 import { PlanItems } from './plan-items/plan-items'
+import { PlanWoodList } from './plan-wood-list/plan-wood-list'
 import { TableOrderItems } from './table-order-items/table-order-items'
 import { TableOrderStandardFrameItems } from './table-order-std-items/table-order-std-items'
 
@@ -119,7 +120,10 @@ export const ProductionOrdersPlanInfo = () => {
               </Row>
             </Col>
             <Col span={17}>
-              <PlanItems />
+              <div className="flex flex-col gap-y-[30px]">
+                <PlanItems />
+                <PlanWoodList />
+              </div>
             </Col>
           </Row>
         </div>

@@ -1,3 +1,4 @@
+import { WoodItemStock } from '@/modules/wood-item-stocks/entities/wood-item-stock.entity';
 import { WoodStockLocation } from '@/modules/wood-stock-locations/entities/wood-stock-location.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -20,4 +21,7 @@ export class Location {
 
   @OneToMany(() => WoodStockLocation, (item) => item.location)
   woodStockLocations: WoodStockLocation[];
+
+  @OneToMany(() => WoodItemStock, (item) => item.location)
+  woodItemStockLocations: WoodItemStock[];
 }
