@@ -1,18 +1,33 @@
 // export class WoodItemStock {}
 
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Wood } from '@/modules/woods/entities/wood.entity';
+import { Expose } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity('wood_item_stock')
 export class WoodItemStock {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Expose()
   @Column({ name: 'wood_id' })
   woodId: number;
 
+  @Expose()
   @Column({ name: 'location_id' })
   locationId: number;
 
+  @Expose()
+  @Column({ name: 'lot' })
+  lot: number;
+
+  @Expose()
   @Column({
     name: 'wood_length',
     nullable: true,
@@ -21,4 +36,9 @@ export class WoodItemStock {
     scale: 4,
   })
   woodLength: number;
+
+  @Expose()
+  @ManyToOne(() => Wood, (location) => location.woodItemStocks)
+  @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
+  wood: Wood;
 }

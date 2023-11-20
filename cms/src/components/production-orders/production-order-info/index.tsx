@@ -60,22 +60,38 @@ export const ProductionOrdersInfoIndex = () => {
       const values = form.getFieldsValue()
       switch (action) {
         case 'create-save-draft':
+          localStorage.setItem('localStorageKey', '1')
           await createSaveDraft(values)
           break
         case 'update-save-draft':
+          localStorage.setItem('localStorageKey', '1')
           await updateSaveDraft(values)
           refetch()
           break
         case 'create':
-          await create(values)
+          if (await modal.confirm(configSubmit)) {
+            localStorage.setItem('localStorageKey', '2')
+            await create(values)
+          } else {
+            return
+          }
           break
         case 'update':
-          await update(values)
-          refetch()
+          if (await modal.confirm(configSubmit)) {
+            localStorage.setItem('localStorageKey', '2')
+            await update(values)
+            refetch()
+          } else {
+            return
+          }
           break
         case 'delete':
-          await remove()
-          refetch()
+          if (await modal.confirm(configCancel)) {
+            await remove()
+            refetch()
+          } else {
+            return
+          }
           break
         default:
           break
@@ -112,6 +128,7 @@ export const ProductionOrdersInfoIndex = () => {
 
   const onClickButtonCancel = async () => {
     try {
+      localStorage.setItem('localStorageKey', '2')
       await remove()
       refetch()
       success()
@@ -207,6 +224,9 @@ export const ProductionOrdersInfoIndex = () => {
         </div>
         <div className="mb-10 mt-5 flex justify-between gap-x-[10px]">
           <div>
+            <ButtonBack disabled={false} />
+          </div>
+          <div className="flex justify-end gap-x-[10px]">
             {showDeleteButton && (
               <Button
                 type="primary"
@@ -236,7 +256,6 @@ export const ProductionOrdersInfoIndex = () => {
                   if (confirmed) {
                     onClickButtonCancel()
                   }
-                  console.log('Confirmed: ', confirmed)
                 }}
                 danger
                 disabled={false}
@@ -244,9 +263,6 @@ export const ProductionOrdersInfoIndex = () => {
                 ยกเลิก
               </Button>
             )}
-          </div>
-          <div className="flex justify-end gap-x-[10px]">
-            <ButtonBack disabled={false} />
             {showSaveButton && (
               <Button
                 type="default"
@@ -269,40 +285,13 @@ export const ProductionOrdersInfoIndex = () => {
                 htmlType="button"
                 className="w-[160px]"
                 onClick={async () => {
-                  const confirmed = await modal.confirm(configSubmit)
-                  if (confirmed) {
-                    isEdit ? onClickButton('update') : onClickButton('create')
-                  }
+                  isEdit ? onClickButton('update') : onClickButton('create')
                 }}
               >
                 {orderInfo?.status === WAIT_FOR_CUTTING ? 'บันทึก' : 'สั่งผลิต'}
               </Button>
             )}
           </div>
-          {/* {(orderInfo?.status === DRAFT || isCreate) && (
-           
-          )} */}
-
-          {/* {isEdit && (
-         
-          )} */}
-
-          {/* {orderInfo?.status === WAIT_FOR_CUTTING && isEdit && (
-            <Button
-              type="default"
-              htmlType="button"
-              className="w-[160px]"
-              icon={<EditOutlined style={{ fontSize: 14 }} />}
-              onClick={async () => {
-                const confirmed = await modal.confirm(configEdit)
-                if (confirmed) {
-                  onClickButton('update-save-draft')
-                }
-              }}
-            >
-              แก้ไขคำสั่งผลิต
-            </Button>
-          )} */}
         </div>
       </Form>
     </>

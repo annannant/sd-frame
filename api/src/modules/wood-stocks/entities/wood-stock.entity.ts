@@ -1,6 +1,14 @@
+import { WoodStockLocation } from '@/modules/wood-stock-locations/entities/wood-stock-location.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity('wood_stock')
 export class WoodStock {
@@ -35,4 +43,7 @@ export class WoodStock {
   @ManyToOne(() => Wood, (wood) => wood.woodStocks)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
   wood: Wood;
+
+  @OneToMany(() => WoodStockLocation, (item) => item.woodStock)
+  woodStockLocations: WoodStockLocation[];
 }

@@ -957,6 +957,7 @@ class CoreAlgorithm {
 
         responseSuggest.push({
           no: noStd,
+          wood: iterator.from_stock ? iterator.wood : this.woodLength,
           size: iterator.size,
           qty: iterator.qty,
           list: iterator.woodList,

@@ -1,9 +1,4 @@
-import { useState } from 'react'
-
-import { Card, Col, Row, Tabs, Typography } from 'antd'
-import type { TabsProps } from 'antd'
-
-import { ButtonBack } from 'common/button/back-button'
+import { Card, Typography } from 'antd'
 
 import { TableOrders } from './table-orders/table-orders'
 

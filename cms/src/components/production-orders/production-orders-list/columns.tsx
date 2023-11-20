@@ -8,6 +8,7 @@ import { TagStatus } from 'common/tag-status'
 import { ITFTableProductionOrder } from 'types/production-order.type'
 
 import { formatDate } from 'helper/date-formatter'
+import { convertWoodLabel } from 'helper/wood'
 
 const columns = [
   {
@@ -25,11 +26,7 @@ const columns = [
     dataIndex: 'address',
     key: 'address',
     render: (text: any, record: ITFTableProductionOrder, count: any) => {
-      return (
-        <div>{`${record?.wood?.name ?? ''} - ${
-          record?.wood?.description ?? ''
-        }`}</div>
-      )
+      return <div>{convertWoodLabel(record?.wood ?? {})}</div>
     },
   },
   {

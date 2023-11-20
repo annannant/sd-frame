@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { useLoaderData } from 'react-router-dom'
 
 import { Table } from 'antd'
@@ -7,15 +8,20 @@ import { ColumnsType } from 'antd/es/table'
 import { ITFProductionOrderItem } from 'types/production-order-items.type'
 import { ITFProductionOrderPlanSuggest } from 'types/production-order-plan'
 
+import { productionOrdersSelector } from 'app/slice/production-orders'
 import {
   useGetProductionOrderByIDQuery,
   usePostProductionCreatePlanQuery,
 } from 'services/production-order'
 
 export const TableOrderStandardFrameItems = () => {
-  const { id, action }: any = useLoaderData()
+  const { paramsCreatePlan } = useSelector(productionOrdersSelector)
+  const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
-  const { isLoading, data } = usePostProductionCreatePlanQuery(id)
+  const { data } = usePostProductionCreatePlanQuery({
+    ...paramsCreatePlan,
+    id: id,
+  })
   const { suggest } = data ?? {}
 
   const columns: ColumnsType<ITFProductionOrderPlanSuggest> = [

@@ -1,16 +1,16 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { ITFProductionOrderPlanResponse } from 'types/production-order-plan'
+import {
+  ITFProductionOrderCreatePlanParams,
+  ITFProductionOrderPlanResponse,
+} from 'types/production-order-plan'
 import {
   ITFProductionOrder,
   ITFProductionOrderQueryParams,
 } from 'types/production-order.type'
-import { ITFWoodOption } from 'types/wood-option.type'
-import { ITFWood } from 'types/wood.type'
 
 import { API_URL } from 'config/url.constant'
-import { orderBy } from 'lodash'
 
 export const productionOrderApiSlice = createApi({
   reducerPath: 'productionOrderApiSlice',
@@ -37,15 +37,16 @@ export const productionOrderApiSlice = createApi({
     }),
     postProductionCreatePlan: builder.query<
       ITFProductionOrderPlanResponse,
-      string
+      ITFProductionOrderCreatePlanParams
     >({
-      query: (id: string | number | undefined) => ({
+      query: (params: ITFProductionOrderCreatePlanParams) => ({
         url: `production-orders/create-plan`,
         method: 'POST',
-        body: {
-          id,
-          sparePart: 0.25,
-        },
+        // body: {
+        //   id,
+        //   sparePart: 0.25,
+        // },
+        body: params,
       }),
     }),
   }),

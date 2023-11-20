@@ -99,7 +99,6 @@ export class StandardFrameStocksService {
           reorderStock: reorderStock > 0 ? reorderStock : 0,
         };
       });
-      console.log('totalReorderStock:', totalReorderStock);
 
       return {
         ...item,

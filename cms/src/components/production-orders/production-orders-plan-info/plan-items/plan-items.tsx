@@ -1,6 +1,8 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLoaderData } from 'react-router-dom'
 
+import { LoadingOutlined } from '@ant-design/icons'
 import { Button, Card, ConfigProvider, Form, InputNumber, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
@@ -13,6 +15,10 @@ import { ITFProductionOrderPlan } from 'types/production-order-plan'
 
 import { parser } from 'helper/number'
 
+import {
+  productionOrdersSelector,
+  setParamsCreatePlan,
+} from 'app/slice/production-orders'
 import { orderBy, sortBy, sum } from 'lodash'
 import {
   useGetProductionOrderByIDQuery,
@@ -20,19 +26,44 @@ import {
 } from 'services/production-order'
 
 export const PlanItems = () => {
-  const { id, action }: any = useLoaderData()
+  const dispatch = useDispatch()
+
+  const form = Form.useFormInstance()
+  const { paramsCreatePlan } = useSelector(productionOrdersSelector)
+  const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
-  const { isLoading, data } = usePostProductionCreatePlanQuery(id)
+  const { isLoading, data, refetch } = usePostProductionCreatePlanQuery({
+    id: id,
+    sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+  })
+
   const { plans, minLength } = data ?? {}
   const orderedPlans = orderBy(plans ?? [], ['wood'], ['asc'])
   const woodLength = orderInfo?.wood?.woodType?.length ?? 0
+
+  const onClickCalulate = () => {
+    dispatch(
+      setParamsCreatePlan({
+        id: id,
+        sparePart: form?.getFieldValue('sparePart') ?? 0.25,
+      })
+    )
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [paramsCreatePlan])
+
+  useEffect(() => {
+    form?.setFieldValue('sparePart', 0.25)
+  }, [])
 
   return (
     <Card title="รายการไม้ที่ต้องตัด" bordered={false}>
       <div className="mb-[40px] flex justify-end gap-x-3">
         <Form.Item
           label="ส่วนเผื่อเหลือ (Spare Part)"
-          name={'sparePArt'}
+          name={'sparePart'}
           style={{ width: '50%' }}
           rules={[
             {
@@ -46,7 +77,6 @@ export const PlanItems = () => {
             max={3}
             placeholder="ส่วนเผื่อเหลือ"
             style={{ width: '100%' }}
-            defaultValue={0.25}
           />
         </Form.Item>
         <ConfigProvider
@@ -59,13 +89,24 @@ export const PlanItems = () => {
           <Button
             type="primary"
             htmlType="button"
-            onClick={() => {}}
+            onClick={onClickCalulate}
             style={{ width: 100 }}
           >
             คำนวณ
           </Button>
         </ConfigProvider>
       </div>
+      {isLoading && (
+        <div className="mb-10 flex justify-center py-10">
+          {
+            <LoadingOutlined
+              style={{ fontSize: 38, color: colors.primary }}
+              spin
+            />
+          }
+        </div>
+      )}
+
       <div className="mb-8 flex flex-col gap-y-[32px]">
         {(orderedPlans ?? []).map(
           (item: ITFProductionOrderPlan, index: number) => {

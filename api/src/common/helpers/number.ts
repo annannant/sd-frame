@@ -6,5 +6,5 @@ export const parser = (input: string | number) => {
     num = input;
   }
 
-  return (num * 100) / 100;
+  return (num * 1000000) / 1000000;
 };

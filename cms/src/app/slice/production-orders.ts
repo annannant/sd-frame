@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
+import { ITFProductionOrderCreatePlanParams } from 'types/production-order-plan'
 import { ITFCreateProductionOrder } from 'types/production-order.type'
 import { ITFWood } from 'types/wood.type'
 
@@ -10,6 +11,7 @@ export interface ProductionOrdersInfoState {
   data: any
   selected: ITFWood | null
   loading: boolean
+  paramsCreatePlan: ITFProductionOrderCreatePlanParams
   // loding: {
   //   'page'?: boolean
   //   'save'?: boolean
@@ -22,11 +24,7 @@ const initialValues: ProductionOrdersInfoState = {
   data: null,
   selected: null,
   loading: false,
-  // loding: {
-  //   'page': false,
-  //   'save': false,
-  //   'submit': false,
-  // },
+  paramsCreatePlan: { id: 0, sparePart: 0.25 },
 }
 
 const productionOrdersSlice = createSlice({
@@ -39,10 +37,17 @@ const productionOrdersSlice = createSlice({
     ) => {
       state.selected = action.payload
     },
+    setParamsCreatePlan: (
+      state: ProductionOrdersInfoState,
+      action: PayloadAction<ITFProductionOrderCreatePlanParams>
+    ) => {
+      state.paramsCreatePlan = action.payload
+    },
   },
 })
 
-export const { setSelected } = productionOrdersSlice.actions
+export const { setSelected, setParamsCreatePlan } =
+  productionOrdersSlice.actions
 export const productionOrdersSelector = (store: RootState) =>
   store.productionOrders
 

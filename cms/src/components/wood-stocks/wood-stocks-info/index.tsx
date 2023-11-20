@@ -16,7 +16,7 @@ export const WoodStocksInfoComponent = () => {
     skip: !id,
   })
 
-  const title = `${data?.name} - ${data?.description}`
+  const title = `${data?.code} - ${data?.name}, ${data?.description}`
 
   return (
     <>

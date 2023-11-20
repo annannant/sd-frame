@@ -29,8 +29,12 @@ export const convertSizeText = (
   return `${toFixed(size, 2)} ${convertUnitToSymbol(unit ?? '')}`
 }
 
+export const convertWoodLabel = (wood?: ITFWood) => {
+  return `${wood?.code} - ${wood?.name}, ${wood?.description}`
+}
+
 export const convertWoodName = (wood?: ITFWood) => {
-  return `${wood?.name} - ${wood?.description}`
+  return `${wood?.name}, ${wood?.description}`
 }
 
 export const convertWoodType = () => {
