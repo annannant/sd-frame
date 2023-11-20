@@ -4,12 +4,12 @@ import { Table } from 'antd'
 
 import { useStandardFrameStocks } from 'hooks/useStandardFrameStocks'
 
-import { useColumnsWoodStdStocks } from './columns'
+import { useColumnsWoodStandardFrameStocks } from './columns'
 
-export const TableWoodStdStocks = () => {
+export const TableWoodStandardFrameStocks = () => {
   const { data, refetch, transformTable } = useStandardFrameStocks()
   const { columns, contextHolder, contextHolderModal } =
-    useColumnsWoodStdStocks()
+    useColumnsWoodStandardFrameStocks()
   const dataSource = transformTable(data ?? [])
 
   useEffect(() => {

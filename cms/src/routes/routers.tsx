@@ -16,6 +16,7 @@ import {
 } from 'pages/standard-frame-stocks/standard-frame-stocks-info'
 import { StandardFrameStocksListPage } from 'pages/standard-frame-stocks/standard-frame-stocks-list'
 import { StandardFramesListPage } from 'pages/standard-frames/standard-frames-list'
+import { WoodStandardFrameStocksListPage } from 'pages/wood-standard-frame-stocks/wood-standard-frame-stocks-list'
 import { WoodStocksImportPage } from 'pages/wood-stocks/wood-stocks-import'
 import { WoodStocksImportConfirmPage } from 'pages/wood-stocks/wood-stocks-import-confirm'
 import {
@@ -94,6 +95,35 @@ export const router = createBrowserRouter([
         element: <ProductionOrdersPlanInfoPage />,
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
+      },
+    ],
+  },
+  {
+    path: '/wood',
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    loader: () => {
+      console.log('loader')
+      return {
+        data: 'loader',
+      }
+    },
+    action: () => {
+      console.log('action')
+      return {
+        data: 'action',
+      }
+    },
+    children: [
+      {
+        index: true,
+        element: <WoodTypesListPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'standard-frames/stocks',
+        element: <WoodStandardFrameStocksListPage />,
+        errorElement: <ErrorPage />,
       },
     ],
   },

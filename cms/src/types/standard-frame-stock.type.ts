@@ -17,20 +17,26 @@ export interface ITFStandardFrameStock extends ITFCreateStandardFrameStock {
   createdBy?: string | null
   updatedAt?: string | null
   updatedBy?: string | null
-  strandardFrame?: ITFStandardFrame | null
+  standardFrame?: ITFStandardFrame | null
   wood?: ITFWood | null
 }
 
-export interface ITFStandardFrameStockByStdFrame
+export interface ITFStandardFrameStockByStandardFrame
   extends ITFStandardFrame,
     ITFStandardFrameStock {
   totalStock?: number | null
+  totalReorderStock?: number | null
 }
 
-export interface ITFTableStandardFrameStockByStdFrame
+export interface ITFTableStandardFrameStockByStandardFrame
   extends ITFTable,
-    ITFStandardFrameStockByStdFrame {}
+    ITFStandardFrameStockByStandardFrame {}
 
 export interface ITFTableStandardFrameStock
   extends ITFTable,
     ITFStandardFrameStock {}
+
+export interface ITFParamStandardFrameStock {
+  standardFrameId?: number | null
+  woodId?: number | null
+}

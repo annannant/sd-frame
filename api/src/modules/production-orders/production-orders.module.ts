@@ -8,6 +8,7 @@ import { ProductionOrderItemsService } from '../production-order-items/productio
 import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
 import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
+import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-f
       ProductionOrderItem,
       StandardFrame,
       WoodItemStock,
+      WoodStock,
       StandardFrameStock,
     ]),
   ],

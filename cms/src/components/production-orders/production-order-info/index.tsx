@@ -48,9 +48,11 @@ export const ProductionOrdersInfoIndex = () => {
 
   const showDeleteButton = isEdit && orderInfo?.status === DRAFT
   const showSaveButton = isCreate || (isEdit && orderInfo?.status === DRAFT)
-  const showSubmitButton = isCreate || (isEdit && orderInfo?.status === DRAFT)
+  const showSubmitButton =
+    isCreate ||
+    (isEdit && [DRAFT, WAIT_FOR_CUTTING].includes(orderInfo?.status ?? ''))
   const showCancelButton = orderInfo?.status === WAIT_FOR_CUTTING
-  const disabledForm = isEdit && orderInfo?.status !== DRAFT
+  // const disabledForm = isEdit && orderInfo?.status !== DRAFT
 
   const onClickButton = async (action: string) => {
     try {
@@ -176,7 +178,6 @@ export const ProductionOrdersInfoIndex = () => {
         scrollToFirstError={{
           block: 'center',
         }}
-        disabled={disabledForm}
       >
         <div className="flex justify-between">
           <Title level={3}>สั่งผลิต / สร้างคำสั่งผลิต</Title>
@@ -224,6 +225,25 @@ export const ProductionOrdersInfoIndex = () => {
                 ลบ
               </Button>
             )}
+            {showCancelButton && (
+              <Button
+                type="primary"
+                htmlType="button"
+                className="w-[120px]"
+                // icon={<CloseOutlined style={{ fontSize: 14 }} />}
+                onClick={async () => {
+                  const confirmed = await modal.confirm(configCancel)
+                  if (confirmed) {
+                    onClickButtonCancel()
+                  }
+                  console.log('Confirmed: ', confirmed)
+                }}
+                danger
+                disabled={false}
+              >
+                ยกเลิก
+              </Button>
+            )}
           </div>
           <div className="flex justify-end gap-x-[10px]">
             <ButtonBack disabled={false} />
@@ -255,26 +275,7 @@ export const ProductionOrdersInfoIndex = () => {
                   }
                 }}
               >
-                สั่งผลิต
-              </Button>
-            )}
-            {showCancelButton && (
-              <Button
-                type="primary"
-                htmlType="button"
-                className="w-[120px]"
-                // icon={<CloseOutlined style={{ fontSize: 14 }} />}
-                onClick={async () => {
-                  const confirmed = await modal.confirm(configCancel)
-                  if (confirmed) {
-                    onClickButtonCancel()
-                  }
-                  console.log('Confirmed: ', confirmed)
-                }}
-                danger
-                disabled={false}
-              >
-                ยกเลิก
+                {orderInfo?.status === WAIT_FOR_CUTTING ? 'บันทึก' : 'สั่งผลิต'}
               </Button>
             )}
           </div>

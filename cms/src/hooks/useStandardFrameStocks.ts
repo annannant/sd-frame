@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLoaderData } from 'react-router-dom'
 
@@ -19,6 +20,7 @@ import useModal from './useModal'
 
 import {
   setDataEdit,
+  setFilter,
   setShowDrawer,
   standardFrameStockSelector,
 } from 'app/slice/standard-frame-stocks'
@@ -33,9 +35,11 @@ export const useStandardFrameStocks = () => {
   const { id }: any = useLoaderData()
   const { contextHolder, success, error } = useMessage()
   const { configDelete } = useModal()
-  const { isEdit } = useSelector(standardFrameStockSelector)
-  const { data, refetch } =
-    useGetAllStandardFrameStocksByStandardFrameIDQuery(id)
+  const { isEdit, filter } = useSelector(standardFrameStockSelector)
+  const { data, refetch } = useGetAllStandardFrameStocksByStandardFrameIDQuery({
+    id,
+    params: filter,
+  })
   const { refetch: refetchWoodOptions } = useGetAllWoodsQuery()
 
   const refetchData = () => {

@@ -28,7 +28,7 @@ import { CREATE, EDIT } from 'constants/common'
 
 import { PlanItems } from './plan-items/plan-items'
 import { TableOrderItems } from './table-order-items/table-order-items'
-import { TableOrderStdItems } from './table-order-std-items/table-order-std-items'
+import { TableOrderStandardFrameItems } from './table-order-std-items/table-order-std-items'
 
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
 
@@ -113,7 +113,7 @@ export const ProductionOrdersPlanInfo = () => {
                     title="รายการขนาดกรอบรูปที่แนะนำให้ตัด"
                     bordered={false}
                   >
-                    <TableOrderStdItems />
+                    <TableOrderStandardFrameItems />
                   </Card>
                 </Col>
               </Row>

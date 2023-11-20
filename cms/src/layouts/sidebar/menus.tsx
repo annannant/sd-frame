@@ -84,6 +84,12 @@ export const menus: ITFSidebarItem[] = [
         label: 'สต๊อก',
         icon: <CodeSandboxOutlined />,
       },
+      // {
+      //   key: '/standard-frames/stocks/woods',
+      //   url: '/standard-frames/stocks/woods',
+      //   label: 'สต๊อก by ไม้กรอบ',
+      //   icon: <CodeSandboxOutlined />,
+      // },
     ],
   },
   {
@@ -95,21 +101,27 @@ export const menus: ITFSidebarItem[] = [
       {
         key: '/wood-types',
         url: '/wood-types',
-        label: 'ข้อมูลไม้กรอบ',
+        label: 'ประเภทไม้กรอบ',
         icon: <ProjectOutlined />,
       },
       {
         key: '/wood-stocks',
         url: '/wood-stocks',
-        label: 'สต๊อก',
+        label: 'สต๊อกไม้กรอบ',
         icon: <CodeSandboxOutlined />,
       },
       {
         key: '/wood-stocks/import',
         url: '/wood-stocks/import',
-        label: 'นำเข้าสต๊อก',
+        label: 'นำเข้าสต๊อกไม้กรอบ',
         icon: <PlusOutlined />,
       },
+      // {
+      //   key: '/wood/standard-frames/stocks',
+      //   url: '/wood/standard-frames/stocks',
+      //   label: 'กรอบมาตรฐาน',
+      //   icon: <CodeSandboxOutlined />,
+      // },
     ],
   },
 ]

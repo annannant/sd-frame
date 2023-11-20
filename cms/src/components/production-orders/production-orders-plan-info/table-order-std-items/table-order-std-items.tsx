@@ -12,7 +12,7 @@ import {
   usePostProductionCreatePlanQuery,
 } from 'services/production-order'
 
-export const TableOrderStdItems = () => {
+export const TableOrderStandardFrameItems = () => {
   const { id, action }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
   const { isLoading, data } = usePostProductionCreatePlanQuery(id)
@@ -37,16 +37,6 @@ export const TableOrderStdItems = () => {
       onHeaderCell: () => ({
         style: { textAlign: 'center' },
       }),
-      // render: (text: any, record: ITFProductionOrderItem, count: any) => {
-      //   if (record?.isCustomSize) {
-      //     return (
-      //       <div className="">
-      //         {`${record?.width}x${record?.height}`.replaceAll('.00', '')}
-      //       </div>
-      //     )
-      //   }
-      //   return <div className="">{`${record?.standardFrame?.name}`}</div>
-      // },
     },
     {
       title: 'จำนวน',

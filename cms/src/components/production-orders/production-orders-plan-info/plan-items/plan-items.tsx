@@ -13,7 +13,7 @@ import { ITFProductionOrderPlan } from 'types/production-order-plan'
 
 import { parser } from 'helper/number'
 
-import { sum } from 'lodash'
+import { orderBy, sortBy, sum } from 'lodash'
 import {
   useGetProductionOrderByIDQuery,
   usePostProductionCreatePlanQuery,
@@ -24,6 +24,7 @@ export const PlanItems = () => {
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
   const { isLoading, data } = usePostProductionCreatePlanQuery(id)
   const { plans, minLength } = data ?? {}
+  const orderedPlans = orderBy(plans ?? [], ['wood'], ['asc'])
   const woodLength = orderInfo?.wood?.woodType?.length ?? 0
 
   return (
@@ -66,64 +67,69 @@ export const PlanItems = () => {
         </ConfigProvider>
       </div>
       <div className="mb-8 flex flex-col gap-y-[32px]">
-        {(plans ?? []).map((item: ITFProductionOrderPlan, index: number) => {
-          const sumWidth = sum(item.list ?? [])
-          const isWoodStock = parser(item.wood ?? '') !== parser(woodLength)
-          const remaining = parser(
-            (isWoodStock ? parser(item.wood ?? '') : parser(woodLength)) -
-              parser(sumWidth)
-          )
-          const percentRemaining =
-            (parser(remaining ?? 0) * 100) / parser(woodLength)
-          const colorWasted =
-            remaining >= parser(minLength ?? 0) ? 'bg-secondary' : 'bg-danger'
+        {(orderedPlans ?? []).map(
+          (item: ITFProductionOrderPlan, index: number) => {
+            const sumWidth = sum(item.list ?? [])
+            const isWoodStock = parser(item.wood ?? '') !== parser(woodLength)
+            const remaining = parser(
+              (isWoodStock ? parser(item.wood ?? '') : parser(woodLength)) -
+                parser(sumWidth)
+            )
+            const percentRemaining =
+              (parser(remaining ?? 0) * 100) / parser(woodLength)
+            const colorWasted =
+              remaining >= parser(minLength ?? 0) ? 'bg-secondary' : 'bg-danger'
 
-          return (
-            <div key={`${item.no}`} className="flex items-center">
-              <div
-                className="w-[60px]"
-                style={{
-                  color: isWoodStock ? colors.primary : colors.fontDescription,
-                  fontWeight: isWoodStock ? 600 : 'normal',
-                }}
-              >
-                {item.wood}
-              </div>
-              <div className="flex flex-1 flex-row">
-                {(item.list ?? []).map((width, idx: number) => {
-                  const percent =
-                    (parser(width ?? 0) * 100) / parser(woodLength)
-                  return (
+            const orderedItems = sortBy(item.list ?? []).reverse()
+            return (
+              <div key={`${item.no}`} className="flex items-center">
+                <div
+                  className="w-[60px]"
+                  style={{
+                    color: isWoodStock
+                      ? colors.primary
+                      : colors.fontDescription,
+                    fontWeight: isWoodStock ? 600 : 'normal',
+                  }}
+                >
+                  {item.wood}
+                </div>
+                <div className="flex flex-1 flex-row">
+                  {orderedItems.map((width, idx: number) => {
+                    const percent =
+                      (parser(width ?? 0) * 100) / parser(woodLength)
+                    return (
+                      <div
+                        key={idx}
+                        className={`mr-[6px] flex h-[8px] justify-center bg-warning`}
+                        style={{
+                          width: `${percent}%`,
+                        }}
+                      >
+                        <div className="mt-[10px]">
+                          {parser(width).toFixed(2)}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  {remaining > 0 && (
                     <div
-                      key={idx}
-                      className={`bg-warning mr-[6px] flex h-[8px] justify-center`}
+                      className={`mr-[6px] flex h-[8px] justify-center ${colorWasted}`}
                       style={{
-                        width: `${percent}%`,
+                        width: `${percentRemaining}%`,
                       }}
                     >
                       <div className="mt-[10px]">
-                        {parser(width).toFixed(2)}
+                        {parser(remaining).toFixed(2)}
                       </div>
                     </div>
-                  )
-                })}
-                {remaining > 0 && (
-                  <div
-                    className={`mr-[6px] flex h-[8px] justify-center ${colorWasted}`}
-                    style={{
-                      width: `${percentRemaining}%`,
-                    }}
-                  >
-                    <div className="mt-[10px]">
-                      {parser(remaining).toFixed(2)}
-                    </div>
-                  </div>
-                )}
-                {/* {sumWidth} */}
+                  )}
+                  {/* {sumWidth} */}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          }
+        )}
       </div>
     </Card>
   )

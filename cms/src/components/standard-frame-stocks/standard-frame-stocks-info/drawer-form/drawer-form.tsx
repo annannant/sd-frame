@@ -32,9 +32,9 @@ export const DrawerForm = (props: DrawerFormProps) => {
   const dispatch = useDispatch()
   const [formInstance] = Form.useForm()
   const { id, data, contextHolder, onFinish } = useStandardFrameStocks()
-  const { data: dataStdFrame } = useGetStandardFramesByIDQuery(id)
+  const { data: dataStandardFrame } = useGetStandardFramesByIDQuery(id)
   const { data: dataWoods } = useGetAllWoodsQuery()
-  const { isShowDrawer, dataEdit, isEdit } = useSelector(
+  const { isShowDrawer, dataEdit, isEdit, filter } = useSelector(
     standardFrameStockSelector
   )
 
@@ -69,12 +69,12 @@ export const DrawerForm = (props: DrawerFormProps) => {
       })
     } else {
       form?.setFieldsValue({
-        woodId: '',
+        woodId: filter.woodId ?? null,
         stock: '',
-        reorderPoint: dataStdFrame?.defaultReorderPoint,
+        reorderPoint: dataStandardFrame?.defaultReorderPoint,
       })
     }
-  }, [form, dataEdit, dataStdFrame])
+  }, [form, dataEdit, dataStandardFrame])
 
   return (
     <>
@@ -103,7 +103,7 @@ export const DrawerForm = (props: DrawerFormProps) => {
                 className="font-title text-xs"
                 style={{ marginTop: 10, marginBottom: 25, paddingLeft: 10 }}
               >
-                {dataStdFrame?.name}
+                {dataStandardFrame?.name}
               </Title>
             </div>
             <Form.Item

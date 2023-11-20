@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { StandardFrameStock } from './entities/standard-frame-stocks.entity';
 import { sumBy } from 'lodash';
 import { DeleteStandardFrameStockDto } from './dto/delete-standard-frame-stocks.dto';
+import { QueryStandardFrameStockDto } from './dto/query-production-order.dto';
 
 @Injectable()
 export class StandardFrameStocksService {
@@ -21,8 +22,22 @@ export class StandardFrameStocksService {
     return this.standardFrameStocksRepository.save(createStandardFrameStockDto);
   }
 
-  findAll() {
-    return `This action returns all standardFrameStocks`;
+  async findAll(query: QueryStandardFrameStockDto) {
+    const data = await this.standardFrameStocksRepository
+      .createQueryBuilder('st')
+      .leftJoinAndSelect('st.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('st.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute');
+    if (query?.standardFrameId) {
+      data.where('st.standardFrameId = :id', { id: query?.standardFrameId });
+    }
+    if (query?.woodId) {
+      data.where('st.woodId = :id', { id: query?.woodId });
+    }
+
+    const response = data.getMany();
+    return response;
   }
 
   findOne(id: number) {
@@ -46,33 +61,75 @@ export class StandardFrameStocksService {
     });
   }
 
-  async findAllByStandardFrames() {
+  async findAllByStandardFrames(query: QueryStandardFrameStockDto) {
     const data = await this.standardFramesRepository
       .createQueryBuilder('sf')
       .leftJoinAndSelect('sf.standardFrameStocks', 'standardFrameStocks')
       .leftJoinAndSelect('standardFrameStocks.wood', 'wood')
       .leftJoinAndSelect('wood.woodType', 'woodType')
-      .leftJoinAndSelect('wood.attribute', 'attribute')
-      .getMany();
-    const response = data.map((item: StandardFrame) => {
+      .leftJoinAndSelect('wood.attribute', 'attribute');
+
+    const result = await data.getMany();
+    const response = (result ?? []).map((item: StandardFrame) => {
+      const standardFrameStocks = item?.standardFrameStocks.filter(
+        (val: StandardFrameStock) => {
+          if (query?.woodId && query?.standardFrameId) {
+            return (
+              +val?.woodId === +query?.woodId &&
+              +val?.standardFrameId === +query?.standardFrameId
+            );
+          }
+
+          if (query?.woodId) {
+            return +val?.woodId === +query?.woodId;
+          }
+
+          if (query?.standardFrameId) {
+            return +val?.standardFrameId === +query?.standardFrameId;
+          }
+
+          return true;
+        },
+      );
+
+      const totalReorderStock = standardFrameStocks.map((val) => {
+        const reorderStock = val?.reorderPoint - val?.stock;
+        return {
+          ...val,
+          reorderStock: reorderStock > 0 ? reorderStock : 0,
+        };
+      });
+      console.log('totalReorderStock:', totalReorderStock);
+
       return {
         ...item,
-        totalStock: sumBy(item?.standardFrameStocks, 'stock'),
+        standardFrameStocks,
+        totalStock: sumBy(standardFrameStocks, 'stock'),
+        totalReorderStock: sumBy(totalReorderStock, 'reorderStock'),
       };
     });
     return response;
   }
 
-  async findAllByStandardFrameId(id: number) {
-    const data = await this.standardFrameStocksRepository
+  async findAllByStandardFrameId(
+    id: number,
+    query: QueryStandardFrameStockDto,
+  ) {
+    const data = this.standardFrameStocksRepository
       .createQueryBuilder('st')
+      .where('st.standardFrameId = :standardFrameId', { standardFrameId: id });
+
+    if (query?.woodId) {
+      data.andWhere('st.woodId = :woodId', { woodId: +query?.woodId });
+    }
+
+    const response = await data
       .leftJoinAndSelect('st.standardFrame', 'standardFrame')
       .leftJoinAndSelect('st.wood', 'wood')
       .leftJoinAndSelect('wood.woodType', 'woodType')
       .leftJoinAndSelect('wood.attribute', 'attribute')
-      .where('st.standardFrameId = :id', { id })
       .getMany();
 
-    return data;
+    return response;
   }
 }

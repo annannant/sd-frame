@@ -4,11 +4,12 @@ import { FileSearchOutlined } from '@ant-design/icons'
 import { Button, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
-import { ITFTableStandardFrameStockByStdFrame } from 'types/standard-frame-stock.type'
+import { colors } from 'constants/colors'
+import { ITFTableStandardFrameStockByStandardFrame } from 'types/standard-frame-stock.type'
 
 import { currency } from 'helper/number'
 
-const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
+const columns: ColumnsType<ITFTableStandardFrameStockByStandardFrame> = [
   {
     title: 'No',
     dataIndex: 'no',
@@ -33,8 +34,8 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
     }),
     width: '15%',
     sorter: (
-      a: ITFTableStandardFrameStockByStdFrame,
-      b: ITFTableStandardFrameStockByStdFrame
+      a: ITFTableStandardFrameStockByStandardFrame,
+      b: ITFTableStandardFrameStockByStandardFrame
     ) => (a?.name ?? '').localeCompare(b?.name ?? ''),
   },
   {
@@ -50,7 +51,7 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
     width: '18%',
     render: (
       text: any,
-      record: ITFTableStandardFrameStockByStdFrame,
+      record: ITFTableStandardFrameStockByStandardFrame,
       count: any
     ) => {
       return `${currency(record?.width ?? 0)} x ${currency(
@@ -58,8 +59,8 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
       )} นิ้ว`
     },
     sorter: (
-      a: ITFTableStandardFrameStockByStdFrame,
-      b: ITFTableStandardFrameStockByStdFrame
+      a: ITFTableStandardFrameStockByStandardFrame,
+      b: ITFTableStandardFrameStockByStandardFrame
     ) => (a?.width ?? 0) - (b?.width ?? 0),
   },
 
@@ -76,17 +77,20 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
     width: '10%',
     render: (
       text: any,
-      record: ITFTableStandardFrameStockByStdFrame,
+      record: ITFTableStandardFrameStockByStandardFrame,
       count: any
     ) => {
-      return text === false ? <Tag color="red">ปิดใช้งาน</Tag> : ''
+      return text === false ? (
+        <Tag color="red">ปิดใช้งาน</Tag>
+      ) : (
+        <Tag color="green">เปิดใช้งาน</Tag>
+      )
     },
     sorter: (
-      a: ITFTableStandardFrameStockByStdFrame,
-      b: ITFTableStandardFrameStockByStdFrame
+      a: ITFTableStandardFrameStockByStandardFrame,
+      b: ITFTableStandardFrameStockByStandardFrame
     ) => (a?.isActive ? 1 : 0) - (b?.isActive ? 1 : 0),
   },
-
   {
     title: 'สต๊อกทั้งหมด',
     dataIndex: 'totalStock',
@@ -100,15 +104,51 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
     width: '18%',
     render: (
       text: any,
-      record: ITFTableStandardFrameStockByStdFrame,
+      record: ITFTableStandardFrameStockByStandardFrame,
       count: any
     ) => {
-      return `${currency(record?.totalStock ?? 0)}`
+      // return `${currency(record?.totalStock ?? 0)}`
+      return (
+        <div
+          className="px-[20px]"
+          style={{
+            color:
+              (record?.totalReorderStock ?? 0) > 0
+                ? colors.danger
+                : colors.fontTitle,
+          }}
+        >
+          {currency(record?.totalStock ?? 0)}
+        </div>
+      )
     },
     sorter: (
-      a: ITFTableStandardFrameStockByStdFrame,
-      b: ITFTableStandardFrameStockByStdFrame
-    ) => (a?.width ?? 0) - (b?.width ?? 0),
+      a: ITFTableStandardFrameStockByStandardFrame,
+      b: ITFTableStandardFrameStockByStandardFrame
+    ) => (a?.totalStock ?? 0) - (b?.totalStock ?? 0),
+  },
+  {
+    title: 'จำนวนที่ต้องสั่งผลิต',
+    dataIndex: 'totalReorderStock',
+    key: 'totalReorderStock',
+    onHeaderCell: () => ({
+      style: { textAlign: 'center' },
+    }),
+    onCell: () => ({
+      style: { textAlign: 'center' },
+    }),
+    width: '15%',
+    render: (
+      text: any,
+      record: ITFTableStandardFrameStockByStandardFrame,
+      count: any
+    ) => {
+      return text > 0 ? `${currency(text)}` : ''
+    },
+    sorter: (
+      a: ITFTableStandardFrameStockByStandardFrame,
+      b: ITFTableStandardFrameStockByStandardFrame
+    ) => (a?.totalReorderStock ?? 0) - (b?.totalReorderStock ?? 0),
   },
   {
     title: 'Action',
@@ -120,7 +160,7 @@ const columns: ColumnsType<ITFTableStandardFrameStockByStdFrame> = [
     }),
     render: (
       text: any,
-      record: ITFTableStandardFrameStockByStdFrame,
+      record: ITFTableStandardFrameStockByStandardFrame,
       count: any
     ) => {
       return (

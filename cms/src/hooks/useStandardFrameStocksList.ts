@@ -1,14 +1,14 @@
 import {
-  ITFStandardFrameStockByStdFrame,
-  ITFTableStandardFrameStockByStdFrame,
+  ITFStandardFrameStockByStandardFrame,
+  ITFTableStandardFrameStockByStandardFrame,
 } from 'types/standard-frame-stock.type'
 
 export const useStandardFrameStocksList = () => {
   const transformStandardFrameList = (
-    data: ITFStandardFrameStockByStdFrame[]
-  ): ITFTableStandardFrameStockByStdFrame[] => {
+    data: ITFStandardFrameStockByStandardFrame[]
+  ): ITFTableStandardFrameStockByStandardFrame[] => {
     const result = data.map(
-      (item, index: number): ITFTableStandardFrameStockByStdFrame => {
+      (item, index: number): ITFTableStandardFrameStockByStandardFrame => {
         return {
           ...item,
           key: item?.id?.toString(),

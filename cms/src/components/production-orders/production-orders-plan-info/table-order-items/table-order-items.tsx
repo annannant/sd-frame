@@ -9,6 +9,8 @@ import {
   ITFTableProductionOrderItem,
 } from 'types/production-order-items.type'
 
+import { currency } from 'helper/number'
+
 import { useGetProductionOrderByIDQuery } from 'services/production-order'
 
 export const TableOrderItems = () => {
@@ -38,7 +40,9 @@ export const TableOrderItems = () => {
         if (record?.isCustomSize) {
           return (
             <div className="">
-              {`${record?.width}x${record?.height}`.replaceAll('.00', '')}
+              {`${currency(record?.width ?? 0)} x ${currency(
+                record?.height ?? 0
+              )}`}
             </div>
           )
         }

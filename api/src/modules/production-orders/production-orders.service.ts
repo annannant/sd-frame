@@ -17,6 +17,7 @@ import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.enti
 import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
 import { generateOrderNo } from '@/common/helpers/generator';
 import { DRAFT } from '@/common/constants/current-status.constant';
+import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
 
 @Injectable()
 export class ProductionOrdersService {
@@ -27,6 +28,8 @@ export class ProductionOrdersService {
     private productionOrderItemsRepository: Repository<ProductionOrderItem>,
     @InjectRepository(StandardFrame)
     private standardFramesRepository: Repository<StandardFrame>,
+    @InjectRepository(WoodStock)
+    private woodStocksRepository: Repository<WoodStock>,
     @InjectRepository(WoodItemStock)
     private woodItemStocksRepository: Repository<WoodItemStock>,
     @InjectRepository(StandardFrameStock)
@@ -110,6 +113,7 @@ export class ProductionOrdersService {
       zeroPattern,
       suggestPattern,
     );
+
     // const data = await algorithm(numbers, [], [], 'desc');
     // console.log('data:', data);
     // console.log('pattern:', pattern);
