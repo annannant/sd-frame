@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 
 import {
@@ -31,7 +32,11 @@ import { PlanWoodList } from './plan-wood-list/plan-wood-list'
 import { TableOrderItems } from './table-order-items/table-order-items'
 import { TableOrderStandardFrameItems } from './table-order-std-items/table-order-std-items'
 
-import { useGetProductionOrderByIDQuery } from 'services/production-order'
+import { productionOrdersSelector } from 'app/slice/production-orders'
+import {
+  useGetProductionOrderByIDQuery,
+  usePostProductionCreatePlanQuery,
+} from 'services/production-order'
 
 const { Title } = Typography
 
@@ -39,11 +44,22 @@ export const ProductionOrdersPlanInfo = () => {
   const [form] = Form.useForm()
 
   const { id, action }: any = useLoaderData()
-  const isEdit = action === EDIT
-  const isCreate = action === CREATE
+  const { paramsCreatePlan } = useSelector(productionOrdersSelector)
+
   const navigate = useNavigate()
 
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
+  const { data } = usePostProductionCreatePlanQuery({
+    id,
+    sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+  })
+
+  const onStartPlan = () => {
+    const values = form.getFieldsValue()
+    console.log('values:', values)
+    console.log('data:', JSON.stringify(data))
+    console.log('onStartPlan:', 'onStartPlan')
+  }
 
   return (
     <>
@@ -82,13 +98,21 @@ export const ProductionOrdersPlanInfo = () => {
                 <Button
                   type="primary"
                   htmlType="button"
-                  onClick={() => console.log('click')}
+                  disabled={!!data?.isWoodOutStock}
+                  onClick={onStartPlan}
                   icon={<PlayCircleOutlined style={{ marginTop: 2 }} />}
                 >
                   เริ่มงานผลิต
                 </Button>
               </div>
             </div>
+            {!!data?.isWoodOutStock && (
+              <div className="flex items-center justify-end">
+                <div className="mt-[10px] text-[14px] font-medium text-danger">
+                  * ไม้กรอบบางรายการหมด กรุณาตรวจสอบสต๊อก
+                </div>
+              </div>
+            )}
             <Divider />
             <div className="grid gap-y-[20px]">
               <Row gutter={[50, 30]}>

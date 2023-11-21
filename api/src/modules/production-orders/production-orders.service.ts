@@ -18,7 +18,8 @@ import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-f
 import { generateOrderNo } from '@/common/helpers/generator';
 import { DRAFT } from '@/common/constants/current-status.constant';
 import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
-import { groupBy, sum, orderBy, sumBy } from 'lodash';
+import { groupBy, sum, orderBy, omit } from 'lodash';
+import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
 @Injectable()
 export class ProductionOrdersService {
   constructor(
@@ -122,6 +123,101 @@ export class ProductionOrdersService {
     };
   }
 
+  selectedLocationFullWood(
+    totalUsedWoodQty: number,
+    woodStockLocations: WoodStockLocation[],
+    woodLength: number,
+  ) {
+    const response = [];
+    let remaining = totalUsedWoodQty;
+    for (const woodStockLocation of woodStockLocations) {
+      if (remaining > 0) {
+        const qty = woodStockLocation?.stock ?? 0;
+        const used = qty > remaining ? remaining : qty;
+        if (used <= 0) {
+          continue;
+        }
+
+        const newWoodStockLocation = {
+          ...woodStockLocation,
+          usedQty: used,
+          woodLength: parser(woodLength),
+          woodFromStock: false,
+          isOutStock: false,
+        };
+        response.push(newWoodStockLocation);
+        remaining -= used;
+      }
+    }
+
+    if (remaining > 0) {
+      response.push({
+        woodLength: parser(woodLength),
+        usedQty: remaining,
+        woodFromStock: false,
+        isOutStock: true,
+      });
+    }
+
+    return response;
+  }
+
+  selectedLocationItemWood(listWoodStock: any, woodItemStocksList: any) {
+    // woodStock.woodItemStocks
+    let woodItemStocks = [...woodItemStocksList];
+    const remainingWoodItem = [...listWoodStock.map((item) => item.wood)];
+    const listWoodStockLocations = [];
+    for (const woodStokItem of remainingWoodItem) {
+      const found = woodItemStocks.find(
+        (val) => parser(val.woodLength) == parser(woodStokItem),
+      );
+      if (found) {
+        // add wood
+        listWoodStockLocations.push({
+          ...found,
+          usedQty: 1,
+          woodFromStock: true,
+          woodLength: parser(found?.woodLength),
+        });
+        // delete
+        woodItemStocks = [
+          ...woodItemStocks.filter((item) => item.id !== found.id),
+        ];
+      }
+    }
+
+    return listWoodStockLocations;
+  }
+
+  summaryUsedWood(response: any, woodStock: any, woodLength: number) {
+    const listWoodFull = response.filter((item) => !item.woodFromStock);
+    const listWoodStock = response.filter((item) => item.woodFromStock);
+
+    const countWoodFull = listWoodFull.length;
+    // const countWoodStock = listWoodStock.length;
+    const listWoodLocations = this.selectedLocationFullWood(
+      countWoodFull,
+      woodStock?.woodStockLocations ?? [],
+      woodLength,
+    );
+    const listWoodStockLocations = this.selectedLocationItemWood(
+      listWoodStock,
+      woodStock?.woodItemStocks ?? [],
+    );
+
+    const summaryWood = [
+      ...listWoodLocations,
+      ...orderBy(listWoodStockLocations, 'woodLength', 'desc'),
+    ];
+    const countWood = listWoodFull?.length;
+    const isEnough = countWood <= woodStock.totalRemaningStock;
+
+    return {
+      isEnough,
+      summaryWood: summaryWood,
+    };
+  }
+
   async createPlan(createProductionOrderPlanDto: CreateProductionOrderPlanDto) {
     // const str = `{"plans":[{"no":1,"wood":97.5,"list":[32.5,32.5,32.5]},{"no":2,"wood":105.5,"list":[32.5,22.5,22.5,22.5]},{"no":3,"wood":22,"list":[18.5]},{"no":4,"wood":120,"list":[22.5,22.5,22.5,17.5,17.5,17.5]},{"no":5,"wood":120,"list":[31.5,22.5,18.5,18.5,14.5,14.5]},{"no":6,"wood":120,"list":[18.5,14.5,14.5,14.5,14.5,14.5,14.5,14.5]},{"no":7,"wood":14,"list":[12.5]},{"no":8,"wood":120,"list":[17.5,17.5,14.5,14.5,14.5,14.5,14.5,12.5]},{"no":9,"wood":120,"list":[31.5,17.5,12.5,12.5,12.5,12.5,10.5,10.5]},{"no":10,"wood":120,"list":[14.19,10.77,10.77,10.77,10.5,10.5,10.5,10.5,10.5,10.5,10.5]},{"no":11,"wood":120,"list":[14.19,10.77,10.77,10.77,10.5,10.5,10.5,10.5,10.5,10.5,10.5]},{"no":12,"wood":120,"list":[10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5]},{"no":13,"wood":120,"list":[10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5]},{"no":14,"wood":120,"list":[12.5,10.5,10.5,10.5,10.5,10.5,10.5,10.5,8.5,8.5,8.5,8.5]},{"no":15,"wood":120,"list":[12.5,12.5,12.5,12.5,10.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5]},{"no":16,"wood":120,"list":[22.5,12.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5,8.5]},{"no":17,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,8.5,8.5,8.5,6.5,6.5,6.5]},{"no":18,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,12.5,6.5,6.5,6.5,6.5,6.5]},{"no":19,"wood":120,"list":[12.5,12.5,12.5,12.5,12.5,12.5,12.5,6.5,6.5,6.5,6.5,6.5]},{"no":20,"wood":120,"list":[7.5,7.5,9.5,9.5,12.5,12.5,12.5,12.5,12.5,8.5,8.5,6.5]},{"no":21,"wood":120,"list":[14.19,14.19,14.19,14.19,12.5]}],"suggest":[{"no":1,"size":"5x7","qty":1,"list":[7.5,7.5,9.5,9.5],"info":{"standardFrameId":21,"woodId":4,"size":"5x7","width":5,"height":7,"woodWidth":1,"qty":1,"dimensionW":7.5,"dimensionH":9.5,"woodList":[7.5,7.5,9.5,9.5],"totalLength":34,"orderNo":1,"set":1,"cuttingName":"h1","cutting":9.5,"key":"uuidv4","combinations":[[],[7.5],[7.5,7.5],[9.5],[7.5,9.5],[7.5,7.5,9.5],[9.5,9.5],[7.5,9.5,9.5],[7.5,7.5,9.5,9.5]]}}]}`;
     // return JSON.parse(str);
@@ -159,20 +255,20 @@ export class ProductionOrdersService {
       data.wood.woodType.width,
     );
     const numbers = await core.totalCutting(formatter);
-    const filterLot = await this.filterWoodLot(data, numbers);
+    let filterLot = await this.filterWoodLot(data, numbers);
     if (filterLot.length === 0) {
-      throw new BadRequestException({
-        status: 'error',
-        error: 'not enough wood',
-      });
+      filterLot = [
+        {
+          temporary: true,
+          woodItemStocksNumbers: [],
+        },
+      ];
     }
 
     for (const woodStock of filterLot) {
-      console.log('woodStock:', woodStock);
       const { woodItemStocksNumbers } = woodStock ?? {};
       const stocks = await this.getStdOrderList(data.woodId);
       const stdOrderList = await core.totalStdList(stocks);
-
       const { pattern, zeroPattern, suggestPattern } = await core.core(
         numbers,
         woodItemStocksNumbers,
@@ -187,31 +283,28 @@ export class ProductionOrdersService {
       );
 
       // sum
-      const { isEnough, countWood, listWoodStock } =
-        await this.checkEnoughWoodStock(response, woodStock);
-
-      if (isEnough) {
+      // const { isEnough } = await this.checkEnoughWoodStock(response, woodStock);
+      const { summaryWood, isEnough } = await this.summaryUsedWood(
+        response,
+        woodStock,
+        woodLength,
+      );
+      if (isEnough || woodStock.temporary) {
         return {
           plans: response,
           suggest: responseSuggest,
-          totalUsedWood: countWood,
-          listUsedWoodStock: listWoodStock.map((item: number) => {
-            const found = woodStock.woodItemStocks.find(
-              (val: WoodItemStock) => parser(val.woodLength) == parser(item),
-            );
-            return found;
-          }),
+          summaryWood: summaryWood,
           minLength,
-          woodStock,
           woodLength,
+          isWoodOutStock: !!summaryWood.find((item) => item.isOutStock),
+          woodStock: omit(woodStock, [
+            'totalRemaningStock',
+            'totalRemaningStockLength',
+            'woodItemStocksNumbers',
+          ]),
         };
       }
     }
-
-    throw new BadRequestException({
-      status: 'error',
-      error: 'not enough wood',
-    });
   }
 
   async findAll(query: QueryProductionOrderDto) {

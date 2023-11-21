@@ -920,11 +920,14 @@ class CoreAlgorithm {
           const wood = item.from_stock ? `, :wood , ${item.wood}` : '';
           console.log(item.pattern, wood);
           sumZero += sum(item.pattern.split(',').map((val) => +val));
+          const responseWood = item.from_stock ? item.wood : this.woodLength;
+          const responseList = item.pattern.split(',').map((val) => +val);
           response.push({
             no,
-            wood: item.from_stock ? item.wood : this.woodLength,
+            wood: responseWood,
             woodFromStock: !!item.from_stock,
-            list: item.pattern.split(',').map((val) => +val),
+            list: responseList,
+            remaining: responseWood - sum(responseList),
           });
           no++;
         }
@@ -935,11 +938,15 @@ class CoreAlgorithm {
         const wood = item.from_stock ? `, :wood , ${item.wood}` : '';
         console.log(item.pattern, wood);
         sumSuggest += sum(item.pattern.split(',').map((val) => +val));
+
+        const responseWood = item.from_stock ? item.wood : this.woodLength;
+        const responseList = item.pattern.split(',').map((val) => +val);
         response.push({
           no,
-          wood: item.from_stock ? item.wood : this.woodLength,
+          wood: responseWood,
           woodFromStock: !!item.from_stock,
-          list: item.pattern.split(',').map((val) => +val),
+          list: responseList,
+          remaining: responseWood - sum(responseList),
         });
         no++;
       }
@@ -957,13 +964,19 @@ class CoreAlgorithm {
           sum(iterator.woodList),
         );
 
+        const responseWood = iterator.from_stock
+          ? iterator.wood
+          : this.woodLength;
+        const responseList = iterator.woodList;
+
         responseSuggest.push({
           no: noStd,
-          wood: iterator.from_stock ? iterator.wood : this.woodLength,
+          wood: responseWood,
           size: iterator.size,
           qty: iterator.qty,
-          list: iterator.woodList,
+          list: responseList,
           info: iterator,
+          remaining: responseWood - sum(responseList),
         });
         noStd++;
       }

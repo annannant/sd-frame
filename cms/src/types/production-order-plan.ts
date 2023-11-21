@@ -6,11 +6,13 @@ import { ITFWoodStock } from './wood-stock.type'
 export interface ITFProductionOrderPlanResponse {
   plans?: ITFProductionOrderPlan[] | null
   suggest?: ITFProductionOrderPlanSuggest[] | null
+  summaryWood?: ITFProductionOrderPlanSummaryWood[] | null
   minLength?: number | null
   woodLength?: number | null
-  woodStock?: ITFWoodStock | null
-  totalUsedWood?: number | null
-  listUsedWoodStock?: ITFWoodItemStock[] | null
+  isWoodOutStock?: boolean | null
+  // woodStock?: ITFWoodStock | null
+  // totalUsedWood?: number | null
+  // listUsedWoodStock?: ITFWoodItemStock[] | null
 }
 
 export interface ITFProductionOrderPlan {
@@ -25,14 +27,23 @@ export interface ITFProductionOrderPlanSuggest {
   qty?: number
 }
 
-export interface ITFTableProductionOrderWood extends ITFTable {
-  woodType?: string | null
-  length?: number | null
-  qty?: number | null
-  location?: ITFLocation
-}
-
 export interface ITFProductionOrderCreatePlanParams {
   id: number
   sparePart: number
 }
+
+export interface ITFProductionOrderPlanSummaryWood {
+  woodId?: number | null
+  locationId?: number | null
+  lot?: number | null
+  stock?: number | null
+  woodLength?: number | null
+  location?: ITFLocation
+  usedQty?: number | null
+  woodFromStock?: boolean | null
+  isOutStock?: boolean | null
+}
+
+export interface ITFTableProductionOrderPlanSummaryWood
+  extends ITFTable,
+    ITFProductionOrderPlanSummaryWood {}

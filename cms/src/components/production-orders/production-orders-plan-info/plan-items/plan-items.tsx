@@ -32,10 +32,12 @@ export const PlanItems = () => {
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
-  const { isLoading, data, refetch } = usePostProductionCreatePlanQuery({
-    id: id,
-    sparePart: paramsCreatePlan?.sparePart ?? 0.25,
-  })
+  const { isLoading, data, refetch, isFetching } =
+    usePostProductionCreatePlanQuery({
+      id: id,
+      sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+    })
+  const loading = isLoading || isFetching
 
   const { plans, minLength } = data ?? {}
   const orderedPlans = orderBy([...(plans ?? [])], ['wood'], ['asc'])
@@ -51,6 +53,7 @@ export const PlanItems = () => {
   }
 
   useEffect(() => {
+    console.log('paramsCreatePlan:', paramsCreatePlan)
     refetch()
   }, [paramsCreatePlan])
 
@@ -96,7 +99,7 @@ export const PlanItems = () => {
           </Button>
         </ConfigProvider>
       </div>
-      {isLoading && (
+      {loading && (
         <div className="mb-10 flex justify-center py-10">
           {
             <LoadingOutlined
@@ -107,71 +110,75 @@ export const PlanItems = () => {
         </div>
       )}
 
-      <div className="mb-8 flex flex-col gap-y-[32px]">
-        {(orderedPlans ?? []).map(
-          (item: ITFProductionOrderPlan, index: number) => {
-            const sumWidth = sum(item.list ?? [])
-            const isWoodStock = parser(item.wood ?? '') !== parser(woodLength)
-            const remaining = parser(
-              (isWoodStock ? parser(item.wood ?? '') : parser(woodLength)) -
-                parser(sumWidth)
-            )
-            const percentRemaining =
-              (parser(remaining ?? 0) * 100) / parser(woodLength)
-            const colorWasted =
-              remaining >= parser(minLength ?? 0) ? 'bg-secondary' : 'bg-danger'
+      {!loading && (
+        <div className="mb-8 flex flex-col gap-y-[32px]">
+          {(orderedPlans ?? []).map(
+            (item: ITFProductionOrderPlan, index: number) => {
+              const sumWidth = sum(item.list ?? [])
+              const isWoodStock = parser(item.wood ?? '') !== parser(woodLength)
+              const remaining = parser(
+                (isWoodStock ? parser(item.wood ?? '') : parser(woodLength)) -
+                  parser(sumWidth)
+              )
+              const percentRemaining =
+                (parser(remaining ?? 0) * 100) / parser(woodLength)
+              const colorWasted =
+                remaining >= parser(minLength ?? 0)
+                  ? 'bg-secondary'
+                  : 'bg-danger'
 
-            const orderedItems = sortBy(item.list ?? []).reverse()
-            return (
-              <div key={`${item.no}`} className="flex items-center">
-                <div
-                  className="w-[60px]"
-                  style={{
-                    color: isWoodStock
-                      ? colors.primary
-                      : colors.fontDescription,
-                    fontWeight: isWoodStock ? 600 : 'normal',
-                  }}
-                >
-                  {item.wood}
-                </div>
-                <div className="flex flex-1 flex-row">
-                  {orderedItems.map((width, idx: number) => {
-                    const percent =
-                      (parser(width ?? 0) * 100) / parser(woodLength)
-                    return (
+              const orderedItems = sortBy(item.list ?? []).reverse()
+              return (
+                <div key={`${item.no}`} className="flex items-center">
+                  <div
+                    className="w-[60px]"
+                    style={{
+                      color: isWoodStock
+                        ? colors.primary
+                        : colors.fontDescription,
+                      fontWeight: isWoodStock ? 600 : 'normal',
+                    }}
+                  >
+                    {item.wood}
+                  </div>
+                  <div className="flex flex-1 flex-row">
+                    {orderedItems.map((width, idx: number) => {
+                      const percent =
+                        (parser(width ?? 0) * 100) / parser(woodLength)
+                      return (
+                        <div
+                          key={idx}
+                          className={`mr-[6px] flex h-[8px] justify-center bg-warning`}
+                          style={{
+                            width: `${percent}%`,
+                          }}
+                        >
+                          <div className="mt-[10px]">
+                            {parser(width).toFixed(2)}
+                          </div>
+                        </div>
+                      )
+                    })}
+                    {remaining > 0 && (
                       <div
-                        key={idx}
-                        className={`mr-[6px] flex h-[8px] justify-center bg-warning`}
+                        className={`mr-[6px] flex h-[8px] justify-center ${colorWasted}`}
                         style={{
-                          width: `${percent}%`,
+                          width: `${percentRemaining}%`,
                         }}
                       >
                         <div className="mt-[10px]">
-                          {parser(width).toFixed(2)}
+                          {parser(remaining).toFixed(2)}
                         </div>
                       </div>
-                    )
-                  })}
-                  {remaining > 0 && (
-                    <div
-                      className={`mr-[6px] flex h-[8px] justify-center ${colorWasted}`}
-                      style={{
-                        width: `${percentRemaining}%`,
-                      }}
-                    >
-                      <div className="mt-[10px]">
-                        {parser(remaining).toFixed(2)}
-                      </div>
-                    </div>
-                  )}
-                  {/* {sumWidth} */}
+                    )}
+                    {/* {sumWidth} */}
+                  </div>
                 </div>
-              </div>
-            )
-          }
-        )}
-      </div>
+              )
+            }
+          )}
+        </div>
+      )}
     </Card>
   )
 }

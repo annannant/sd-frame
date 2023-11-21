@@ -52,8 +52,8 @@ export const PlanWoodList = () => {
     sparePart: paramsCreatePlan?.sparePart ?? 0.25,
   })
 
-  const { transformTableProductionOrderWood } = useProductionOrdersPlan()
-  const dataSources = transformTableProductionOrderWood(data ?? {})
+  const { transformTableSummaryWood } = useProductionOrdersPlan()
+  const dataSources = transformTableSummaryWood(data?.summaryWood ?? [])
 
   useEffect(() => {
     refetch()
@@ -66,12 +66,13 @@ export const PlanWoodList = () => {
   return (
     <Card
       title={
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between">
           <span>รายการไม้ที่ต้องใช้</span>
-          <span>
-            Lot
-            <span className="ml-3">1</span>
-          </span>
+          {!!data?.isWoodOutStock && (
+            <div className=" text-[14px] font-medium text-danger">
+              * ไม้กรอบบางรายการหมด กรุณาตรวจสอบสต๊อก
+            </div>
+          )}
         </div>
       }
       bordered={false}

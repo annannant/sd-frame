@@ -7,7 +7,8 @@ import {
 } from 'constants/current-status.constant'
 import {
   ITFProductionOrderPlanResponse,
-  ITFTableProductionOrderWood,
+  ITFProductionOrderPlanSummaryWood,
+  ITFTableProductionOrderPlanSummaryWood,
 } from 'types/production-order-plan'
 import { ITFWoodStockLocation } from 'types/wood-stock-location.type'
 
@@ -38,49 +39,26 @@ export const useProductionOrdersPlan = () => {
     return response
   }
 
-  const transformTableProductionOrderWood = (
-    data: ITFProductionOrderPlanResponse
-  ): ITFTableProductionOrderWood[] => {
-    let no = 1
-    const response = []
-    // wood in stock
-    for (const woodItem of orderBy(
-      data?.listUsedWoodStock ?? [],
-      'woodLength',
-      'asc'
-    )) {
-      console.log('woodItem:', woodItem)
-      response.push({
-        no: no,
-        key: `wood-${woodItem.id}`,
-        woodType: 'ไม้ในสต๊อก',
-        length: woodItem.woodLength,
-        qty: 1,
-        location: woodItem?.location ?? {},
-      })
-      no++
-    }
-
-    if ((data.totalUsedWood ?? 0) > 0) {
-      const list = data.woodStock?.woodStockLocations ?? []
-      const locations = selectedLocation(data.totalUsedWood ?? 0, list)
-      for (const location of locations) {
-        response.push({
-          no: no,
-          key: `full-${location.woodId}${location.lot}${location.locationId}`,
-          woodType: 'ไม้เส้น เต็มขนาด',
-          length: data.woodLength,
-          qty: location.qty,
-          location: location?.location ?? {},
-        })
-        no++
+  const transformTableSummaryWood = (
+    data: ITFProductionOrderPlanSummaryWood[]
+  ): ITFTableProductionOrderPlanSummaryWood[] => {
+    const response = data.map((item, index) => {
+      const key = [
+        `${item.woodFromStock ? 'stock' : 'full'}`,
+        item.woodId,
+        item.locationId,
+        item.lot,
+      ].join('')
+      return {
+        ...item,
+        key,
+        no: index + 1,
       }
-    }
-
+    })
     return response
   }
 
   return {
-    transformTableProductionOrderWood,
+    transformTableSummaryWood,
   }
 }

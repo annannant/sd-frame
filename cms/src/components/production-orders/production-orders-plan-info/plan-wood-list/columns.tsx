@@ -1,18 +1,19 @@
 import { Link } from 'react-router-dom'
 
 import { DeleteOutlined, FileSearchOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Tag } from 'antd'
+import { ColumnsType } from 'antd/es/table'
 
 import { TagStatus } from 'common/tag-status'
 
-import { ITFTableProductionOrderWood } from 'types/production-order-plan'
+import { ITFTableProductionOrderPlanSummaryWood } from 'types/production-order-plan'
 
 import { formatDate } from 'helper/date-formatter'
 import { convertLocationLabel } from 'helper/location'
 import { currency } from 'helper/number'
 import { convertWoodLabel } from 'helper/wood'
 
-const columns = [
+const columns: ColumnsType<ITFTableProductionOrderPlanSummaryWood> = [
   {
     title: 'No',
     dataIndex: 'no',
@@ -22,92 +23,94 @@ const columns = [
     title: 'ไม้',
     dataIndex: 'woodType',
     key: 'woodType',
+    render: (
+      text: any,
+      record: ITFTableProductionOrderPlanSummaryWood,
+      count: any
+    ) => {
+      return (
+        <div>
+          {record.woodFromStock ? (
+            <span>ไม้ในสต๊อก</span>
+          ) : (
+            <span>
+              ไม้เส้น เต็มขนาด{' '}
+              {record?.isOutStock && (
+                <Tag color="error" style={{ marginLeft: 5 }}>
+                  Out of stock
+                </Tag>
+              )}
+            </span>
+          )}
+        </div>
+      )
+    },
   },
   {
     title: 'ความยาว',
-    dataIndex: 'length',
-    key: 'length',
-    render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-      return <div>{currency(text ?? 0)}</div>
+    dataIndex: 'woodLength',
+    key: 'woodLength',
+    onCell: () => ({
+      style: { textAlign: 'right' },
+    }),
+    render: (
+      text: any,
+      record: ITFTableProductionOrderPlanSummaryWood,
+      count: any
+    ) => {
+      return <div>{currency(text ?? 0)} "</div>
     },
   },
   {
     title: 'จำนวน',
-    dataIndex: 'qty',
-    key: 'qty',
+    dataIndex: 'usedQty',
+    key: 'usedQty',
+    onCell: () => ({
+      style: { textAlign: 'right' },
+    }),
+    render: (
+      text: any,
+      record: ITFTableProductionOrderPlanSummaryWood,
+      count: any
+    ) => {
+      return <div>{currency(text ?? 0)}</div>
+    },
   },
   {
     title: 'หน่วย',
     dataIndex: 'unit',
     key: 'unit',
-    render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
+    render: (
+      text: any,
+      record: ITFTableProductionOrderPlanSummaryWood,
+      count: any
+    ) => {
       return <div>เส้น</div>
     },
+  },
+
+  {
+    title: 'Lot',
+    dataIndex: 'lot',
+    key: 'lot',
+    onCell: () => ({
+      style: { textAlign: 'center' },
+    }),
   },
   {
     title: 'ตำแหน่งที่ตั้ง',
     dataIndex: 'location',
     key: 'location',
-    render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-      return <div>{convertLocationLabel(record?.location)}</div>
+    render: (
+      text: any,
+      record: ITFTableProductionOrderPlanSummaryWood,
+      count: any
+    ) => {
+      return (
+        <div>{record?.location && convertLocationLabel(record?.location)}</div>
+      )
     },
   },
-  // {
-  //   title: '',
-  //   dataIndex: 'address',
-  //   key: 'address',
-  //   render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-  //     return <div>{convertWoodLabel(record?.wood ?? {})}</div>
-  //   },
-  // },
-  // {
-  //   title: 'วันที่สั่งผลิต',
-  //   dataIndex: 'address',
-  //   key: 'address',
-  //   render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-  //     if (!record?.createdAt) {
-  //       return <></>
-  //     }
-  //     return (
-  //       <>
-  //         <span className="mr-[6px]">{`${formatDate(record?.createdAt).format(
-  //           'DD MMM YYYY '
-  //         )}`}</span>
-  //         <span>{`${formatDate(record?.createdAt).format('HH:mm')} น.`}</span>
-  //       </>
-  //     )
-  //   },
-  // },
-  // {
-  //   title: 'สถานะ',
-  //   dataIndex: 'status',
-  //   key: 'status',
-  //   render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-  //     return <TagStatus status={text} />
-  //   },
-  // },
-  // {
-  //   title: 'Action',
-  //   dataIndex: 'address',
-  //   key: 'address',
-  //   render: (text: any, record: ITFTableProductionOrderWood, count: any) => {
-  //     return (
-  //       <div className="flex justify-center">
-  //         <Link to={`/production-orders/edit/${record?.id}`}>
-  //           <Button
-  //             type="primary"
-  //             shape="circle"
-  //             icon={<FileSearchOutlined />}
-  //             size="small"
-  //             style={{
-  //               padding: '1px 1px 1px 3px',
-  //             }}
-  //           />
-  //         </Link>
-  //       </div>
-  //     )
-  //   },
-  // },
 ]
 
 export default columns
