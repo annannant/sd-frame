@@ -38,10 +38,10 @@ class CoreAlgorithm {
       }
 
       const dimensionW = parseFloat(
-        (width + (item.woodWidth + this.sparePart) * 2).toFixed(2),
+        (width + item.woodWidth * 2 + this.sparePart * 2).toFixed(2),
       );
       const dimensionH = parseFloat(
-        (height + (item.woodWidth + this.sparePart) * 2).toFixed(2),
+        (height + item.woodWidth * 2 + this.sparePart * 2).toFixed(2),
       );
 
       const orderNo = index + 1;

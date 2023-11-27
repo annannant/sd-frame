@@ -18,7 +18,7 @@ import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-f
 import { generateOrderNo } from '@/common/helpers/generator';
 import { DRAFT } from '@/common/constants/current-status.constant';
 import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
-import { groupBy, sum, orderBy, omit } from 'lodash';
+import { groupBy, sum, orderBy, omit, flatten } from 'lodash';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
 @Injectable()
 export class ProductionOrdersService {
@@ -255,6 +255,8 @@ export class ProductionOrdersService {
       data.wood.woodType.width,
     );
     const numbers = await core.totalCutting(formatter);
+    // sum(numbers);
+    // return;
     let filterLot = await this.filterWoodLot(data, numbers);
     if (filterLot.length === 0) {
       filterLot = [

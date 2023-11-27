@@ -45,6 +45,64 @@ export class ProductionOrder {
   @Column({ name: 'updated_by' })
   updatedBy: string;
 
+  @Expose()
+  @Column({ name: 'wood_code' })
+  woodCode: string;
+
+  @Expose()
+  @Column({ name: 'wood_name' })
+  woodName: string;
+
+  @Expose()
+  @Column({ name: 'wood_description' })
+  woodDescription: string;
+
+  @Expose()
+  @Column({ name: 'wood_type_code' })
+  woodTypeCode: string;
+
+  @Expose()
+  @Column({ name: 'wood_type_name' })
+  woodTypeName: string;
+
+  @Expose()
+  @Column({
+    name: 'width',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 4,
+  })
+  width: number;
+
+  @Expose()
+  @Column({
+    name: 'height',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 4,
+  })
+  height: number;
+
+  @Expose()
+  @Column({
+    name: 'length',
+    nullable: true,
+    type: 'decimal',
+    precision: 10,
+    scale: 4,
+  })
+  length: number;
+
+  @Expose()
+  @Column({ name: 'size_unit' })
+  sizeUnit: string;
+
+  @Expose()
+  @Column({ name: 'attribute_code' })
+  attributeCode: string;
+
   @BeforeInsert()
   insertDates() {
     this.createdAt = new Date();

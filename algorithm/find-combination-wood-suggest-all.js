@@ -17,7 +17,7 @@ const {
   maxBy,
 } = require("lodash");
 const debug = false;
-const printAlgo = false;
+const printAlgo = true;
 const woodLength = 120;
 const minLength = 6.5;
 const ORDER_BY = "desc"; // asc
@@ -89,7 +89,7 @@ function findCombinations(
             currentCombinations[j],
             ";",
             current,
-            "** dup"
+            "** ซ้ำ"
           );
         }
         continue;
@@ -123,6 +123,7 @@ function findCombinations(
       // check remaining stock
       const pattern = current.join(",");
       const woods = [...remainWoodStock, woodLength];
+      console.log("woods:", woods);
       if (printAlgo) {
         console.log(j + 1, ";", currentCombinations[j], ";", current);
       }
@@ -153,7 +154,8 @@ function findCombinations(
             ";",
             sumvalue,
             ";",
-            `${wood}-${sumvalue}`,
+            // `${wood}-${sumvalue}`,
+            `${wood - sumvalue}`,
             ";",
             afterUseWood
           );
@@ -223,18 +225,18 @@ function findCombinations(
       // console.log('combinations:', combinations)
       combinations.push(current);
       if (printAlgo) {
-        // console.log(
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   ";",
-        //   JSON.stringify(combinations)
-        // );
+        console.log(
+          ";",
+          ";",
+          ";",
+          ";",
+          ";",
+          ";",
+          ";",
+          // ";",
+          // ";",
+          JSON.stringify(combinations)
+        );
       }
     }
   }
