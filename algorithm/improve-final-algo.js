@@ -234,7 +234,6 @@ class ImproveCoreAlgorithm {
       }
     }
   }
-
   checkPatternHasMainList(currentPattern, numbers, suggestNumbers) {
     for (const item of currentPattern) {
       const found = numbers.includes(item);
@@ -408,6 +407,7 @@ class ImproveCoreAlgorithm {
 
     return numbers;
   }
+
   removeSelectedPatternFromRemainingListStd(numbers, patternList) {
     return patternList;
   }
@@ -543,6 +543,7 @@ class ImproveCoreAlgorithm {
         console.log(final.std?.width, final.std?.hight, "=", final.std?.qty);
       }
     }
+    this.prepareResponseV2();
   }
 
   findRemaningPatternWithZeroStd(
@@ -655,6 +656,36 @@ class ImproveCoreAlgorithm {
     }
 
     return result;
+  }
+
+  prepareResponseV2() {
+    const response = [];
+    const responseSuggest = [];
+    for (const item of this.finalResult) {
+      console.log("item:", item);
+      response.push({
+        wood: item.wood,
+        woodFromStock: item.form_stock,
+        list: item.pattern_list,
+        remaining: item.remaining,
+      });
+
+      if (item.std) {
+        responseSuggest.push({
+          wood: item.std?.qty,
+          size: `${item.std?.width}x${item.std?.hight}`,
+          qty: item.qty,
+          list: item.pattern_list,
+          info: item.std,
+          remaining: item.remaining,
+        });
+      }
+    }
+
+    return {
+      response,
+      responseSuggest,
+    };
   }
 }
 
