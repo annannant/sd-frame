@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate, useSearchParams } from 'react-router-dom'
 
 import {
   CalculatorOutlined,
@@ -43,6 +43,9 @@ const { Title } = Typography
 export const ProductionOrdersPlanInfo = () => {
   const [form] = Form.useForm()
 
+  const [searchParams] = useSearchParams()
+  const debug = searchParams.get('debug') ?? undefined
+
   const { id, action }: any = useLoaderData()
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
 
@@ -52,6 +55,7 @@ export const ProductionOrdersPlanInfo = () => {
   const { data } = usePostProductionCreatePlanQuery({
     id,
     sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+    debug,
   })
 
   const onStartPlan = () => {

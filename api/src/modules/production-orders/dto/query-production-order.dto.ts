@@ -4,4 +4,8 @@ export class QueryProductionOrderDto {
   @IsOptional()
   @IsString()
   statuses?: string = '';
+
+  @IsOptional()
+  @IsString()
+  debug?: string = '';
 }

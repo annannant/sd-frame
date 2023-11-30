@@ -26,7 +26,15 @@ export class ProductionOrdersController {
   }
 
   @Post('create-plan')
-  createPlan(@Body() createProductionOrderDto: CreateProductionOrderPlanDto) {
+  createPlan(
+    @Query() query: QueryProductionOrderDto,
+    @Body() createProductionOrderDto: CreateProductionOrderPlanDto,
+  ) {
+    if (query.debug) {
+      return this.productionOrdersService.createPlanV2(
+        createProductionOrderDto,
+      );
+    }
     return this.productionOrdersService.createPlan(createProductionOrderDto);
   }
 

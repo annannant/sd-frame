@@ -30,6 +30,7 @@ export interface ITFProductionOrderPlanSuggest {
 export interface ITFProductionOrderCreatePlanParams {
   id: number
   sparePart: number
+  debug?: string
 }
 
 export interface ITFProductionOrderPlanSummaryWood {

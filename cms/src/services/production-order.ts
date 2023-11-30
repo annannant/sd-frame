@@ -11,6 +11,7 @@ import {
 } from 'types/production-order.type'
 
 import { API_URL } from 'config/url.constant'
+import { pick } from 'lodash'
 
 export const productionOrderApiSlice = createApi({
   reducerPath: 'productionOrderApiSlice',
@@ -39,11 +40,14 @@ export const productionOrderApiSlice = createApi({
       ITFProductionOrderPlanResponse,
       ITFProductionOrderCreatePlanParams
     >({
-      query: (params: ITFProductionOrderCreatePlanParams) => ({
-        url: `production-orders/create-plan`,
-        method: 'POST',
-        body: params,
-      }),
+      query: (params: ITFProductionOrderCreatePlanParams) => {
+        return {
+          url: `production-orders/create-plan`,
+          method: 'POST',
+          body: params,
+          params: pick(params, ['debug']),
+        }
+      },
     }),
   }),
 })

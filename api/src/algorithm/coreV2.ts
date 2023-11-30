@@ -1,3 +1,5 @@
+import { parser } from '@/common/helpers/number';
+
 const { sum, join, keyBy, orderBy, flatten, maxBy } = require('lodash');
 
 class ImproveCoreAlgorithm {
@@ -333,7 +335,7 @@ class ImproveCoreAlgorithm {
         console.log('woods:', woods);
         for (let k = 0; k < woods.length; k++) {
           const wood = woods[k];
-          const remaining = wood - sumPattern;
+          const remaining = parser(wood) - parser(sumPattern);
           console.log('remaining:', wood, sumPattern, remaining);
           // console.log("remaining:", wood, "-", sumPattern, "=", remaining);
           const temp = {
@@ -589,7 +591,7 @@ class ImproveCoreAlgorithm {
         console.log('selected.remaining not 0:', selected.remaining);
       }
 
-      const selected = this.findCombinationRemaningPattern(
+      const selected: any = this.findCombinationRemaningPattern(
         numbers,
         suggestNumbers,
         this.remainigWoodItemStockList,
@@ -669,11 +671,13 @@ class ImproveCoreAlgorithm {
     const response = [];
     const responseSuggest = [];
     for (const item of this.finalResult) {
+      console.log('item:', item);
       response.push({
         wood: item.wood,
         woodFromStock: item.form_stock,
         list: item.pattern_list,
         remaining: item.remaining,
+        std: item.std,
       });
 
       if (item.std) {

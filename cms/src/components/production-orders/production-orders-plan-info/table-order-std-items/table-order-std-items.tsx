@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useSearchParams } from 'react-router-dom'
 
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
@@ -15,12 +15,16 @@ import {
 } from 'services/production-order'
 
 export const TableOrderStandardFrameItems = () => {
+  const [searchParams] = useSearchParams()
+  const debug = searchParams.get('debug') ?? undefined
+
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
   const { data } = usePostProductionCreatePlanQuery({
     ...paramsCreatePlan,
     id: id,
+    debug,
   })
   const { suggest } = data ?? {}
 

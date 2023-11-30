@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useSearchParams } from 'react-router-dom'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import {
@@ -44,12 +44,17 @@ export const PlanWoodList = () => {
   const dispatch = useDispatch()
 
   const form = Form.useFormInstance()
+
+  const [searchParams] = useSearchParams()
+  const debug = searchParams.get('debug') ?? undefined
+
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
   const { data, refetch } = usePostProductionCreatePlanQuery({
     id: id,
     sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+    debug,
   })
 
   const { transformTableSummaryWood } = useProductionOrdersPlan()

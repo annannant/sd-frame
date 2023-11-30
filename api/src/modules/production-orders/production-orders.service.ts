@@ -20,6 +20,7 @@ import { DRAFT } from '@/common/constants/current-status.constant';
 import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
 import { groupBy, sum, orderBy, omit, flatten } from 'lodash';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
+import ImproveCoreAlgorithm from '@/algorithm/coreV2';
 @Injectable()
 export class ProductionOrdersService {
   constructor(
@@ -307,6 +308,81 @@ export class ProductionOrdersService {
         };
       }
     }
+  }
+
+  async createPlanV2(
+    createProductionOrderPlanDto: CreateProductionOrderPlanDto,
+  ) {
+    const { id: productionOrderId, sparePart } = createProductionOrderPlanDto;
+    const queryOrders =
+      this.productionOrdersRepository.createQueryBuilder('pod');
+    const data = await queryOrders
+      .leftJoinAndSelect('pod.productionOrderItems', 'productionOrderItems')
+      .leftJoinAndSelect('productionOrderItems.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('pod.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .leftJoinAndSelect('wood.attribute', 'attribute')
+      .leftJoinAndSelect('wood.woodStocks', 'woodStocks')
+      .leftJoinAndSelect('wood.woodItemStocks', 'woodItemStocks')
+      .leftJoinAndSelect('woodStocks.woodStockLocations', 'woodStockLocations')
+      .leftJoinAndSelect('woodStockLocations.location', 'location')
+      .leftJoinAndSelect('woodItemStocks.location', 'woodItemStockLocation')
+      .where('pod.id = :id', { id: productionOrderId })
+      .getOne();
+
+    const woodLength = data?.wood?.woodType?.length;
+    const minLength = await this.getMinLength(
+      data.wood.woodType.width,
+      sparePart,
+    );
+
+    const core1 = new CoreAlgorithm(
+      parser(woodLength),
+      parser(minLength),
+      parser(sparePart),
+    );
+    const formatter = await this.formatItems(
+      data.productionOrderItems,
+      data.wood.woodType.width,
+    );
+    const numbers = await core1.totalCutting(formatter);
+    const orderStd = await this.getStdOrderList(data.woodId);
+
+    let filterLot = await this.filterWoodLot(data, numbers);
+    if (filterLot.length === 0) {
+      filterLot = [
+        {
+          temporary: true,
+          woodItemStocksNumbers: [],
+        },
+      ];
+    }
+
+    for (const woodStock of filterLot) {
+      const { woodItemStocksNumbers: woodItemStocks } = woodStock ?? {};
+      const remainingList = [...numbers];
+      const core = new ImproveCoreAlgorithm(
+        woodLength,
+        minLength,
+        sparePart,
+        data.wood.woodType.width,
+      );
+      core.setRemainingList([...remainingList]);
+      core.setWoodItemStockList([...woodItemStocks]);
+      core.setStandardListByOrders(
+        [...orderStd].map((item) => {
+          // item.qty = 1;
+          return item;
+        }),
+      );
+      core.findPattern();
+      const { response, responseSuggest } = core.prepareResponseV2();
+      return {
+        plans: response,
+        suggest: responseSuggest,
+      };
+    }
+    return [];
   }
 
   async findAll(query: QueryProductionOrderDto) {
