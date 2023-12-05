@@ -23,6 +23,10 @@ export class WoodStockLocation {
   stock: number;
 
   @Expose()
+  @Column({ name: 'used', nullable: true })
+  used: number;
+
+  @Expose()
   @ManyToOne(() => Wood, (user) => user.woodStockLocations)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
   wood: Wood;

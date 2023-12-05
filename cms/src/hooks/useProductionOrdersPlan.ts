@@ -43,15 +43,17 @@ export const useProductionOrdersPlan = () => {
     data: ITFProductionOrderPlanSummaryWood[]
   ): ITFTableProductionOrderPlanSummaryWood[] => {
     const response = data.map((item, index) => {
-      const key = [
-        `${item.woodFromStock ? 'stock' : 'full'}`,
-        item.woodId,
-        item.locationId,
-        item.lot,
-      ].join('')
+      // const key = [
+      //   `${item.woodFromStock ? 'stock' : 'full'}`,
+      //   item.woodId,
+      //   item.locationId,
+      //   item.lot,
+      //   index ?? 0,
+      // ].join('')
+      // console.log('key:', key)
       return {
         ...item,
-        key,
+        key: `summary-${index + 1}`,
         no: index + 1,
       }
     })

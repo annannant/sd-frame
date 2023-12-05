@@ -28,4 +28,8 @@ export class CreateProductionOrderItemDto {
   @IsOptional()
   @IsString()
   standardFrame?: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
 }

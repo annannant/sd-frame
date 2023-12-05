@@ -30,6 +30,16 @@ import { WoodStock } from './modules/wood-stocks/entities/wood-stock.entity';
 import { WoodStocksModule } from './modules/wood-stocks/wood-stocks.module';
 import { UploadsModule } from './modules/uploads/uploads.module';
 import { StandardFrameStocksModule } from './modules/standard-frame-stocks/standard-frame-stocks.module';
+import { ProductionPlansModule } from './modules/production-plans/production-plans.module';
+import { ProductionPlanWoodsModule } from './modules/production-plan-woods/production-plan-woods.module';
+import { ProductionPlanWoodItemsModule } from './modules/production-plan-wood-items/production-plan-wood-items.module';
+import { ProductionWoodSummaryModule } from './modules/production-wood-summary/production-wood-summary.module';
+import { ProductionPlan } from './modules/production-plans/entities/production-plan.entity';
+import { ProductionPlanWood } from './modules/production-plan-woods/entities/production-plan-wood.entity';
+import { ProductionPlanWoodItem } from './modules/production-plan-wood-items/entities/production-plan-wood-item.entity';
+import { ProductionWoodSummary } from './modules/production-wood-summary/entities/production-wood-summary.entity';
+import { ProductionPlanSuggestItemsModule } from './modules/production-plan-suggest-items/production-plan-suggest-items.module';
+import { ProductionPlanSuggestItem } from './modules/production-plan-suggest-items/entities/production-plan-suggest-item.entity';
 
 @Module({
   imports: [
@@ -53,6 +63,12 @@ import { StandardFrameStocksModule } from './modules/standard-frame-stocks/stand
         WoodStock,
         WoodStockLocation,
         Location,
+
+        ProductionPlan,
+        ProductionPlanSuggestItem,
+        ProductionPlanWood,
+        ProductionPlanWoodItem,
+        ProductionWoodSummary,
       ],
       autoLoadEntities: true,
       // synchronize: true,
@@ -74,6 +90,12 @@ import { StandardFrameStocksModule } from './modules/standard-frame-stocks/stand
     LocationsModule,
     UploadsModule,
     StandardFrameStocksModule,
+
+    ProductionPlansModule,
+    ProductionPlanSuggestItemsModule,
+    ProductionPlanWoodsModule,
+    ProductionPlanWoodItemsModule,
+    ProductionWoodSummaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

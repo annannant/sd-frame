@@ -194,7 +194,7 @@ class ImproveCoreAlgorithm {
     return false;
   }
 
-  findPatternStd(remaining, zeroOnly = true) {
+  findPatternStd(remaining) {
     if (this.standardList.length === 0) {
       return false;
     }
@@ -210,7 +210,7 @@ class ImproveCoreAlgorithm {
         const list = flatten(Array(currentQty).fill(std.wood_list));
 
         // always return remaining = 0
-        const selected = this.findCombinationStd(list, remaining, zeroOnly);
+        const selected = this.findCombinationStd(list, remaining);
         if (selected) {
           let usedPatternList = [];
           let remainingPatternList = [...list];
@@ -284,8 +284,7 @@ class ImproveCoreAlgorithm {
   findCombinationRemaningPattern(
     numbers,
     suggestNumbers,
-    woodItemStocksList = [],
-    zeroOnly = true
+    woodItemStocksList = []
   ) {
     const list = [...numbers, ...suggestNumbers];
     const woodItemStocks = [...woodItemStocksList];
@@ -358,7 +357,7 @@ class ImproveCoreAlgorithm {
           if (remaining >= 0) {
             // find pattern from std
             // always return remaining = 0
-            const res = this.findPatternStd(remaining, zeroOnly);
+            const res = this.findPatternStd(remaining);
             if (res) {
               const pattern = [...temp.main_pattern_list, ...res.pattern_list];
               return {
@@ -549,17 +548,12 @@ class ImproveCoreAlgorithm {
     this.prepareResponseV2();
   }
 
-  findRemaningPatternWithZeroStd(
-    remainingList,
-    suggestList = [],
-    zeroOnly = true
-  ) {
+  findRemaningPatternWithZeroStd(remainingList, suggestList = []) {
     let numbers = [...remainingList].sort((a, b) => b - a);
     let suggestNumbers = [...suggestList].sort((a, b) => b - a);
     let temp = [];
 
     // zero pattern
-    // const zeroOnly = true;
     while (numbers.length > 0) {
       console.log("start numbers:", numbers);
       console.log("start suggestNumbers:", suggestNumbers);
@@ -590,8 +584,7 @@ class ImproveCoreAlgorithm {
       const selected = this.findCombinationRemaningPattern(
         numbers,
         suggestNumbers,
-        this.remainigWoodItemStockList,
-        zeroOnly
+        this.remainigWoodItemStockList
       );
 
       if (selected?.remaining !== 0) {
@@ -627,9 +620,6 @@ class ImproveCoreAlgorithm {
       console.log("xxxxxxxxx no more zero patter xxxxxxxxx");
       console.log(numbers);
       console.log(suggestNumbers);
-      if ((zeroOnly = false)) {
-        return;
-      }
       this.findRemaningPatternWithRemainingStd(numbers, suggestNumbers);
     }
 
@@ -690,6 +680,109 @@ class ImproveCoreAlgorithm {
       responseSuggest,
     };
   }
+
+  //--- v2
+  findCombinationWithExpect(expected, list) {
+    let combinations = [[]];
+    const combinationsKey = { "": true };
+
+    for (let i = 0; i < list.length; i++) {
+      const value = list[i];
+      const currentCombinations = [...combinations];
+      for (let j = 0; j < currentCombinations.length; j++) {
+        const combination = currentCombinations[j];
+        const currentPattern = [...combination, value];
+        const sumPattern = sum(currentPattern);
+        const keyPattern = currentPattern.join("|");
+        const isDuplicate = combinationsKey[keyPattern];
+        if (isDuplicate) {
+          continue;
+        }
+
+        if (sumPattern > this.woodLength) {
+          continue;
+        }
+
+        const temp = {
+          pattern: currentPattern.join(","),
+          pattern_list: currentPattern,
+        };
+
+        if (sumPattern === expected) {
+          return temp;
+        }
+        combinations = [...combinations, currentPattern];
+        combinationsKey[keyPattern] = true; // for checking duplicate
+      }
+    }
+  }
+
+  findPattern2() {
+    let numbers = [...this.remainingList].sort((a, b) => b - a);
+    console.log("numbers:", numbers);
+    let remainingList = [];
+
+    // zero pattern
+    while (numbers.length > 0) {
+      const number = numbers.shift();
+      console.log("number:", number);
+
+      for (const iterator of [...this.remainigWoodItemStockList, 120]) {
+        const afterUseWood = iterator - number;
+        if (afterUseWood < 0) {
+          continue;
+        }
+
+        if (afterUseWood === 0) {
+          // selected pattern
+        }
+
+        if (afterUseWood > 0) {
+          // find expected remaining
+          const selected = this.findCombinationWithExpect(
+            afterUseWood,
+            numbers
+          );
+
+          if (selected) {
+            const pattern_list = [...selected.pattern_list, number];
+            this.finalResult.push({
+              pattern_list,
+              pattern: pattern_list.join(","),
+            });
+            this.removeWoodItemStock(selected);
+          }
+          if (!selected) {
+            numbers.push(number);
+            continue;
+          }
+
+          //
+        }
+        console.log("iterator:", iterator, ":", iterator - number);
+      }
+
+      return;
+      // const selected = this.findCombination(
+      //   numbers,
+      //   this.remainigWoodItemStockList
+      // );
+      // if (selected.remaining == 0) {
+      //   this.finalResult.push(selected);
+      //   this.removeWoodItemStock(selected);
+      //   const newNumbers = this.removeSelectedPatternFromRemainingList(
+      //     numbers,
+      //     selected?.pattern_list ?? []
+      //   );
+      //   numbers = [...newNumbers];
+      //   continue;
+      // }
+      // remainingList = [...numbers];
+      // return remainingList;
+    }
+
+    return remainingList;
+  }
 }
 
 async function execute() {
@@ -727,7 +820,8 @@ async function execute() {
   // core.findItemFromWoodItemStock();
 
   // check from wood item stock
-  core.findPattern();
+  // core.findPattern();
+  core.findPattern2();
 }
 
 execute();

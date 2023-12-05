@@ -6,6 +6,7 @@ export interface ITFCreateProductionOrderItemForm {
   isCustomSize?: boolean | null
   qty?: number | null
   standardFrameId?: number | null
+  name?: string | null
 }
 
 export interface ITFCreateProductionOrderForm {

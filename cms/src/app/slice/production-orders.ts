@@ -24,7 +24,7 @@ const initialValues: ProductionOrdersInfoState = {
   data: null,
   selected: null,
   loading: false,
-  paramsCreatePlan: { id: 0, sparePart: 0.25 },
+  paramsCreatePlan: { sparePart: 0.25 },
 }
 
 const productionOrdersSlice = createSlice({

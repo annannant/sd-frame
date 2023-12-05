@@ -35,7 +35,7 @@ import {
 import { orderBy, sortBy, sum } from 'lodash'
 import {
   useGetProductionOrderByIDQuery,
-  usePostProductionCreatePlanQuery,
+  usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
 
 const { Text } = Typography
@@ -51,10 +51,12 @@ export const PlanWoodList = () => {
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
-  const { data, refetch } = usePostProductionCreatePlanQuery({
+  const { data, refetch } = usePostProductionOrderCreatePlanQuery({
     id: id,
-    sparePart: paramsCreatePlan?.sparePart ?? 0.25,
-    debug,
+    params: {
+      sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+      debug,
+    },
   })
 
   const { transformTableSummaryWood } = useProductionOrdersPlan()

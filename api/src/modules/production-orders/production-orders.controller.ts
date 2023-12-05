@@ -25,19 +25,6 @@ export class ProductionOrdersController {
     return this.productionOrdersService.create(createProductionOrderDto);
   }
 
-  @Post('create-plan')
-  createPlan(
-    @Query() query: QueryProductionOrderDto,
-    @Body() createProductionOrderDto: CreateProductionOrderPlanDto,
-  ) {
-    if (query.debug) {
-      return this.productionOrdersService.createPlanV2(
-        createProductionOrderDto,
-      );
-    }
-    return this.productionOrdersService.createPlan(createProductionOrderDto);
-  }
-
   @Get()
   findAll(@Query() query: QueryProductionOrderDto) {
     return this.productionOrdersService.findAll(query);
@@ -46,6 +33,36 @@ export class ProductionOrdersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productionOrdersService.findOne(+id);
+  }
+
+  @Post(':id/plan')
+  plan(
+    @Param('id') id: string,
+    @Query() query: QueryProductionOrderDto,
+    @Body() createProductionOrderDto: CreateProductionOrderPlanDto,
+  ) {
+    return this.productionOrdersService.plan(+id, createProductionOrderDto);
+  }
+
+  @Post(':id/create-plan')
+  createPlan(
+    @Param('id') id: string,
+    @Query() query: QueryProductionOrderDto,
+    @Body() createProductionOrderDto: CreateProductionOrderPlanDto,
+  ) {
+    return this.productionOrdersService.createPlanV2(
+      +id,
+      createProductionOrderDto,
+    );
+    // return this.productionOrdersService.createPlan(
+    //   +id,
+    //   createProductionOrderDto,
+    // );
+  }
+
+  @Post(':id/cancel-plan')
+  cancelPlan(@Param('id') id: string) {
+    return this.productionOrdersService.cancelPlan(+id);
   }
 
   @Patch(':id')

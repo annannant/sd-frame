@@ -13,11 +13,14 @@ class ImproveCoreAlgorithm {
   remainigWoodItemStockList = [];
   finalResult = [];
 
+  printAlgo;
+
   constructor(woodLength, minLength, sparePart, faceWidth) {
     this.woodLength = woodLength;
     this.minLength = minLength;
     this.sparePart = sparePart;
     this.faceWidth = faceWidth;
+    this.printAlgo = true;
   }
 
   setRemainingList(remainingList) {
@@ -76,10 +79,13 @@ class ImproveCoreAlgorithm {
   findCombination(list, woodItemStocksList) {
     const woodItemStocks = [...woodItemStocksList];
     let combinations = [[]];
-    let combinationsKey = { '': true };
+    const combinationsKey = { '': true };
 
-    let tempList = [];
+    const tempList = [];
     for (let i = 0; i < list.length; i++) {
+      if (this.printAlgo) {
+        console.log('----', i + 1, ';', list[i]);
+      }
       const value = list[i];
       const currentCombinations = [...combinations];
       for (let j = 0; j < currentCombinations.length; j++) {
@@ -91,6 +97,16 @@ class ImproveCoreAlgorithm {
         // if duplicate, skip
         const isDuplicate = combinationsKey[keyPattern];
         if (isDuplicate) {
+          if (this.printAlgo) {
+            console.log(
+              j + 1,
+              ';',
+              JSON.stringify(currentCombinations[j]),
+              ';',
+              JSON.stringify(currentPattern),
+              '** dup',
+            );
+          }
           continue;
         }
 
@@ -99,15 +115,53 @@ class ImproveCoreAlgorithm {
 
         // isMoreThanWoodLength
         if (sumPattern > this.woodLength) {
+          if (this.printAlgo) {
+            console.log(
+              j + 1,
+              ';',
+              JSON.stringify(currentCombinations[j]),
+              ';',
+              JSON.stringify(currentPattern),
+              '** > 120',
+            );
+          }
           continue;
         }
 
         //
         const woods = [...woodItemStocks, 120];
+        if (this.printAlgo) {
+          // console.log(j + 1, ';', currentCombinations[j], ';', currentPattern);
+          console.log(
+            j + 1,
+            ';',
+            JSON.stringify(currentCombinations[j]),
+            ';',
+            JSON.stringify(currentPattern),
+            ';',
+            sumPattern,
+          );
+        }
         for (let k = 0; k < woods.length; k++) {
           const wood = woods[k];
           const remaining = wood - sumPattern;
-          // console.log("remaining:", wood, "-", sumPattern, "=", remaining);
+          // if (this.printAlgo) {
+          //   console.log(
+          //     ';',
+          //     ';',
+          //     ';',
+          //     k + 1,
+          //     ';',
+          //     wood,
+          //     ';',
+          //     sumPattern,
+          //     ';',
+          //     remaining,
+          //     // `${wood}-${sumPattern}`,
+          //     // ';',
+          //     // remaining,
+          //   );
+          // }
           const temp = {
             pattern: currentPattern.join(','),
             pattern_list: currentPattern,
@@ -125,6 +179,19 @@ class ImproveCoreAlgorithm {
             tempList.push(temp);
           }
         }
+
+        // if (this.printAlgo) {
+        //   console.log(
+        //     ';',
+        //     ';',
+        //     ';',
+        //     ';',
+        //     ';',
+        //     ';',
+        //     ';',
+        //     JSON.stringify(combinations),
+        //   );
+        // }
       }
     }
 
@@ -199,7 +266,10 @@ class ImproveCoreAlgorithm {
     }
 
     const items = orderBy(this.standardList, ['w', 'h'], ['asc']);
-    const maxQty = maxBy(items, 'qty').qty;
+    let maxQty = maxBy(items, 'qty').qty;
+    if (maxQty > 5) {
+      maxQty = 5;
+    }
     for (let index = 0; index < +maxQty; index++) {
       const currentQty = index + 1;
       for (const std of items) {
@@ -208,9 +278,12 @@ class ImproveCoreAlgorithm {
         }
 
         const list = flatten(Array(currentQty).fill(std.wood_list));
-
         // always return remaining = 0
-        const selected = this.findCombinationStd(list, remaining, zeroOnly);
+        const selected: any = this.findCombinationStd(
+          list,
+          remaining,
+          zeroOnly,
+        );
         if (selected) {
           const usedPatternList = [];
           let remainingPatternList = [...list];
@@ -295,7 +368,6 @@ class ImproveCoreAlgorithm {
     const combinationsKey = { '': true };
 
     // all zero
-    let tempList = [];
     for (let i = 0; i < list.length; i++) {
       const value = list[i];
       const currentCombinations = [...combinations];
@@ -404,7 +476,7 @@ class ImproveCoreAlgorithm {
 
   removeSelectedPatternFromRemainingList(numbers, patternList) {
     for (const iterator of patternList) {
-      let deletIndex = numbers.indexOf(+iterator);
+      const deletIndex = numbers.indexOf(+iterator);
       if (deletIndex > -1) {
         numbers.splice(deletIndex, 1);
         numbers = [...numbers];
@@ -448,7 +520,6 @@ class ImproveCoreAlgorithm {
         console.log('numbers:', numbers);
         continue;
       }
-
       remainingList = [...numbers];
       return remainingList;
     }
@@ -671,25 +742,35 @@ class ImproveCoreAlgorithm {
     const response = [];
     const responseSuggest = [];
     for (const item of this.finalResult) {
-      console.log('item:', item);
       response.push({
         wood: item.wood,
         woodFromStock: item.form_stock,
+        woodType:
+          parser(item.wood) === parser(this.woodLength) ? 'full' : 'part',
         list: item.pattern_list,
         remaining: item.remaining,
         std: item.std,
       });
 
       if (item.std) {
-        console.log('item.std:', item.std);
-        responseSuggest.push({
-          // wood: item.std?.qty,
-          size: `${item.std?.width}x${item.std?.hight}`,
-          qty: item.std.qty,
-          // list: item.pattern_list,
-          // info: item.std,
-          // remaining: item.remaining,
-        });
+        const found = responseSuggest.find(
+          (val) =>
+            val.size === `${item.std?.width}x${item.std?.hight}` &&
+            val.qty > item.std.qty,
+        );
+        if (!found) {
+          responseSuggest.push({
+            // wood: item.std?.qty,
+            ...item.std,
+            size: `${item.std?.width}x${item.std?.hight}`,
+            qty: item.std.qty,
+            // list: item.pattern_list,
+            // info: item.std,
+            // remaining: item.remaining,
+            woodType:
+              parser(item.wood) === parser(this.woodLength) ? 'full' : 'part',
+          });
+        }
       }
     }
 

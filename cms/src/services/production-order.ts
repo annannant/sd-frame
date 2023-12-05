@@ -36,13 +36,22 @@ export const productionOrderApiSlice = createApi({
         method: 'GET',
       }),
     }),
-    postProductionCreatePlan: builder.query<
+    postProductionOrderCreatePlan: builder.query<
       ITFProductionOrderPlanResponse,
-      ITFProductionOrderCreatePlanParams
+      {
+        id: string
+        params: ITFProductionOrderCreatePlanParams
+      }
     >({
-      query: (params: ITFProductionOrderCreatePlanParams) => {
+      query: ({
+        id,
+        params,
+      }: {
+        id: string
+        params: ITFProductionOrderCreatePlanParams
+      }) => {
         return {
-          url: `production-orders/create-plan`,
+          url: `production-orders/${id}/plan`,
           method: 'POST',
           body: params,
           params: pick(params, ['debug']),
@@ -55,5 +64,5 @@ export const productionOrderApiSlice = createApi({
 export const {
   useGetAllProductionOrdersQuery,
   useGetProductionOrderByIDQuery,
-  usePostProductionCreatePlanQuery,
+  usePostProductionOrderCreatePlanQuery,
 } = productionOrderApiSlice

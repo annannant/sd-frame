@@ -22,7 +22,7 @@ import {
 import { orderBy, sortBy, sum } from 'lodash'
 import {
   useGetProductionOrderByIDQuery,
-  usePostProductionCreatePlanQuery,
+  usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
 
 export const PlanItems = () => {
@@ -37,10 +37,12 @@ export const PlanItems = () => {
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
   const { isLoading, data, refetch, isFetching } =
-    usePostProductionCreatePlanQuery({
+    usePostProductionOrderCreatePlanQuery({
       id: id,
-      sparePart: paramsCreatePlan?.sparePart ?? 0.25,
-      debug,
+      params: {
+        sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+        debug,
+      },
     })
   const loading = isLoading || isFetching
 
@@ -51,7 +53,6 @@ export const PlanItems = () => {
   const onClickCalulate = () => {
     dispatch(
       setParamsCreatePlan({
-        id: id,
         sparePart: form?.getFieldValue('sparePart') ?? 0.25,
       })
     )
@@ -134,7 +135,7 @@ export const PlanItems = () => {
 
               const orderedItems = sortBy(item.list ?? []).reverse()
               return (
-                <div key={`${item.no}`} className="flex items-center">
+                <div key={`item-no-${index + 1}`} className="flex items-center">
                   <div
                     className="w-[60px]"
                     style={{

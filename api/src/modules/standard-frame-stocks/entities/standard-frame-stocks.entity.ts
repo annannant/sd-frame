@@ -31,6 +31,10 @@ export class StandardFrameStock {
   stock: number;
 
   @Expose()
+  @Column({ name: 'inprogress_stock' })
+  inprogressStock: number;
+
+  @Expose()
   @ManyToOne(() => StandardFrame)
   @JoinColumn([{ name: 'standard_frame_id', referencedColumnName: 'id' }])
   standardFrame: StandardFrame;

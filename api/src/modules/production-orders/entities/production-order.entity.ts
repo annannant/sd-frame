@@ -103,6 +103,10 @@ export class ProductionOrder {
   @Column({ name: 'attribute_code' })
   attributeCode: string;
 
+  @Expose()
+  @Column({ name: 'production_plan_id' })
+  productionPlanId: number;
+
   @BeforeInsert()
   insertDates() {
     this.createdAt = new Date();

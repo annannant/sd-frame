@@ -39,6 +39,30 @@ export class WoodItemStock {
   woodLength: number;
 
   @Expose()
+  @Column({ name: 'stock' })
+  stock: number;
+
+  @Expose()
+  @Column({ name: 'used' })
+  used: number;
+
+  @Expose()
+  @Column({ name: 'created_at' })
+  createdAt: Date;
+
+  @Expose()
+  @Column({ name: 'created_by' })
+  createdBy: string;
+
+  @Expose()
+  @Column({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @Expose()
+  @Column({ name: 'updated_by' })
+  updatedBy: string;
+
+  @Expose()
   @ManyToOne(() => Wood, (location) => location.woodItemStocks)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
   wood: Wood;

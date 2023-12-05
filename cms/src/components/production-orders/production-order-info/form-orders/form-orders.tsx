@@ -55,7 +55,7 @@ export const FormOrders = () => {
     })
   }, [data?.options, selectedSize])
 
-  const handleOnChange = (value: number) => {
+  const handleOnChange = (index: number, value: number, option: any) => {
     const orderItems = form?.getFieldValue('orderItems')
     setSelectedSize(keyBy(orderItems?.filter(Boolean), 'size'))
   }
@@ -227,7 +227,9 @@ export const FormOrders = () => {
                             >
                               <Select
                                 showSearch
-                                onChange={handleOnChange}
+                                onChange={(value: any, opton: any) =>
+                                  handleOnChange(index, value, opton)
+                                }
                                 options={options}
                                 filterOption={filterOption}
                               />

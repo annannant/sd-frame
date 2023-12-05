@@ -11,7 +11,7 @@ import { ITFProductionOrderPlanSuggest } from 'types/production-order-plan'
 import { productionOrdersSelector } from 'app/slice/production-orders'
 import {
   useGetProductionOrderByIDQuery,
-  usePostProductionCreatePlanQuery,
+  usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
 
 export const TableOrderStandardFrameItems = () => {
@@ -21,10 +21,12 @@ export const TableOrderStandardFrameItems = () => {
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
-  const { data } = usePostProductionCreatePlanQuery({
-    ...paramsCreatePlan,
+  const { data } = usePostProductionOrderCreatePlanQuery({
     id: id,
-    debug,
+    params: {
+      ...paramsCreatePlan,
+      debug,
+    },
   })
   const { suggest } = data ?? {}
 

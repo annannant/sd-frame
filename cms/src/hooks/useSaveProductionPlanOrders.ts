@@ -10,7 +10,7 @@ import {
   postCreateProductionOrder,
 } from 'api/production-orders'
 
-import { pick } from 'lodash'
+import { keyBy, pick } from 'lodash'
 import { useGetAllActiveStandardFramesQuery } from 'services/standard-frame'
 
 export const useSaveProductionPlanOrders = () => {
@@ -19,12 +19,14 @@ export const useSaveProductionPlanOrders = () => {
   const transformPayload = (
     payload: ITFCreateProductionOrderForm
   ): ITFUpdateProductionOrder => {
+    const stdFramdObj = keyBy(data?.options, 'value')
     return {
       woodId: payload.woodId,
       orderItems: payload.orderItems?.map((item) => {
         const standardFrame = !item.isCustomSize
           ? data?.list.find((std) => std.id === item.size)
           : {}
+        const name = item.size ? stdFramdObj?.[item.size]?.data?.name : ''
         return {
           id: item.id,
           width: item.width,
@@ -33,6 +35,7 @@ export const useSaveProductionPlanOrders = () => {
           isCustomSize: item.isCustomSize,
           ...pick(standardFrame, ['width', 'height']),
           standardFrameId: item.isCustomSize ? null : item.size,
+          name: item.isCustomSize ? `${item.width}x${item.height}` : name,
         }
       }),
     }

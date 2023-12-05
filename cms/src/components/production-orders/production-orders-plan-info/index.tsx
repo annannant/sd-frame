@@ -35,7 +35,7 @@ import { TableOrderStandardFrameItems } from './table-order-std-items/table-orde
 import { productionOrdersSelector } from 'app/slice/production-orders'
 import {
   useGetProductionOrderByIDQuery,
-  usePostProductionCreatePlanQuery,
+  usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
 
 const { Title } = Typography
@@ -52,10 +52,12 @@ export const ProductionOrdersPlanInfo = () => {
   const navigate = useNavigate()
 
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
-  const { data } = usePostProductionCreatePlanQuery({
+  const { data } = usePostProductionOrderCreatePlanQuery({
     id,
-    sparePart: paramsCreatePlan?.sparePart ?? 0.25,
-    debug,
+    params: {
+      sparePart: paramsCreatePlan?.sparePart ?? 0.25,
+      debug,
+    },
   })
 
   const onStartPlan = () => {
