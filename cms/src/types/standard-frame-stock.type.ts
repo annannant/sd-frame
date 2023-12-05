@@ -7,6 +7,7 @@ export interface ITFCreateStandardFrameStock {
   woodId?: number | null
   reorderPoint?: number | null
   stock?: number | null
+  inprogressStock?: number | null
 }
 
 export interface ITFUpdateStandardFrameStock
@@ -34,7 +35,9 @@ export interface ITFTableStandardFrameStockByStandardFrame
 
 export interface ITFTableStandardFrameStock
   extends ITFTable,
-    ITFStandardFrameStock {}
+    ITFStandardFrameStock {
+  totalStock?: number | null
+}
 
 export interface ITFParamStandardFrameStock {
   standardFrameId?: number | null

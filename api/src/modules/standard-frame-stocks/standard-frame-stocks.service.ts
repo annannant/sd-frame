@@ -93,7 +93,8 @@ export class StandardFrameStocksService {
       );
 
       const totalReorderStock = standardFrameStocks.map((val) => {
-        const reorderStock = val?.reorderPoint - val?.stock;
+        const reorderStock =
+          val?.reorderPoint - (val?.stock + val?.inprogressStock);
         return {
           ...val,
           reorderStock: reorderStock > 0 ? reorderStock : 0,
@@ -103,7 +104,9 @@ export class StandardFrameStocksService {
       return {
         ...item,
         standardFrameStocks,
-        totalStock: sumBy(standardFrameStocks, 'stock'),
+        totalStock:
+          sumBy(standardFrameStocks, 'stock') +
+          sumBy(standardFrameStocks, 'inprogressStock'),
         totalReorderStock: sumBy(totalReorderStock, 'reorderStock'),
       };
     });

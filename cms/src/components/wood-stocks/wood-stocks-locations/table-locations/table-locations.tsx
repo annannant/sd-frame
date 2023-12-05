@@ -27,8 +27,8 @@ export const TableLocations = () => {
   const summary = (pageData: any) => {
     let totalStock = 0
 
-    pageData.forEach(({ stock }: any) => {
-      totalStock += stock
+    pageData.forEach(({ remaining }: any) => {
+      totalStock += remaining
     })
 
     return (

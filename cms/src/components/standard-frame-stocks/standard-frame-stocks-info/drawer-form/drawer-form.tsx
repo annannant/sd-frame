@@ -65,12 +65,14 @@ export const DrawerForm = (props: DrawerFormProps) => {
       form?.setFieldsValue({
         woodId: dataEdit?.woodId,
         stock: dataEdit?.stock,
+        inprogressStock: dataEdit?.inprogressStock,
         reorderPoint: dataEdit?.reorderPoint,
       })
     } else {
       form?.setFieldsValue({
         woodId: filter.woodId ?? null,
         stock: '',
+        inprogressStock: '',
         reorderPoint: dataStandardFrame?.defaultReorderPoint,
       })
     }
@@ -139,6 +141,15 @@ export const DrawerForm = (props: DrawerFormProps) => {
                   ]}
                 >
                   <InputNumber placeholder="สต๊อก" style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="inprogressStock" label="สต๊อกที่กำลังผลิต">
+                  <InputNumber
+                    placeholder="สต๊อก"
+                    style={{ width: '100%' }}
+                    disabled
+                  />
                 </Form.Item>
               </Col>
             </Row>

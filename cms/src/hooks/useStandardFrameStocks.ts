@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLoaderData } from 'react-router-dom'
 
@@ -24,6 +23,7 @@ import {
   setShowDrawer,
   standardFrameStockSelector,
 } from 'app/slice/standard-frame-stocks'
+import { omit } from 'lodash'
 import { useGetAllStandardFrameStocksByStandardFrameIDQuery } from 'services/standard-frame-stock'
 import { useGetAllWoodsQuery } from 'services/wood'
 
@@ -81,6 +81,7 @@ export const useStandardFrameStocks = () => {
           ...item,
           key: `${item?.standardFrameId}${item?.woodId}`,
           no: index + 1,
+          totalStock: (item?.stock ?? 0) + (item?.inprogressStock ?? 0),
         }
       }
     )
@@ -90,7 +91,7 @@ export const useStandardFrameStocks = () => {
   const onFinish = async (formValues: any) => {
     try {
       const data = {
-        ...formValues,
+        ...omit(formValues, ['inprogressStock']),
         standardFrameId: +id,
       }
       if (isEdit) {

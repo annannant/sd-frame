@@ -15,9 +15,9 @@ const columns: ColumnsType<ITFWoodStockLocation> = [
     }),
   },
   {
-    title: 'จำนวน',
-    dataIndex: 'stock',
-    key: 'stock',
+    title: 'คงเหลือ',
+    dataIndex: 'remaining',
+    key: 'remaining',
     onHeaderCell: () => ({
       style: { textAlign: 'center' },
     }),

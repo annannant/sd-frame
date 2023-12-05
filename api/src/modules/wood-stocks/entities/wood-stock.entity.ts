@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  AfterLoad,
 } from 'typeorm';
 
 @Entity('wood_stock')
@@ -39,6 +40,13 @@ export class WoodStock {
   @Expose()
   @Column({ name: 'total_used', nullable: true })
   totalUsed: number;
+
+  protected totalRemaining: number;
+
+  @AfterLoad()
+  getRemaining() {
+    this.totalRemaining = (this.totalStock ?? 0) - (this.totalUsed ?? 0);
+  }
 
   @ManyToOne(() => Wood, (wood) => wood.woodStocks)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })

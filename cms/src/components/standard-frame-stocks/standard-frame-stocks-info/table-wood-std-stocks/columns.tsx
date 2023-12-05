@@ -108,8 +108,8 @@ export const useColumnsWoodStandardFrameStocks = () => {
     // },
     {
       title: 'สต๊อก',
-      dataIndex: 'stock',
-      key: 'stock',
+      dataIndex: 'totalStock',
+      key: 'totalStock',
       onHeaderCell: () => ({
         style: { textAlign: 'center' },
       }),
@@ -123,17 +123,17 @@ export const useColumnsWoodStandardFrameStocks = () => {
             className="px-[20px]"
             style={{
               color:
-                (record?.stock ?? 0) < (record?.reorderPoint ?? 0)
+                (record?.totalStock ?? 0) < (record?.reorderPoint ?? 0)
                   ? colors.danger
                   : undefined,
             }}
           >
-            {currency(record?.stock ?? 0)}
+            {currency(record?.totalStock ?? 0)}
           </div>
         )
       },
       sorter: (a: ITFTableStandardFrameStock, b: ITFTableStandardFrameStock) =>
-        (a?.stock ?? 0) - (b?.stock ?? 0),
+        (a?.totalStock ?? 0) - (b?.totalStock ?? 0),
     },
     {
       title: 'จุดสั่งผลิต (Reorder Point)',
@@ -166,15 +166,15 @@ export const useColumnsWoodStandardFrameStocks = () => {
       }),
       width: '15%',
       render: (text: any, record: ITFTableStandardFrameStock, count: any) => {
-        const reorder = (record?.reorderPoint ?? 0) - (record?.stock ?? 0)
-        return reorder > 0 ? `${currency(reorder)}` : ''
+        const reorder = (record?.reorderPoint ?? 0) - (record?.totalStock ?? 0)
+        return reorder > 0 ? `${currency(reorder)}` : '-'
       },
       sorter: (
         a: ITFTableStandardFrameStock,
         b: ITFTableStandardFrameStock
       ) => {
-        const reorderA = (a?.reorderPoint ?? 0) - (a?.stock ?? 0)
-        const reorderB = (b?.reorderPoint ?? 0) - (b?.stock ?? 0)
+        const reorderA = (a?.reorderPoint ?? 0) - (a?.totalStock ?? 0)
+        const reorderB = (b?.reorderPoint ?? 0) - (b?.totalStock ?? 0)
         return reorderA - reorderB
       },
     },
