@@ -10,6 +10,7 @@ import {
 import { Expose } from 'class-transformer';
 import { ProductionPlan } from '@/modules/production-plans/entities/production-plan.entity';
 import { Location } from '@/modules/locations/entities/location.entity';
+import { Wood } from '@/modules/woods/entities/wood.entity';
 
 @Entity('production_wood_summary')
 export class ProductionWoodSummary {
@@ -74,4 +75,8 @@ export class ProductionWoodSummary {
   @OneToOne(() => Location)
   @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
   location: Location;
+
+  @OneToOne(() => Wood)
+  @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })
+  wood: Wood;
 }

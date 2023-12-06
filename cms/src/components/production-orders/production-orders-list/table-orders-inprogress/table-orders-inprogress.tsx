@@ -9,14 +9,14 @@ import {
 } from 'constants/current-status.constant'
 
 import { useProductionOrders } from 'hooks/useProductionOrders'
-import { useProductionPlanOrders } from 'hooks/useProductionPlanOrders'
+import { useProductionPlans } from 'hooks/useProductionPlans'
 
 import columns from '../columns'
 
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
 export const TableOrdersInprogress = () => {
-  const { transformTable } = useProductionPlanOrders()
+  const { transformTable } = useProductionPlans()
   const { dataOrderInprogress, refetchOrderInprogress } = useProductionOrders()
 
   const dataSource = transformTable(dataOrderInprogress ?? [])

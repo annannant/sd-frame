@@ -4,27 +4,14 @@ import { useLoaderData, useSearchParams } from 'react-router-dom'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button, Card, ConfigProvider, Form, InputNumber, Table } from 'antd'
-import { ColumnsType } from 'antd/es/table'
 
 import { colors } from 'constants/colors'
-import {
-  ITFProductionOrderItem,
-  ITFTableProductionOrderItem,
-} from 'types/production-order-items.type'
-import { ITFProductionOrderPlan } from 'types/production-order-plan.type'
 import { ITFProductionPlanWood } from 'types/production-plan-wood'
 
 import { parser } from 'helper/number'
 
-import {
-  productionOrdersSelector,
-  setParamsCreatePlan,
-} from 'app/slice/production-orders'
-import { orderBy, sortBy, sum } from 'lodash'
-import {
-  useGetProductionOrderByIDQuery,
-  usePostProductionOrderCreatePlanQuery,
-} from 'services/production-order'
+import { setParamsCreatePlan } from 'app/slice/production-orders'
+import { orderBy, sortBy } from 'lodash'
 import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 
 export const PlanWoods = () => {
@@ -62,8 +49,35 @@ export const PlanWoods = () => {
   }
 
   return (
-    <Card title="รายการไม้ที่ต้องตัด" bordered={false}>
+    <Card
+      title={
+        <div className="flex items-center justify-between">
+          <div>รายการไม้ที่ต้องตัด</div>
+          <div className="flex gap-4">
+            <Button
+              type="primary"
+              htmlType="button"
+              onClick={() => {}}
+              // style={{ width: 100 }}
+            >
+              จัดการไม้ผลิตเสีย
+            </Button>
+            <Button
+              type="primary"
+              htmlType="button"
+              onClick={() => {}}
+              // style={{ width: 100 }}
+            >
+              อัพเดทสถานะ
+            </Button>
+          </div>
+        </div>
+      }
+      bordered={false}
+    >
       <div className="mb-[40px] flex justify-end gap-x-3">
+        <span>ส่วนเผื่อเหลือ (Spare Part): </span>{' '}
+        {parseFloat(data?.sparePart ?? '0')} นิ้ว
         {/* <Form.Item
           label="ส่วนเผื่อเหลือ (Spare Part)"
           name={'sparePart'}
@@ -82,7 +96,7 @@ export const PlanWoods = () => {
             style={{ width: '100%' }}
           />
         </Form.Item> */}
-        <ConfigProvider
+        {/* <ConfigProvider
           theme={{
             token: {
               colorPrimary: colors.success,
@@ -97,7 +111,7 @@ export const PlanWoods = () => {
           >
             คำนวณ
           </Button>
-        </ConfigProvider>
+        </ConfigProvider> */}
       </div>
       {loading && (
         <div className="mb-10 flex justify-center py-10">

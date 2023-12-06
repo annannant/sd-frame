@@ -38,7 +38,7 @@ import {
   usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
 
-const { Text } = Typography
+const { Title } = Typography
 
 export const PlanWoodList = () => {
   const dispatch = useDispatch()
@@ -58,6 +58,7 @@ export const PlanWoodList = () => {
       debug,
     },
   })
+  const lot = data?.summaryWood?.[0]?.lot
 
   const { transformTableSummaryWood } = useProductionOrdersPlan()
   const dataSources = transformTableSummaryWood(data?.summaryWood ?? [])
@@ -74,16 +75,21 @@ export const PlanWoodList = () => {
     <Card
       title={
         <div className="flex items-center justify-between">
-          <span>รายการไม้ที่ต้องใช้</span>
-          {!!data?.isWoodOutStock && (
-            <div className=" text-[14px] font-medium text-danger">
-              * ไม้กรอบบางรายการหมด กรุณาตรวจสอบสต๊อก
-            </div>
-          )}
+          <span>
+            รายการไม้ที่ต้องใช้ ( Lot : <span className="mx-1">{lot}</span> )
+          </span>
+          {/* <Title level={5} style={{ marginTop: 0, marginBottom: 0 }}>
+            Lot : <span className="mx-3">{lot}</span>
+          </Title> */}
         </div>
       }
       bordered={false}
     >
+      {!!data?.isWoodOutStock && (
+        <div className=" text-[14px] font-medium text-danger">
+          * ไม้กรอบบางรายการหมด กรุณาตรวจสอบสต๊อก
+        </div>
+      )}
       <Table
         dataSource={dataSources}
         columns={columns}

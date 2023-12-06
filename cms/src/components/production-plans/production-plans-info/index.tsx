@@ -35,6 +35,7 @@ import useMessage from 'hooks/useMessage'
 import useModal from 'hooks/useModal'
 import { useProductionOrdersPlan } from 'hooks/useProductionOrdersPlan'
 
+import { PlanWoodSummary } from './plan-wood-summary/plan-wood-summary'
 import { PlanWoods } from './plan-woods/plan-woods'
 import { TableOrderItems } from './table-order-items/table-order-items'
 import { TableOrderStandardFrameItems } from './table-order-std-items/table-order-std-items'
@@ -78,25 +79,6 @@ export const ProductionPlansInfoComponent = () => {
               >
                 กลับไปก่อนหน้า
               </Button>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorPrimary: colors.success,
-                  },
-                }}
-              >
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  size="large"
-                  // disabled={!!data?.isWoodOutStock}
-                  // onClick={onStartPlan}
-                  icon={<InsertRowLeftOutlined style={{ marginTop: 2 }} />}
-                  style={{ width: 120 }}
-                >
-                  เบิกไม้
-                </Button>
-              </ConfigProvider>
             </div>
           </div>
           <Divider />
@@ -129,8 +111,7 @@ export const ProductionPlansInfoComponent = () => {
           <Col span={17}>
             <div className="flex flex-col gap-y-[30px]">
               <PlanWoods />
-              {/* 
-              <PlanWoodList /> */}
+              <PlanWoodSummary />
             </div>
           </Col>
         </Row>

@@ -4,14 +4,14 @@ import { Table } from 'antd'
 
 import { DRAFT, WAIT_FOR_CUTTING } from 'constants/current-status.constant'
 
-import { useProductionPlanOrders } from 'hooks/useProductionPlanOrders'
+import { useProductionPlans } from 'hooks/useProductionPlans'
 
 import columns from '../columns'
 
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
 export const TableOrders = () => {
-  const { transformTable } = useProductionPlanOrders()
+  const { transformTable } = useProductionPlans()
   const { data, refetch } = useGetAllProductionOrdersQuery({
     statuses: [WAIT_FOR_CUTTING],
   })

@@ -6,14 +6,14 @@ import { ColumnsType } from 'antd/es/table'
 
 import { TagStatus } from 'common/tag-status'
 
-import { ITFTableProductionOrderPlanSummaryWood } from 'types/production-order-plan.type'
+import { ITFTableProductionWoodSummary } from 'types/production-wood-summary'
 
 import { formatDate } from 'helper/date-formatter'
 import { convertLocationLabel } from 'helper/location'
-import { currency } from 'helper/number'
+import { currency, parser } from 'helper/number'
 import { convertWoodLabel } from 'helper/wood'
 
-const columns: ColumnsType<ITFTableProductionOrderPlanSummaryWood> = [
+const columns: ColumnsType<ITFTableProductionWoodSummary> = [
   {
     title: 'No',
     dataIndex: 'no',
@@ -23,24 +23,14 @@ const columns: ColumnsType<ITFTableProductionOrderPlanSummaryWood> = [
     title: 'ไม้',
     dataIndex: 'woodType',
     key: 'woodType',
-    render: (
-      text: any,
-      record: ITFTableProductionOrderPlanSummaryWood,
-      count: any
-    ) => {
+    render: (text: any, record: ITFTableProductionWoodSummary, count: any) => {
+      // const length = record?.wood?.woodType?.length ?? 0
       return (
         <div>
-          {record.woodFromStock ? (
+          {record.woodType === 'part' ? (
             <span>ไม้ในสต๊อก</span>
           ) : (
-            <span>
-              ไม้เส้นยาว{' '}
-              {record?.isOutStock && (
-                <Tag color="error" style={{ marginLeft: 5 }}>
-                  Out of stock
-                </Tag>
-              )}
-            </span>
+            <span>ไม้เส้นยาว</span>
           )}
         </div>
       )
@@ -48,44 +38,44 @@ const columns: ColumnsType<ITFTableProductionOrderPlanSummaryWood> = [
   },
   {
     title: 'ความยาว',
-    dataIndex: 'woodLength',
-    key: 'woodLength',
+    dataIndex: 'length',
+    key: 'length',
     onCell: () => ({
       style: { textAlign: 'right' },
     }),
-    render: (
-      text: any,
-      record: ITFTableProductionOrderPlanSummaryWood,
-      count: any
-    ) => {
+    render: (text: any, record: ITFTableProductionWoodSummary, count: any) => {
       return <div>{currency(text ?? 0)} "</div>
     },
   },
   {
-    title: 'จำนวน',
-    dataIndex: 'usedQty',
-    key: 'usedQty',
+    title: 'เบิกแล้ว / ที่ต้องใช้',
+    dataIndex: 'totalQty',
+    key: 'totalQty',
     onCell: () => ({
       style: { textAlign: 'right' },
     }),
-    render: (
-      text: any,
-      record: ITFTableProductionOrderPlanSummaryWood,
-      count: any
-    ) => {
-      return <div>{currency(text ?? 0)}</div>
+    width: 140,
+    render: (text: any, record: ITFTableProductionWoodSummary, count: any) => {
+      return (
+        <div>
+          <span className="text-primary">
+            {currency(record.totalWithdraw ?? 0)}
+          </span>{' '}
+          / {currency(record.totalQty ?? 0)}
+        </div>
+      )
     },
   },
   {
     title: 'หน่วย',
     dataIndex: 'unit',
     key: 'unit',
-    render: (
-      text: any,
-      record: ITFTableProductionOrderPlanSummaryWood,
-      count: any
-    ) => {
-      return <div>เส้น</div>
+    render: (text: any, record: ITFTableProductionWoodSummary, count: any) => {
+      return (
+        <div>
+          {record.woodType === 'part' ? <span>ชิ้น</span> : <span>เส้น</span>}
+        </div>
+      )
     },
     align: 'center',
   },
@@ -102,11 +92,7 @@ const columns: ColumnsType<ITFTableProductionOrderPlanSummaryWood> = [
     title: 'ตำแหน่งที่ตั้ง',
     dataIndex: 'location',
     key: 'location',
-    render: (
-      text: any,
-      record: ITFTableProductionOrderPlanSummaryWood,
-      count: any
-    ) => {
+    render: (text: any, record: ITFTableProductionWoodSummary, count: any) => {
       return (
         <div>{record?.location && convertLocationLabel(record?.location)}</div>
       )

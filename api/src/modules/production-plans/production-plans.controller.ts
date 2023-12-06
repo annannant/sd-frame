@@ -10,6 +10,7 @@ import {
 import { ProductionPlansService } from './production-plans.service';
 import { CreateProductionPlanDto } from './dto/create-production-plan.dto';
 import { UpdateProductionPlanDto } from './dto/update-production-plan.dto';
+import { UpdateProductionWoodSummaryDto } from '../production-wood-summary/dto/update-production-wood-summary.dto';
 
 @Controller('production-plans')
 export class ProductionPlansController {
@@ -38,6 +39,17 @@ export class ProductionPlansController {
     @Body() updateProductionPlanDto: UpdateProductionPlanDto,
   ) {
     return this.productionPlansService.update(+id, updateProductionPlanDto);
+  }
+
+  @Patch(':id/withdraw-woods')
+  withdrawWoods(
+    @Param('id') id: string,
+    @Body() updateProductionWoodSummaryDto: UpdateProductionWoodSummaryDto[],
+  ) {
+    return this.productionPlansService.withdrawWoods(
+      +id,
+      updateProductionWoodSummaryDto,
+    );
   }
 
   @Delete(':id')

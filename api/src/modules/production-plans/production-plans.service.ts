@@ -4,12 +4,16 @@ import { UpdateProductionPlanDto } from './dto/update-production-plan.dto';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { ProductionPlan } from './entities/production-plan.entity';
+import { UpdateProductionWoodSummaryDto } from '../production-wood-summary/dto/update-production-wood-summary.dto';
+import { ProductionWoodSummary } from '../production-wood-summary/entities/production-wood-summary.entity';
 
 @Injectable()
 export class ProductionPlansService {
   constructor(
     @InjectRepository(ProductionPlan)
     private productionPlansRepository: Repository<ProductionPlan>,
+    @InjectRepository(ProductionWoodSummary)
+    private productionWoodSummaryRepository: Repository<ProductionWoodSummary>,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -45,6 +49,14 @@ export class ProductionPlansService {
       )
       .leftJoinAndSelect('plan.productionWoodSummary', 'productionWoodSummary')
       .leftJoinAndSelect('productionWoodSummary.location', 'location')
+      .leftJoinAndSelect(
+        'productionWoodSummary.wood',
+        'productionWoodSummaryWood',
+      )
+      .leftJoinAndSelect(
+        'productionWoodSummaryWood.woodType',
+        'productionWoodSummaryWoodType',
+      )
       .where('plan.id = :id', { id })
       .getOne();
 
@@ -55,6 +67,21 @@ export class ProductionPlansService {
       };
     }
 
+    return data;
+  }
+
+  async withdrawWoods(
+    id: number,
+    updateProductionWoodSummaryDto: UpdateProductionWoodSummaryDto[],
+  ) {
+    const data = updateProductionWoodSummaryDto.map(
+      (val: ProductionWoodSummary) => {
+        return this.productionWoodSummaryRepository.update(val.id, {
+          totalWithdraw: val.totalWithdraw ?? null,
+        });
+      },
+    );
+    await Promise.all(data);
     return data;
   }
 
