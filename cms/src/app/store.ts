@@ -6,6 +6,7 @@ import rootReducer from './root-reducer'
 
 import { attributeApiSlice } from 'services/attribute'
 import { productionOrderApiSlice } from 'services/production-order'
+import { productionPlanApiSlice } from 'services/production-plan'
 import { standardFrameApiSlice } from 'services/standard-frame'
 import { standardFrameStockApiSlice } from 'services/standard-frame-stock'
 import { woodApiSlice } from 'services/wood'
@@ -24,6 +25,7 @@ const store = configureStore({
       .concat(attributeApiSlice.middleware)
       .concat(woodStockApiSlice.middleware)
       .concat(woodStockLocationApiSlice.middleware)
+      .concat(productionPlanApiSlice.middleware)
       .concat(woodTypeApiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 })

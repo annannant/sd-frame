@@ -27,6 +27,10 @@ export interface ITFProductionOrderPlanSuggest {
   qty?: number
 }
 
+export interface ITFProductionOrderCreatePlan {
+  sparePart: number
+}
+
 export interface ITFProductionOrderCreatePlanParams {
   // id: number
   sparePart: number

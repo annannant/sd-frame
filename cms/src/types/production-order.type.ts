@@ -16,6 +16,7 @@ export interface ITFProductionOrder {
   updatedBy?: string | null
   wood?: ITFWood | null
   productionOrderItems?: ITFProductionOrderItem[] | null
+  productionPlanId?: number | null
 }
 
 export interface ITFProductionOrderQueryParams {

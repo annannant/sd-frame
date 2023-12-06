@@ -1,4 +1,5 @@
 import { ProductionOrderItem } from '@/modules/production-order-items/entities/production-order-item.entity';
+import { ProductionPlan } from '@/modules/production-plans/entities/production-plan.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';
 import {
@@ -10,6 +11,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 
 @Entity('production_order')
@@ -129,4 +131,8 @@ export class ProductionOrder {
 
   @OneToMany(() => ProductionOrderItem, (item) => item.productionOrder)
   productionOrderItems: ProductionOrderItem[];
+
+  @OneToOne(() => ProductionPlan)
+  @JoinColumn({ name: 'production_plan_id', referencedColumnName: 'id' })
+  productionPlan: ProductionPlan;
 }

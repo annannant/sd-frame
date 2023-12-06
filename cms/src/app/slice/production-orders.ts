@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { ITFProductionOrderCreatePlanParams } from 'types/production-order-plan'
+import { ITFProductionOrderCreatePlanParams } from 'types/production-order-plan.type'
 import { ITFCreateProductionOrder } from 'types/production-order.type'
 import { ITFWood } from 'types/wood.type'
 

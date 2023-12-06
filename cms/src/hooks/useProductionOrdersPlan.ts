@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 import {
   CUTTING_INPROGRESS,
   DRAFT,
@@ -6,51 +8,28 @@ import {
   WAIT_FOR_PREPARING,
 } from 'constants/current-status.constant'
 import {
+  ITFProductionOrderCreatePlan,
   ITFProductionOrderPlanResponse,
   ITFProductionOrderPlanSummaryWood,
   ITFTableProductionOrderPlanSummaryWood,
-} from 'types/production-order-plan'
+} from 'types/production-order-plan.type'
 import { ITFWoodStockLocation } from 'types/wood-stock-location.type'
+
+import { postProductionOrderCreatePlan } from 'api/production-orders'
+
+import useMessage from './useMessage'
 
 import { orderBy } from 'lodash'
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
 export const useProductionOrdersPlan = () => {
-  const selectedLocation = (
-    totalUsedWood: number,
-    woodStockLocations: ITFWoodStockLocation[]
-  ) => {
-    const response = []
-    let remaining = totalUsedWood
-    for (const location of woodStockLocations) {
-      if (remaining > 0) {
-        const qty = location.stock ?? 0
-        const used = qty > remaining ? remaining : qty
-        const newLocation = {
-          ...location,
-          qty: used,
-        }
-        response.push(newLocation)
-        remaining -= used
-      }
-    }
-    console.log('response:', response)
-
-    return response
-  }
+  const navigate = useNavigate()
+  const { contextHolder, success, error } = useMessage()
 
   const transformTableSummaryWood = (
     data: ITFProductionOrderPlanSummaryWood[]
   ): ITFTableProductionOrderPlanSummaryWood[] => {
     const response = data.map((item, index) => {
-      // const key = [
-      //   `${item.woodFromStock ? 'stock' : 'full'}`,
-      //   item.woodId,
-      //   item.locationId,
-      //   item.lot,
-      //   index ?? 0,
-      // ].join('')
-      // console.log('key:', key)
       return {
         ...item,
         key: `summary-${index + 1}`,
@@ -60,7 +39,30 @@ export const useProductionOrdersPlan = () => {
     return response
   }
 
+  const startPlan = async (
+    id: string,
+    formValues: ITFProductionOrderCreatePlan
+  ) => {
+    try {
+      const response = await postProductionOrderCreatePlan(id, {
+        sparePart: formValues.sparePart,
+      })
+      console.log('response:', response)
+      success()
+      setTimeout(() => {
+        navigate('/production-plans')
+      }, 600)
+    } catch (err) {
+      console.log('err:', err)
+      error()
+    }
+  }
+
   return {
     transformTableSummaryWood,
+    startPlan,
+    contextHolder,
+    success,
+    error,
   }
 }

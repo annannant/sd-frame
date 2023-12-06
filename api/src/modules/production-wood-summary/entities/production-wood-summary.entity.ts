@@ -8,6 +8,8 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
+import { ProductionPlan } from '@/modules/production-plans/entities/production-plan.entity';
+import { Location } from '@/modules/locations/entities/location.entity';
 
 @Entity('production_wood_summary')
 export class ProductionWoodSummary {
@@ -64,4 +66,12 @@ export class ProductionWoodSummary {
   @Expose()
   @Column({ name: 'location_id' })
   locationId: number;
+
+  @ManyToOne(() => ProductionPlan, (plan) => plan.productionWoodSummary)
+  @JoinColumn({ name: 'production_plan_id', referencedColumnName: 'id' })
+  productionPlan: ProductionPlan;
+
+  @OneToOne(() => Location)
+  @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
+  location: Location;
 }

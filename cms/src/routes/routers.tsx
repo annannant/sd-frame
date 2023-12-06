@@ -11,6 +11,11 @@ import { ProductionOrdersPlanInfoPage } from 'pages/production-orders/production
 import { ProductionOrdersWaitingPage } from 'pages/production-orders/production-orders-waiting'
 import { ProductionOrdersWaitingInfoPage } from 'pages/production-orders/production-orders-waiting-info'
 import {
+  ProductionPlansInfoPage,
+  editPlanLoader,
+} from 'pages/production-plans/production-plans-info'
+import { ProductionPlansListPage } from 'pages/production-plans/production-plans-list'
+import {
   StandardFrameStocksInfoPage,
   viewStandardFrameStocksInfoLoader,
 } from 'pages/standard-frame-stocks/standard-frame-stocks-info'
@@ -263,6 +268,36 @@ export const router = createBrowserRouter([
         element: <StandardFrameStocksInfoPage />,
         errorElement: <ErrorPage />,
         loader: viewStandardFrameStocksInfoLoader,
+      },
+    ],
+  },
+  {
+    path: '/production-plans',
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    loader: () => {
+      console.log('loader')
+      return {
+        data: 'loader',
+      }
+    },
+    action: () => {
+      console.log('action')
+      return {
+        data: 'action',
+      }
+    },
+    children: [
+      {
+        index: true,
+        element: <ProductionPlansListPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'edit/:planId',
+        element: <ProductionPlansInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editPlanLoader,
       },
     ],
   },

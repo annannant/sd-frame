@@ -10,6 +10,8 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
+import { ProductionPlan } from '@/modules/production-plans/entities/production-plan.entity';
+import { ProductionPlanWoodItem } from '@/modules/production-plan-wood-items/entities/production-plan-wood-item.entity';
 
 @Entity('production_plan_wood')
 export class ProductionPlanWood {
@@ -69,4 +71,11 @@ export class ProductionPlanWood {
   updateDates() {
     this.updatedAt = new Date();
   }
+
+  @ManyToOne(() => ProductionPlan, (plan) => plan.productionPlanWoods)
+  @JoinColumn({ name: 'production_plan_id', referencedColumnName: 'id' })
+  productionPlan: ProductionPlan;
+
+  @OneToMany(() => ProductionPlanWoodItem, (item) => item.productionPlanWood)
+  productionPlanWoodItems: ProductionPlanWoodItem;
 }

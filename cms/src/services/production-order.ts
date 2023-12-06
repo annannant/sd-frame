@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   ITFProductionOrderCreatePlanParams,
   ITFProductionOrderPlanResponse,
-} from 'types/production-order-plan'
+} from 'types/production-order-plan.type'
 import {
   ITFProductionOrder,
   ITFProductionOrderQueryParams,

@@ -1,4 +1,5 @@
 import { ProductionOrder } from '@/modules/production-orders/entities/production-order.entity';
+import { ProductionPlan } from '@/modules/production-plans/entities/production-plan.entity';
 import { StandardFrame } from '@/modules/standard-frames/entities/standard-frame.entity';
 import { Expose } from 'class-transformer';
 import {
@@ -47,4 +48,8 @@ export class ProductionPlanSuggestItem {
   @Expose()
   @Column({ name: 'qty' })
   qty: number;
+
+  @ManyToOne(() => ProductionPlan, (plan) => plan.productionPlanSuggestItems)
+  @JoinColumn({ name: 'production_plan_id', referencedColumnName: 'id' })
+  productionPlan: ProductionPlan;
 }

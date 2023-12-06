@@ -12,6 +12,7 @@ import {
   ITFTableProductionOrderItem,
 } from 'types/production-order-items.type'
 import { ITFProductionOrderPlan } from 'types/production-order-plan.type'
+import { ITFProductionPlanWood } from 'types/production-plan-wood'
 
 import { parser } from 'helper/number'
 
@@ -24,31 +25,33 @@ import {
   useGetProductionOrderByIDQuery,
   usePostProductionOrderCreatePlanQuery,
 } from 'services/production-order'
+import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 
-export const PlanItems = () => {
+export const PlanWoods = () => {
   const dispatch = useDispatch()
-
   const form = Form.useFormInstance()
 
-  const [searchParams] = useSearchParams()
-  const debug = searchParams.get('debug') ?? undefined
-
-  const { paramsCreatePlan } = useSelector(productionOrdersSelector)
   const { id }: any = useLoaderData()
-  const { data: orderInfo } = useGetProductionOrderByIDQuery(id)
-  const { isLoading, data, refetch, isFetching } =
-    usePostProductionOrderCreatePlanQuery({
-      id: id,
-      params: {
-        sparePart: paramsCreatePlan?.sparePart ?? 0.25,
-        debug,
-      },
-    })
-  const loading = isLoading || isFetching
-
-  const { plans, minLength } = data ?? {}
-  const orderedPlans = orderBy([...(plans ?? [])], ['wood'], ['asc'])
-  const woodLength = orderInfo?.wood?.woodType?.length ?? 0
+  const { data } = useGetProductionPlanByIDQuery(id, { skip: !id })
+  const productionPlanWoods = useMemo(() => {
+    const formatted = (data?.productionPlanWoods ?? []).map(
+      (item: ITFProductionPlanWood) => {
+        return {
+          ...item,
+          length: parser(item.length),
+          hasRemaining: item.productionPlanWoodItems?.find(
+            (val) => val.type === 'keep'
+          )
+            ? 1
+            : 0,
+        }
+      }
+    )
+    return orderBy(formatted, ['length', 'hasRemaining'], ['asc', 'asc'])
+  }, [data?.productionPlanWoods])
+  const orderInfo = data?.productionOrder ?? {}
+  const loading = false
+  const woodLength = parser(orderInfo?.wood?.woodType?.length ?? '')
 
   const onClickCalulate = () => {
     dispatch(
@@ -58,19 +61,10 @@ export const PlanItems = () => {
     )
   }
 
-  useEffect(() => {
-    console.log('paramsCreatePlan:', paramsCreatePlan)
-    refetch()
-  }, [paramsCreatePlan])
-
-  useEffect(() => {
-    form?.setFieldValue('sparePart', 0.25)
-  }, [])
-
   return (
     <Card title="รายการไม้ที่ต้องตัด" bordered={false}>
       <div className="mb-[40px] flex justify-end gap-x-3">
-        <Form.Item
+        {/* <Form.Item
           label="ส่วนเผื่อเหลือ (Spare Part)"
           name={'sparePart'}
           style={{ width: '50%' }}
@@ -87,7 +81,7 @@ export const PlanItems = () => {
             placeholder="ส่วนเผื่อเหลือ"
             style={{ width: '100%' }}
           />
-        </Form.Item>
+        </Form.Item> */}
         <ConfigProvider
           theme={{
             token: {
@@ -118,24 +112,14 @@ export const PlanItems = () => {
 
       {!loading && (
         <div className="mb-8 flex flex-col gap-y-[32px]">
-          {(orderedPlans ?? []).map(
-            (item: ITFProductionOrderPlan, index: number) => {
-              const sumWidth = sum(item.list ?? [])
-              const isWoodStock = parser(item.wood ?? '') !== parser(woodLength)
-              const remaining = parser(
-                (isWoodStock ? parser(item.wood ?? '') : parser(woodLength)) -
-                  parser(sumWidth)
-              )
-              const percentRemaining =
-                (parser(remaining ?? 0) * 100) / parser(woodLength)
-              const colorWasted =
-                remaining >= parser(minLength ?? 0)
-                  ? 'bg-secondary'
-                  : 'bg-danger'
-
-              const orderedItems = sortBy(item.list ?? []).reverse()
+          {(productionPlanWoods ?? []).map(
+            (wood: ITFProductionPlanWood, index: number) => {
+              const isWoodStock = wood.itemType === 'part'
+              const orderedItems = sortBy(
+                wood.productionPlanWoodItems ?? []
+              ).reverse()
               return (
-                <div key={`item-no-${index + 1}`} className="flex items-center">
+                <div key={`item-no-${wood.id}`} className="flex items-center">
                   <div
                     className="w-[60px]"
                     style={{
@@ -145,39 +129,39 @@ export const PlanItems = () => {
                       fontWeight: isWoodStock ? 600 : 'normal',
                     }}
                   >
-                    {item.wood}
+                    {wood.length}
                   </div>
                   <div className="flex flex-1 flex-row">
-                    {orderedItems.map((width, idx: number) => {
+                    {orderedItems.map((item, idx: number) => {
                       const percent =
-                        (parser(width ?? 0) * 100) / parser(woodLength)
+                        (parser(item.length ?? 0) * 100) / parser(woodLength)
+                      let colorWasted
+                      switch (item.type) {
+                        case 'keep':
+                          colorWasted = 'bg-secondary'
+                          break
+                        case 'wasted':
+                          colorWasted = 'bg-danger'
+                          break
+                        default:
+                          colorWasted = 'bg-warning'
+                          break
+                      }
+
                       return (
                         <div
-                          key={idx}
-                          className={`mr-[6px] flex h-[8px] justify-center bg-warning`}
+                          key={item.id}
+                          className={`mr-[6px] flex h-[8px] justify-center  ${colorWasted}`}
                           style={{
                             width: `${percent}%`,
                           }}
                         >
                           <div className="mt-[10px]">
-                            {parser(width).toFixed(2)}
+                            {parser(item.length ?? 0).toFixed(2)}
                           </div>
                         </div>
                       )
                     })}
-                    {remaining > 0 && (
-                      <div
-                        className={`mr-[6px] flex h-[8px] justify-center ${colorWasted}`}
-                        style={{
-                          width: `${percentRemaining}%`,
-                        }}
-                      >
-                        <div className="mt-[10px]">
-                          {parser(remaining).toFixed(2)}
-                        </div>
-                      </div>
-                    )}
-                    {/* {sumWidth} */}
                   </div>
                 </div>
               )

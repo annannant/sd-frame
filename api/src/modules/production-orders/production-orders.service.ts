@@ -1,16 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateProductionOrderDto } from './dto/create-production-order.dto';
 import { UpdateProductionOrderDto } from './dto/update-production-order.dto';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { ProductionOrder } from './entities/production-order.entity';
-import {
-  Between,
-  DataSource,
-  EntityManager,
-  IsNull,
-  Not,
-  Repository,
-} from 'typeorm';
+import { Between, DataSource, EntityManager, Repository } from 'typeorm';
 import { ProductionOrderItem } from '../production-order-items/entities/production-order-item.entity';
 import { CreateProductionOrderItemDto } from '../production-order-items/dto/create-production-order-item.dto';
 import { QueryProductionOrderDto } from './dto/query-production-order.dto';
@@ -420,22 +413,27 @@ export class ProductionOrdersService {
   ) {
     const productionOrderId = id;
     const { sparePart } = createProductionOrderPlanDto;
-    const queryOrders =
-      this.productionOrdersRepository.createQueryBuilder('pod');
-    const data = await queryOrders
+    let queryOrders = this.productionOrdersRepository.createQueryBuilder('pod');
+    queryOrders = queryOrders
       .leftJoinAndSelect('pod.productionOrderItems', 'productionOrderItems')
       .leftJoinAndSelect('productionOrderItems.standardFrame', 'standardFrame')
       .leftJoinAndSelect('pod.wood', 'wood')
       .leftJoinAndSelect('wood.woodType', 'woodType')
       .leftJoinAndSelect('wood.attribute', 'attribute')
       .leftJoinAndSelect('wood.woodStocks', 'woodStocks')
-      .leftJoinAndSelect('wood.woodItemStocks', 'woodItemStocks')
-      .leftJoinAndSelect('woodStocks.woodStockLocations', 'woodStockLocations')
+      .leftJoinAndSelect('wood.woodItemStocks', 'woodItemStocks', 'used = 0')
+      .leftJoinAndMapMany(
+        'woodStocks.woodStockLocations',
+        WoodStockLocation,
+        'woodStockLocations',
+        'woodStocks.wood_id=woodStockLocations.wood_id AND woodStocks.lot=woodStockLocations.lot',
+      )
       .leftJoinAndSelect('woodStockLocations.location', 'location')
       .leftJoinAndSelect('woodItemStocks.location', 'woodItemStockLocation')
-      .where('pod.id = :id', { id: productionOrderId })
-      .andWhere('woodItemStocks.used = 0')
-      .getOne();
+      .where('pod.id = :id', { id: productionOrderId });
+    // const sql = queryOrders.getSql();
+
+    const data = await queryOrders.getOne();
     const woodLength = data?.wood?.woodType?.length;
     const minLength = await this.getMinLength(
       data.wood.woodType.width,
@@ -556,6 +554,7 @@ export class ProductionOrdersService {
     data: any,
   ) {
     try {
+      console.log('data?.plans:', data?.plans);
       for (const plan of data?.plans) {
         // create plan wood
         const created = await manager.save(
@@ -588,6 +587,24 @@ export class ProductionOrdersService {
             ),
           );
         }
+
+        if (plan?.remaining) {
+          await manager.save(
+            plainToInstance(
+              ProductionPlanWoodItem,
+              {
+                productionPlanWoodId: created.id,
+                productionPlanId,
+                length: plan?.remaining,
+                type: plan?.remaining >= data?.minLength ? 'keep' : 'wasted',
+                cuttingStatus: 'pending',
+              },
+              { strategy: 'excludeAll' },
+            ),
+          );
+        }
+
+        // remaining
         console.log('plan:', plan);
       }
     } catch (err) {

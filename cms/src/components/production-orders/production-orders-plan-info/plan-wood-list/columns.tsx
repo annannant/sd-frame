@@ -6,7 +6,7 @@ import { ColumnsType } from 'antd/es/table'
 
 import { TagStatus } from 'common/tag-status'
 
-import { ITFTableProductionOrderPlanSummaryWood } from 'types/production-order-plan'
+import { ITFTableProductionOrderPlanSummaryWood } from 'types/production-order-plan.type'
 
 import { formatDate } from 'helper/date-formatter'
 import { convertLocationLabel } from 'helper/location'

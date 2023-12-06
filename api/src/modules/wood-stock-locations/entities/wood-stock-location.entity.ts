@@ -41,16 +41,16 @@ export class WoodStockLocation {
     this.remaining = (this.stock ?? 0) - (this.used ?? 0);
   }
 
-  @ManyToOne(() => Location, (location) => location.woodStockLocations)
-  @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
-  location: Location;
-
   @ManyToOne(() => WoodStock, (woodStock) => woodStock.woodStockLocations)
   @JoinColumn([
     { name: 'wood_id', referencedColumnName: 'woodId' },
     { name: 'lot', referencedColumnName: 'lot' },
   ])
   woodStock: WoodStock;
+
+  @ManyToOne(() => Location, (location) => location.woodStockLocations)
+  @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
+  location: Location;
 
   @ManyToOne(() => Wood, (wood) => wood.woodStockLocations)
   @JoinColumn({ name: 'wood_id', referencedColumnName: 'id' })

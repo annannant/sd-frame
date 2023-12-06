@@ -21,7 +21,7 @@ import {
   ITFProductionOrderItem,
   ITFTableProductionOrderItem,
 } from 'types/production-order-items.type'
-import { ITFProductionOrderPlan } from 'types/production-order-plan'
+import { ITFProductionOrderPlan } from 'types/production-order-plan.type'
 
 import { parser } from 'helper/number'
 import { useProductionOrdersPlan } from 'hooks/useProductionOrdersPlan'

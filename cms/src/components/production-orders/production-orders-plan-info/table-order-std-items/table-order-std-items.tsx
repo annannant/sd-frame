@@ -6,7 +6,7 @@ import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 
 import { ITFProductionOrderItem } from 'types/production-order-items.type'
-import { ITFProductionOrderPlanSuggest } from 'types/production-order-plan'
+import { ITFProductionOrderPlanSuggest } from 'types/production-order-plan.type'
 
 import { productionOrdersSelector } from 'app/slice/production-orders'
 import {

@@ -1,4 +1,5 @@
 import { ProductionOrderItem } from '@/modules/production-order-items/entities/production-order-item.entity';
+import { ProductionPlanWood } from '@/modules/production-plan-woods/entities/production-plan-wood.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';
 import {
@@ -70,4 +71,8 @@ export class ProductionPlanWoodItem {
   updateDates() {
     this.updatedAt = new Date();
   }
+
+  @ManyToOne(() => ProductionPlanWood, (plan) => plan.productionPlanWoodItems)
+  @JoinColumn({ name: 'production_plan_wood_id', referencedColumnName: 'id' })
+  productionPlanWood: ProductionPlanWood;
 }

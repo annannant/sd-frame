@@ -13,6 +13,7 @@ import {
   Col,
   Divider,
   Form,
+  Modal,
   Row,
   Tabs,
   Typography,
@@ -26,6 +27,10 @@ import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 
 import { CREATE, EDIT } from 'constants/common'
+
+import useMessage from 'hooks/useMessage'
+import useModal from 'hooks/useModal'
+import { useProductionOrdersPlan } from 'hooks/useProductionOrdersPlan'
 
 import { PlanItems } from './plan-items/plan-items'
 import { PlanWoodList } from './plan-wood-list/plan-wood-list'
@@ -41,6 +46,8 @@ import {
 const { Title } = Typography
 
 export const ProductionOrdersPlanInfo = () => {
+  const navigate = useNavigate()
+
   const [form] = Form.useForm()
 
   const [searchParams] = useSearchParams()
@@ -48,8 +55,6 @@ export const ProductionOrdersPlanInfo = () => {
 
   const { id, action }: any = useLoaderData()
   const { paramsCreatePlan } = useSelector(productionOrdersSelector)
-
-  const navigate = useNavigate()
 
   const { data: orderInfo } = useGetProductionOrderByIDQuery(id, { skip: !id })
   const { data } = usePostProductionOrderCreatePlanQuery({
@@ -60,15 +65,27 @@ export const ProductionOrdersPlanInfo = () => {
     },
   })
 
-  const onStartPlan = () => {
-    const values = form.getFieldsValue()
-    console.log('values:', values)
-    console.log('data:', JSON.stringify(data))
-    console.log('onStartPlan:', 'onStartPlan')
+  const [modal, contextHolderModal] = Modal.useModal()
+  const { configSubmit } = useModal()
+  const { contextHolder, startPlan } = useProductionOrdersPlan()
+
+  const onStartPlan = async () => {
+    if (
+      await modal.confirm({
+        ...configSubmit,
+        title: 'เริ่มงานผลิต',
+        content: <>ต้องการเริ่มงานผลิต ใช่หรือไม่ ?</>,
+      })
+    ) {
+      const values = form.getFieldsValue()
+      await startPlan(id, { sparePart: values?.sparePart })
+    }
   }
 
   return (
     <>
+      {contextHolder}
+      {contextHolderModal}
       <div className="flex w-full items-center justify-between">
         <Title level={3}>รายละเอียดการผลิต</Title>
         <Title level={5} className="pr-[26px]">
@@ -96,7 +113,7 @@ export const ProductionOrdersPlanInfo = () => {
                   htmlType="button"
                   icon={<LeftOutlined />}
                   onClick={() => {
-                    navigate(`/wood-types/${id}/woods`)
+                    navigate(-1)
                   }}
                 >
                   กลับไปก่อนหน้า

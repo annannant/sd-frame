@@ -60,6 +60,7 @@ export const ProductionOrdersWaitingInfo = () => {
                 htmlType="button"
                 onClick={() => navigate(`/production-orders/plan/${id}`)}
                 icon={<CalculatorOutlined style={{ marginTop: 2 }} />}
+                size="large"
               >
                 วางแผนการผลิต
               </Button>
