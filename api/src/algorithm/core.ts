@@ -5,6 +5,7 @@ class CoreAlgorithm {
   woodLength: number;
   minLength: number;
   sparePart: number;
+  summaryTotalCutting = [];
 
   constructor(woodLength, minLength, sparePart) {
     this.woodLength = woodLength;
@@ -24,6 +25,7 @@ class CoreAlgorithm {
   }
   prepare = (orders) => {
     const formatted = [];
+    const summary = [];
     for (const [index, item] of orders.entries()) {
       let width = item.width;
       let height = item.height;
@@ -54,6 +56,13 @@ class CoreAlgorithm {
         dimensionH,
       };
 
+      summary.push({
+        ...convert,
+        dimensionWQty: convert.qty * 2,
+        dimensionHQty: convert.qty * 2,
+        size: `${convert.width}x${convert.height}`,
+      });
+
       // split qty
       for (let idx = 0; idx < item.qty; idx++) {
         const set = idx + 1;
@@ -75,6 +84,9 @@ class CoreAlgorithm {
         }
       }
     }
+
+    this.summaryTotalCutting = summary;
+
     const ordered = orderBy(formatted, ['height'], 'desc').map((item) => ({
       ...item,
       key: 'uuidv4',

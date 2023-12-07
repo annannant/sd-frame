@@ -501,6 +501,7 @@ export class ProductionOrdersService {
           ]),
           woodLot: summaryWood?.[0]?.lot,
           wood: pick(data?.wood, ['id', 'code', 'name', 'description']),
+          mainSummary: core1.summaryTotalCutting,
         };
       }
     }
@@ -522,6 +523,7 @@ export class ProductionOrdersService {
       'isWoodOutStock',
       'woodStock',
       'woodLot',
+      'mainSummary',
     ]);
   }
 

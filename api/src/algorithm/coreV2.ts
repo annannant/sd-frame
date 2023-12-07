@@ -20,7 +20,7 @@ class ImproveCoreAlgorithm {
     this.minLength = minLength;
     this.sparePart = sparePart;
     this.faceWidth = faceWidth;
-    this.printAlgo = true;
+    this.printAlgo = false;
   }
 
   setRemainingList(remainingList) {
@@ -260,6 +260,51 @@ class ImproveCoreAlgorithm {
     return false;
   }
 
+  findCombinationStd2(list, expectedRemaining) {
+    let combinations = [[]];
+    const combinationsKey = { '': true };
+
+    for (let i = 0; i < list.length; i++) {
+      const value = list[i];
+      const currentCombinations = [...combinations];
+      for (let j = 0; j < currentCombinations.length; j++) {
+        const combination = currentCombinations[j];
+        const currentPattern = [...combination, value];
+        const sumPattern = sum(currentPattern);
+        const keyPattern = currentPattern.join('|');
+
+        // if duplicate, skip
+        const isDuplicate = combinationsKey[keyPattern];
+        if (isDuplicate) {
+          continue;
+        }
+
+        combinations = [...combinations, currentPattern];
+        combinationsKey[keyPattern] = true; // for checking duplicate
+
+        // isMoreThanWoodLength
+        if (sumPattern > this.woodLength) {
+          continue;
+        }
+
+        const remaining = expectedRemaining - sumPattern;
+        const temp = {
+          pattern: currentPattern.join(','),
+          pattern_list: currentPattern,
+          sum: sumPattern,
+          remaining,
+        };
+
+        if (remaining === 0) {
+          return temp;
+        }
+      }
+    }
+    console.log('combinations:', combinations);
+
+    return false;
+  }
+
   findPatternStd(remaining, zeroOnly = true) {
     if (this.standardList.length === 0) {
       return false;
@@ -287,7 +332,6 @@ class ImproveCoreAlgorithm {
         if (selected) {
           const usedPatternList = [];
           let remainingPatternList = [...list];
-
           for (const iterator of selected.pattern_list) {
             const indexPattern = remainingPatternList.indexOf(iterator);
             if (indexPattern >= 0) {
@@ -715,7 +759,252 @@ class ImproveCoreAlgorithm {
   findPattern() {
     const remainingList = this.findZeroPattern();
     if (remainingList.length > 0) {
-      this.findRemaningPatternWithZeroStd(remainingList);
+      // this.findRemaningPatternWithZeroStd(remainingList);
+      this.findRemaningPattern(remainingList);
+    }
+  }
+
+  checkAllIsStd(ori) {
+    const final = [...this.finalResult];
+    for (const iterator of final) {
+      if (iterator.main_pattern_list) {
+        for (const main of iterator.main_pattern_list) {
+          const index = ori.indexOf(main);
+          if (index >= 0) {
+            ori.splice(index, 1);
+          }
+        }
+      } else {
+        for (const main of iterator.pattern_list) {
+          const index = ori.indexOf(main);
+          if (index >= 0) {
+            ori.splice(index, 1);
+          }
+        }
+      }
+      // console.log('iterator:', iterator);
+    }
+
+    return ori.length === 0;
+  }
+
+  findRemaningPattern(remainingList) {
+    const ori = [...remainingList];
+    let numbers = [...remainingList].sort((a, b) => b - a);
+    while (numbers.length > 0) {
+      const selected = this.findCombination(
+        [...numbers],
+        this.remainigWoodItemStockList,
+      );
+      // console.log('selected:', selected.remaining);
+      // check numbers -> ว่า มีแต่ std รึป่าว
+      const IsAllStd = this.checkAllIsStd(ori);
+
+      // หา pattern ที่รวมกับ std แล้วเศษน้อยกว่า selected.remaining
+      const selectedstd = this.findCombinationRemaningPattern2(
+        selected.remaining ?? 0,
+        numbers,
+        this.remainigWoodItemStockList,
+      );
+
+      // console.log('selectedstd:', selectedstd);
+
+      // return;
+      if (selectedstd && !IsAllStd) {
+        // console.log('selectedstd:', selectedstd);
+        this.finalResult.push(selectedstd);
+        this.removeWoodItemStock(selectedstd);
+        const newNumbers = this.removeSelectedPatternFromRemainingList(
+          numbers,
+          selectedstd?.main_pattern_list ?? [],
+        );
+        // console.log(
+        //   'selectedstd?.remaining_pattern_list:',
+        //   selectedstd?.remaining_pattern_list,
+        // );
+        numbers = [
+          ...newNumbers,
+          ...(selectedstd?.remaining_pattern_list ?? []),
+        ];
+      } else {
+        // เลือก selected.remaining
+        // console.log('selected:', selected);
+        this.finalResult.push(selected);
+        this.removeWoodItemStock(selected);
+        const newNumbers = this.removeSelectedPatternFromRemainingList(
+          numbers,
+          selected?.pattern_list ?? [],
+        );
+        numbers = [...newNumbers];
+        continue;
+      }
+    }
+    console.log('ori:', ori);
+  }
+
+  findCombinationRemaningPattern2(candidate, numbers, woodItemStocksList) {
+    const list = [...numbers];
+    const woodItemStocks = [...woodItemStocksList];
+
+    let combinations = [[]];
+    const combinationsKey = { '': true };
+    for (let i = 0; i < list.length; i++) {
+      const value = list[i];
+      const currentCombinations = [...combinations];
+      for (let j = 0; j < currentCombinations.length; j++) {
+        const combination = currentCombinations[j];
+        const currentPattern = [...combination, value];
+        const sumPattern = sum(currentPattern);
+        const keyPattern = currentPattern.join('|');
+        const isDuplicate = combinationsKey[keyPattern];
+        if (isDuplicate) {
+          continue;
+        }
+        if (sumPattern > this.woodLength) {
+          continue;
+        }
+
+        const woods = [...woodItemStocks, 120];
+        for (let k = 0; k < woods.length; k++) {
+          const wood = woods[k];
+          const remaining = parser(wood) - parser(sumPattern);
+          if (remaining < 0) {
+            continue;
+          }
+
+          if (parser(sumPattern) < parser(wood / 2)) {
+            console.log(
+              'parser(sumPattern):',
+              parser(sumPattern),
+              ':',
+              parser(wood / 2),
+            );
+            continue;
+          }
+
+          console.log(
+            'remaining:',
+            remaining,
+            candidate,
+            sumPattern,
+            JSON.stringify(currentPattern),
+          );
+          // // หาเศษ จาก std
+          const match = this.findRemaningPatternWithCombinationStd(
+            remaining,
+            candidate,
+          );
+          if (!match) {
+            continue;
+          }
+
+          // หา
+          console.log(JSON.stringify(currentPattern));
+          // console.log('match:', match);
+          const pattern = [...match.used_pattern_list, ...currentPattern];
+          return {
+            ...match,
+            main_pattern: currentPattern.join(','),
+            main_pattern_list: currentPattern,
+            pattern: pattern.join(','),
+            pattern_list: pattern,
+            wood,
+            sum: sum(pattern),
+            remaining: match.remaining,
+            form_stock: woodItemStocks.includes(wood),
+          };
+        }
+
+        combinations = [...combinations, currentPattern];
+        combinationsKey[keyPattern] = true; // for checking duplicate
+      }
+    }
+
+    return undefined;
+  }
+
+  findRemainingList(all, used) {
+    const remainingList = [];
+    for (const iterator of all) {
+      const index = used.indexOf(iterator);
+      if (index < 0) {
+        remainingList.push(iterator);
+      }
+    }
+    return remainingList;
+  }
+
+  findRemaningPatternWithCombinationStd(expectedRemaining, candidate) {
+    if (this.standardList.length === 0) {
+      return false;
+    }
+    const MAX_QTY = 5;
+
+    const items = orderBy(this.standardList, ['w', 'h'], ['asc']);
+    let maxQty = maxBy(items, 'qty').qty;
+    if (maxQty > MAX_QTY) {
+      maxQty = MAX_QTY;
+    }
+    // console.log('maxQty:', maxQty);
+    for (let index = 0; index < +maxQty; index++) {
+      const currentQty = index + 1;
+      for (const std of items) {
+        if (+std.qty < currentQty) {
+          continue;
+        }
+        const list = flatten(Array(currentQty).fill(std.wood_list));
+
+        let combinations = [[]];
+        const combinationsKey = { '': true };
+        for (let i = 0; i < list.length; i++) {
+          const value = list[i];
+          const currentCombinations = [...combinations];
+          for (let j = 0; j < currentCombinations.length; j++) {
+            const combination = currentCombinations[j];
+            const currentPattern = [...combination, value];
+            const sumPattern = sum(currentPattern);
+            const keyPattern = currentPattern.join('|');
+            const isDuplicate = combinationsKey[keyPattern];
+            if (isDuplicate) {
+              continue;
+            }
+            if (sumPattern > this.woodLength) {
+              continue;
+            }
+
+            const remaining = expectedRemaining - sumPattern;
+
+            if (remaining < 0) {
+              continue;
+            }
+
+            if (remaining < candidate) {
+              const temp = {
+                used_pattern: currentPattern.join(','),
+                used_pattern_list: currentPattern,
+                remaining_pattern_list: this.findRemainingList(
+                  list,
+                  currentPattern,
+                ),
+                pattern_wood_list: list,
+                sum: sumPattern,
+                remaining,
+                std: {
+                  ...std,
+                  qty: currentQty,
+                },
+              };
+
+              // ลบออกจาก std list
+              this.removeSelectedPatternFromStdList(temp.std);
+              return temp;
+            }
+
+            combinations = [...combinations, currentPattern];
+            combinationsKey[keyPattern] = true; // for checking duplicate
+          }
+        }
+      }
     }
   }
 
