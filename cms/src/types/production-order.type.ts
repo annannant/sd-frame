@@ -2,6 +2,7 @@ import {
   ITFProductionOrderItem,
   ITFUpdateProductionOrderItem,
 } from './production-order-items.type'
+import { ITFProductionPlan } from './production-plan.type'
 import { ITFTable } from './table.type'
 import { ITFWood } from './wood.type'
 
@@ -17,6 +18,7 @@ export interface ITFProductionOrder {
   wood?: ITFWood | null
   productionOrderItems?: ITFProductionOrderItem[] | null
   productionPlanId?: number | null
+  productionPlan?: ITFProductionPlan | null
 }
 
 export interface ITFProductionOrderQueryParams {

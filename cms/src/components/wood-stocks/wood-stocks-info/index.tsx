@@ -26,13 +26,14 @@ export const WoodStocksInfoComponent = () => {
       </div>
       <Row gutter={[20, 20]}>
         <Col span={24}>
-          <Card title="Lot" bordered={false}>
+          <Card title="สต๊อกไม้กรอบ" bordered={false}>
             <div className="grid gap-y-[50px]">
               <TableLots />
             </div>
           </Card>
         </Col>
       </Row>
+
       <Row>
         <Col span={24}>
           <div className="mt-[30px] flex justify-end">

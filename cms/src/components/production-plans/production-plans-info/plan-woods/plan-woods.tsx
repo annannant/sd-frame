@@ -92,6 +92,7 @@ export const PlanWoods = () => {
         }
     }
   }, [firstCheckedItem])
+
   console.log('checkedType:', checkedType)
 
   const productionPlanWoods = useMemo(() => {

@@ -30,19 +30,21 @@ const columns = [
     },
   },
   {
-    title: 'วันที่สั่งผลิต',
+    title: 'วันที่เริ่มผลิต',
     dataIndex: 'address',
     key: 'address',
     render: (text: any, record: ITFTableProductionOrder, count: any) => {
-      if (!record?.createdAt) {
+      if (!record?.productionPlan?.createdAt) {
         return <></>
       }
       return (
         <>
-          <span className="mr-[6px]">{`${formatDate(record?.createdAt).format(
-            'DD MMM YYYY '
-          )}`}</span>
-          <span>{`${formatDate(record?.createdAt).format('HH:mm')} น.`}</span>
+          <span className="mr-[6px]">{`${formatDate(
+            record?.productionPlan?.createdAt
+          ).format('DD MMM YYYY ')}`}</span>
+          <span>{`${formatDate(record?.productionPlan?.createdAt).format(
+            'HH:mm'
+          )} น.`}</span>
         </>
       )
     },

@@ -364,6 +364,7 @@ export class ProductionOrdersService {
   async findAll(query: QueryProductionOrderDto) {
     const queryOrders =
       this.productionOrdersRepository.createQueryBuilder('pod');
+    const statusList = query.statuses.split(',');
     if (query.statuses) {
       const statuses = query.statuses.split(',');
       queryOrders.where('pod.status IN (:...statuses)', {
@@ -371,12 +372,19 @@ export class ProductionOrdersService {
       });
     }
 
-    const orders = await queryOrders
+    let sql = await queryOrders
       .leftJoinAndSelect('pod.wood', 'wood')
       .leftJoinAndSelect('wood.woodType', 'woodType')
       .leftJoinAndSelect('wood.attribute', 'attribute')
-      .orderBy('pod.id', 'ASC')
-      .getMany();
+      .orderBy('pod.id', 'ASC');
+
+    if (statusList.includes(CUTTING_INPROGRESS)) {
+      sql = sql
+        .leftJoinAndSelect('pod.productionPlan', 'productionPlan')
+        .orderBy('productionPlan.id', 'ASC');
+    }
+
+    const orders = await sql.getMany();
 
     return orders;
   }

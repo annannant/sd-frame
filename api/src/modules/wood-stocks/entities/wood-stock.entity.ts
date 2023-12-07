@@ -1,3 +1,4 @@
+import { WoodItemStock } from '@/modules/wood-item-stocks/entities/wood-item-stock.entity';
 import { WoodStockLocation } from '@/modules/wood-stock-locations/entities/wood-stock-location.entity';
 import { Wood } from '@/modules/woods/entities/wood.entity';
 import { Expose } from 'class-transformer';

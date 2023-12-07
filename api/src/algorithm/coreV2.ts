@@ -792,11 +792,12 @@ class ImproveCoreAlgorithm {
     const ori = [...remainingList];
     let numbers = [...remainingList].sort((a, b) => b - a);
     while (numbers.length > 0) {
+      console.log('====>::::::');
       const selected = this.findCombination(
         [...numbers],
         this.remainigWoodItemStockList,
       );
-      // console.log('selected:', selected.remaining);
+      console.log('selected:', selected.remaining);
       // check numbers -> ว่า มีแต่ std รึป่าว
       const IsAllStd = this.checkAllIsStd(ori);
 
@@ -826,7 +827,18 @@ class ImproveCoreAlgorithm {
           ...newNumbers,
           ...(selectedstd?.remaining_pattern_list ?? []),
         ];
+        // if (selectedstd.remaining >= this.minLength) {
+        //   this.remainigWoodItemStockList.push(+selectedstd.remaining);
+        // }
+        console.log(
+          'this.remainigWoodItemStockList:',
+          this.remainigWoodItemStockList,
+        );
+        console.log('selectedstd:', selectedstd?.remaining, '-->', numbers);
       } else {
+        // if (selected.remaining >= this.minLength) {
+        //   this.remainigWoodItemStockList.push(+selected.remaining);
+        // }
         // เลือก selected.remaining
         // console.log('selected:', selected);
         this.finalResult.push(selected);
@@ -839,7 +851,9 @@ class ImproveCoreAlgorithm {
         continue;
       }
     }
-    console.log('ori:', ori);
+
+    console.log('====>finalResult<=====');
+    console.log(this.finalResult);
   }
 
   findCombinationRemaningPattern2(candidate, numbers, woodItemStocksList) {
@@ -873,12 +887,6 @@ class ImproveCoreAlgorithm {
           }
 
           if (parser(sumPattern) < parser(wood / 2)) {
-            console.log(
-              'parser(sumPattern):',
-              parser(sumPattern),
-              ':',
-              parser(wood / 2),
-            );
             continue;
           }
 
@@ -973,19 +981,22 @@ class ImproveCoreAlgorithm {
             }
 
             const remaining = expectedRemaining - sumPattern;
-
             if (remaining < 0) {
               continue;
             }
 
-            if (remaining < candidate) {
+            if (
+              remaining === 0 ||
+              (remaining < candidate && remaining < this.minLength)
+            ) {
+              const remainingPatternList = this.findRemainingList(
+                list,
+                currentPattern,
+              );
               const temp = {
                 used_pattern: currentPattern.join(','),
                 used_pattern_list: currentPattern,
-                remaining_pattern_list: this.findRemainingList(
-                  list,
-                  currentPattern,
-                ),
+                remaining_pattern_list: remainingPatternList,
                 pattern_wood_list: list,
                 sum: sumPattern,
                 remaining,

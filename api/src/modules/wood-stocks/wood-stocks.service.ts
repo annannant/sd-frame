@@ -11,6 +11,7 @@ import { ImportWoodStockDto } from './dto/import-wood-stock.dto';
 import { Location } from '../locations/entities/location.entity';
 import { plainToInstance } from 'class-transformer';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
+import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
 
 @Injectable()
 export class WoodStocksService {
@@ -122,9 +123,26 @@ export class WoodStocksService {
   }
 
   async findByWoods(woodId: number) {
-    const data = await this.woodStocksRepository.findBy({
-      woodId: woodId,
-    });
+    // const data = await this.woodStocksRepository.findBy({
+    //   woodId: woodId,
+    // });
+
+    const data = await this.woodStocksRepository
+      .createQueryBuilder('st')
+      .leftJoinAndMapMany(
+        'st.woodItemStocks',
+        WoodItemStock,
+        'woodItemStocks',
+        'st.wood_id=woodItemStocks.wood_id AND st.lot=woodItemStocks.lot',
+      )
+      .leftJoinAndMapOne(
+        'woodItemStocks.location',
+        Location,
+        'location',
+        'location.id=woodItemStocks.location_id',
+      )
+      .where('st.woodId = :woodId', { woodId: woodId })
+      .getMany();
 
     const summary = {
       totalStock: sumBy(data, 'totalStock'),
