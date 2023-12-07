@@ -70,7 +70,12 @@ export const PlanWoodSummary = () => {
         title={
           <div className="flex items-center justify-between py-4">
             <span>
-              รายการไม้ที่ต้องใช้ ( Lot : <span className="mx-1">{lot}</span> )
+              รายการไม้ที่ต้องใช้{' '}
+              {lot && (
+                <span>
+                  ( Lot : <span className="mx-1">{lot}</span> )
+                </span>
+              )}
             </span>
             <div className="flex items-center justify-end">
               {/* <Title level={5} style={{ marginTop: 0, marginBottom: 0 }}>

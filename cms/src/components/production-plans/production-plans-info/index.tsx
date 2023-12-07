@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import { useLoaderData, useNavigate, useSearchParams } from 'react-router-dom'
 
 import {
+  CalculatorFilled,
   CalculatorOutlined,
   InsertRowLeftOutlined,
   LeftOutlined,
   PlayCircleOutlined,
 } from '@ant-design/icons'
+// import CalculateIcon from '@mui/icons-material/Calculate'
 import {
   Button,
   Card,
@@ -24,6 +26,7 @@ import {
 import type { TabsProps } from 'antd'
 import type { NotificationPlacement } from 'antd/es/notification/interface'
 
+import { ButtonPrimarySuccess } from 'common/button/single-color-button'
 import { TagStatus } from 'common/tag-status'
 import { OrderInfoDetailIndex } from 'components/orders-info-detail'
 import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
@@ -79,6 +82,18 @@ export const ProductionPlansInfoComponent = () => {
               >
                 กลับไปก่อนหน้า
               </Button>
+              <ButtonPrimarySuccess
+                type="primary"
+                htmlType="button"
+                // disabled={!!data?.isWoodOutStock}
+                // onClick={}
+                size="large"
+                icon={
+                  <CalculatorOutlined style={{ marginTop: 2, fontSize: 18 }} />
+                }
+              >
+                วางแผนผลิตใหม่
+              </ButtonPrimarySuccess>
             </div>
           </div>
           <Divider />

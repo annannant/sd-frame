@@ -10,11 +10,13 @@ const useMessage = () => {
     })
   }
 
-  const error = () => {
-    messageApi.open({
+  const error = (
+    val: any = {
       type: 'error',
       content: 'Oops! Something went wrong. Please try again.',
-    })
+    }
+  ) => {
+    messageApi.open(val)
   }
 
   const warning = () => {
@@ -26,6 +28,7 @@ const useMessage = () => {
 
   return {
     contextHolder,
+    messageApi,
     success,
     error,
     warning,

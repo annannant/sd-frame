@@ -94,7 +94,7 @@ export const useProductionPlans = () => {
         return {
           ...item,
           productionPlanWoodItems: orderedItems,
-          hasRemaining,
+          hasRemaining: hasRemaining ? 1 : 0,
           length: parser(item.length),
         }
       }

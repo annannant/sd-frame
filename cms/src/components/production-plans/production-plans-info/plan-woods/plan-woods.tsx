@@ -10,6 +10,7 @@ import {
   ConfigProvider,
   Form,
   InputNumber,
+  Modal,
   Table,
 } from 'antd'
 
@@ -34,66 +35,23 @@ import CheckboxGroupWood from './checkbox-group-wood'
 import { ModalManageWoodWasted } from './modal-manage-wood-wasted'
 
 import { setParamsCreatePlan } from 'app/slice/production-orders'
-import { flatten, orderBy, sortBy } from 'lodash'
+import { flatten, keyBy, orderBy, sortBy } from 'lodash'
 import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 
 export const PlanWoods = () => {
   const dispatch = useDispatch()
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
+  const [modal, contextHolderModal] = Modal.useModal()
 
   const { id }: any = useLoaderData()
   const { data, refetch } = useGetProductionPlanByIDQuery(id, { skip: !id })
   const { contextHolder, success, error } = useMessage()
+
   const { transformProductionPlanWoods } = useProductionPlans()
   const orderInfo = data?.productionOrder ?? {}
   const loading = false
   const woodLength = parser(orderInfo?.wood?.woodType?.length ?? '')
-
-  const formProductionPlanWoods = Form.useWatch('productionPlanWoods', form)
-  const firstCheckedItem = useMemo((): ITFProductionPlanWoodItem | null => {
-    const formValues = form.getFieldValue('productionPlanWoods')
-    for (const iterator of formValues ?? []) {
-      if (iterator?.checkbox?.length > 0) {
-        const item = iterator?.productionPlanWoodItems?.find(
-          (item: ITFProductionPlanWoodItem) => item.id === iterator?.checkbox[0]
-        )
-        return item
-      }
-    }
-    return null
-  }, [form, formProductionPlanWoods])
-
-  const {
-    title,
-    method,
-    type: checkedType,
-  } = useMemo(() => {
-    const type = firstCheckedItem?.type ?? 'normal'
-    if (firstCheckedItem?.type === 'keep') {
-      return {
-        title: 'อัพเดทสถานะ',
-        type,
-        method: 'update',
-      }
-    }
-
-    switch (firstCheckedItem?.cuttingStatus) {
-      case 'success':
-        return {
-          title: 'ย้อนสถานะ',
-          type,
-          method: 'reverse',
-        }
-      case 'pending':
-      default:
-        return {
-          title: 'อัพเดทสถานะ',
-          type,
-          method: 'update',
-        }
-    }
-  }, [firstCheckedItem])
 
   const productionPlanWoods = useMemo(() => {
     return transformProductionPlanWoods(
@@ -101,6 +59,46 @@ export const PlanWoods = () => {
       data?.productionWoodSummary ?? []
     )
   }, [data?.productionPlanWoods, data?.productionWoodSummary])
+
+  const formProductionPlanWoods = Form.useWatch('productionPlanWoods', form)
+
+  const checkbox = useMemo(() => {
+    for (const iterator of formProductionPlanWoods ?? []) {
+      if (iterator.checkboxAll === true) {
+        return iterator.productionPlanWoodItems[0]
+      }
+      if (iterator.checkbox?.length > 0) {
+        const keyByM = keyBy(iterator.productionPlanWoodItems, 'id')
+        return keyByM[iterator.checkbox[0]]
+      }
+    }
+    return null
+  }, [formProductionPlanWoods])
+
+  // const firstCheckedWood =
+  //   (formProductionPlanWoods ?? []).find(
+  //     (item: any) => item.checkbox?.length > 0
+  //   ) ||
+  //   (formProductionPlanWoods ?? []).find(
+  //     (item: any) => item.checkboxAll === true
+  //   )
+  // console.log('firstCheckedWood:', firstCheckedWood)
+
+  // const firstChecked = firstCheckedWood?.checkbox?.[0]
+  // const firstCheckedItem = firstCheckedWood?.productionPlanWoodItems?.find(
+  //   (val: ITFProductionPlanWoodItem) => val.id === firstChecked
+  // )
+  // const title =
+  //   firstCheckedItem?.cuttingStatus === 'success' ? 'ย้อนสถานะ' : 'อัพเดทสถานะ'
+  // const method =
+  //   firstCheckedItem?.cuttingStatus === 'success' ? 'reverse' : 'update'
+  // const checkedType = firstCheckedItem?.type ?? ''
+  console.log('checkbox?.cuttingStatus:', checkbox?.cuttingStatus)
+
+  const title =
+    checkbox?.cuttingStatus === 'success' ? 'ย้อนสถานะ' : 'อัพเดทสถานะ'
+  const method = checkbox?.cuttingStatus === 'success' ? 'reverse' : 'update'
+  const firstCheckedItem = true
 
   const onClickCalulate = () => {
     dispatch(
@@ -114,6 +112,13 @@ export const PlanWoods = () => {
     try {
       const values = form.getFieldValue('productionPlanWoods')
       const data = values.filter((item: any) => item.checkbox?.length > 0)
+      if (data.length === 0) {
+        Modal.error({
+          title: 'Error',
+          content: 'กรุณาเลือกไม้ที่ต้องการอัพเดทสถานะ',
+        })
+        return
+      }
 
       const payload = {
         cuttingStatus:
@@ -126,7 +131,10 @@ export const PlanWoods = () => {
       }
       await patchUpdateStatus(payload)
       success()
-      refetch()
+      // refetch()
+      setTimeout(() => {
+        window.location.reload()
+      }, 700)
     } catch (err) {
       console.log('err:', err)
       error()
@@ -148,6 +156,7 @@ export const PlanWoods = () => {
   return (
     <>
       {contextHolder}
+      {contextHolderModal}
       <Card
         title={
           <div className="flex items-center justify-between">
@@ -161,19 +170,12 @@ export const PlanWoods = () => {
               >
                 จัดการไม้ผลิตเสีย
               </Button>
-              {/* <Button
-              type="primary"
-              htmlType="button"
-              onClick={updateStatus}
-              style={{ width: 100 }}
-            >
-              กำลังตัด
-            </Button> */}
               <Button
                 type="primary"
                 htmlType="button"
                 onClick={updateStatus}
-                disabled={!firstCheckedItem || checkedType !== 'normal'}
+                disabled={!firstCheckedItem}
+                // disabled={!firstCheckedItem || checkedType !== 'normal'}
               >
                 {title}
               </Button>
