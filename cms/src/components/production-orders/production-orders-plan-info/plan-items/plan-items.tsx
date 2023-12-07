@@ -129,9 +129,7 @@ export const PlanItems = () => {
               const percentRemaining =
                 (parser(remaining ?? 0) * 100) / parser(woodLength)
               const colorWasted =
-                remaining >= parser(minLength ?? 0)
-                  ? 'bg-secondary'
-                  : 'bg-danger'
+                remaining >= parser(minLength ?? 0) ? 'bg-info' : 'bg-danger'
 
               const orderedItems = sortBy(item.list ?? []).reverse()
               return (

@@ -20,7 +20,7 @@ module.exports = {
     extend: {
       colors: {
         primary: '#4B49AC',
-        secondary: '#98BDFF',
+        secondary: '#a3a4a5',
         success: '#57B657',
         danger: '#FF4747',
         warning: '#FFC100',
@@ -45,6 +45,7 @@ module.exports = {
         'dark-bg-base': '#001529',
         'dark-font-base': '#fff',
         'dark-font-nuetral': '#ffffffa6',
+        'gray': '#C2C7D0',
       },
     },
   },

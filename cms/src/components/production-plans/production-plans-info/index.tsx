@@ -94,7 +94,7 @@ export const ProductionPlansInfoComponent = () => {
           </div>
         </Card>
         <Row gutter={[30, 30]}>
-          <Col span={7}>
+          <Col span={6}>
             <Row gutter={[0, 30]}>
               <Col span={24}>
                 <Card title="รายการขนาดกรอบรูปในคำสั่งผลิต" bordered={false}>
@@ -108,7 +108,7 @@ export const ProductionPlansInfoComponent = () => {
               </Col>
             </Row>
           </Col>
-          <Col span={17}>
+          <Col span={18}>
             <div className="flex flex-col gap-y-[30px]">
               <PlanWoods />
               <PlanWoodSummary />

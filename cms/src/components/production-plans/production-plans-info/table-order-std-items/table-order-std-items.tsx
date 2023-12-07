@@ -15,7 +15,6 @@ export const TableOrderStandardFrameItems = () => {
   const { id }: any = useLoaderData()
   const { data } = useGetProductionPlanByIDQuery(id, { skip: !id })
   const suggest = useMemo(() => data?.productionPlanSuggestItems ?? [], [data])
-  console.log('suggest:', suggest)
 
   const columns: ColumnsType<ITFTableProductionPlanSuggestItem> = [
     {

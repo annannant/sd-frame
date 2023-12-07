@@ -12,3 +12,7 @@ export const patchWithdrawWoods = async (
 ) => {
   return await httpClient.patch(`/production-plans/${id}/withdraw-woods`, data)
 }
+
+export const patchCreate = async (data: any) => {
+  return await httpClient.patch('/production-plans', data)
+}

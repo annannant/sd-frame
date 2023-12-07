@@ -29,6 +29,7 @@ export const colors = {
   },
   white: '#fff',
   lightGray: '#ddd',
+  gray: '#C2C7D0',
   // secondary: '#98BDFF',
   // supportGreen: '#77ddaa',
   // supportPurple: '#7978E9',

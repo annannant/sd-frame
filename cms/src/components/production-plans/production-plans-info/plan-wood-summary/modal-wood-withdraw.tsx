@@ -65,7 +65,6 @@ export const ModalWoodWithdraw = (props: ITFProps) => {
   const lot = productionWoodSummary?.[0]?.lot
 
   useEffect(() => {
-    console.log('data?.productionWoodSummary:', data?.productionWoodSummary)
     form.setFieldValue('woodsWithdraw', data?.productionWoodSummary)
   }, [data?.productionWoodSummary])
 
