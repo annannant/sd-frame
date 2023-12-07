@@ -28,6 +28,7 @@ import {
 import { patchUpdateStatus } from 'api/production-plan-wood-items'
 import { parser } from 'helper/number'
 import useMessage from 'hooks/useMessage'
+import { useProductionPlans } from 'hooks/useProductionPlans'
 
 import CheckboxGroupWood from './checkbox-group-wood'
 import { ModalManageWoodWasted } from './modal-manage-wood-wasted'
@@ -44,14 +45,15 @@ export const PlanWoods = () => {
   const { id }: any = useLoaderData()
   const { data, refetch } = useGetProductionPlanByIDQuery(id, { skip: !id })
   const { contextHolder, success, error } = useMessage()
-
+  const { transformProductionPlanWoods } = useProductionPlans()
   const orderInfo = data?.productionOrder ?? {}
   const loading = false
   const woodLength = parser(orderInfo?.wood?.woodType?.length ?? '')
 
   const formProductionPlanWoods = Form.useWatch('productionPlanWoods', form)
   const firstCheckedItem = useMemo((): ITFProductionPlanWoodItem | null => {
-    for (const iterator of formProductionPlanWoods ?? []) {
+    const formValues = form.getFieldValue('productionPlanWoods')
+    for (const iterator of formValues ?? []) {
       if (iterator?.checkbox?.length > 0) {
         const item = iterator?.productionPlanWoodItems?.find(
           (item: ITFProductionPlanWoodItem) => item.id === iterator?.checkbox[0]
@@ -60,7 +62,7 @@ export const PlanWoods = () => {
       }
     }
     return null
-  }, [formProductionPlanWoods])
+  }, [form, formProductionPlanWoods])
 
   const {
     title,
@@ -93,42 +95,12 @@ export const PlanWoods = () => {
     }
   }, [firstCheckedItem])
 
-  console.log('checkedType:', checkedType)
-
   const productionPlanWoods = useMemo(() => {
-    const formatted = (data?.productionPlanWoods ?? []).map(
-      (item: ITFProductionPlanWood) => {
-        console.log(
-          'item.productionPlanWoodItems:',
-          item.productionPlanWoodItems
-        )
-
-        const productionPlanWoodItems = (
-          item.productionPlanWoodItems ?? []
-        ).map((val) => ({
-          ...val,
-          length: parser(val.length),
-          hasRemaining: val.type === 'keep' ? 1 : 0,
-        }))
-
-        return {
-          ...item,
-          productionPlanWoodItems: orderBy(
-            productionPlanWoodItems,
-            ['hasRemaining', 'length'],
-            ['asc', 'desc']
-          ),
-          length: parser(item.length),
-          hasRemaining: item.productionPlanWoodItems?.find(
-            (val) => val.type === 'keep'
-          )
-            ? 1
-            : 0,
-        }
-      }
+    return transformProductionPlanWoods(
+      data?.productionPlanWoods ?? [],
+      data?.productionWoodSummary ?? []
     )
-    return orderBy(formatted, ['length', 'hasRemaining'], ['asc', 'asc'])
-  }, [data?.productionPlanWoods])
+  }, [data?.productionPlanWoods, data?.productionWoodSummary])
 
   const onClickCalulate = () => {
     dispatch(
@@ -213,40 +185,6 @@ export const PlanWoods = () => {
         <div className="mb-[40px] flex justify-end gap-x-3">
           <span>ส่วนเผื่อเหลือ (Spare Part): </span>{' '}
           {parseFloat(data?.sparePart ?? '0')} นิ้ว
-          {/* <Form.Item
-          label="ส่วนเผื่อเหลือ (Spare Part)"
-          name={'sparePart'}
-          style={{ width: '50%' }}
-          rules={[
-            {
-              required: true,
-              message: 'ระบุส่วนเผื่อเหลือ',
-            },
-          ]}
-          className="w-full"
-        >
-          <InputNumber
-            max={3}
-            placeholder="ส่วนเผื่อเหลือ"
-            style={{ width: '100%' }}
-          />
-        </Form.Item> */}
-          {/* <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: colors.success,
-            },
-          }}
-        >
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={onClickCalulate}
-            style={{ width: 100 }}
-          >
-            คำนวณ
-          </Button>
-        </ConfigProvider> */}
         </div>
         {loading && (
           <div className="mb-10 flex justify-center py-10">

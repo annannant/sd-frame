@@ -1,4 +1,5 @@
 import { ITFProductionPlanWoodItem } from './production-plan-wood-item'
+import { ITFProductionWoodSummaryTemp } from './production-wood-summary'
 
 export type ITFProductionPlanWoodItemType = 'full' | 'part'
 
@@ -13,4 +14,5 @@ export interface ITFProductionPlanWood {
   updatedAt?: string | null
   updatedBy?: string | null
   productionPlanWoodItems?: ITFProductionPlanWoodItem[]
+  tempWood?: ITFProductionWoodSummaryTemp
 }

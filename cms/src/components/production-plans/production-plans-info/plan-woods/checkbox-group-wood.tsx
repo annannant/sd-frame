@@ -45,6 +45,7 @@ export const CheckboxGroupWood = (props: ITFProps) => {
     props.defaultCheckedList ?? []
   )
 
+  const withdrawnWood = !!wood?.tempWood
   const checkAll = plainOptionsEnabled.length === checkedList.length
   const indeterminate =
     checkedList.length > 0 && checkedList.length < plainOptionsEnabled.length
@@ -86,23 +87,6 @@ export const CheckboxGroupWood = (props: ITFProps) => {
           return 'bg-success'
       }
     }
-
-    // switch (item.type) {
-    //   case 'keep':
-    //     colorWasted = checked ? 'bg-info' : 'bg-slate-300'
-    //     break
-    //   case 'wasted':
-    //     colorWasted = 'bg-slate-200	'
-    //     break
-    //   default:
-    //     colorWasted =
-    //       item.cuttingStatus === 'pending'
-    //         ? checked
-    //           ? 'bg-warning'
-    //           : 'bg-slate-400	'
-    //         : 'bg-success'
-    //     break
-    // }
   }
 
   useEffect(() => {
@@ -147,6 +131,7 @@ export const CheckboxGroupWood = (props: ITFProps) => {
                       ? colors.primary
                       : colors.fontTitle,
                 }}
+                disabled={!withdrawnWood}
               >
                 {props.title}
               </Checkbox>
@@ -181,7 +166,7 @@ export const CheckboxGroupWood = (props: ITFProps) => {
                         <Checkbox
                           key={item.id}
                           value={item.id}
-                          disabled={item.type === 'wasted'}
+                          disabled={item.type === 'wasted' || !withdrawnWood}
                           className={`checkbox-wood ${item.type} ${item.cuttingStatus}`}
                         >
                           {parser(item.length ?? 0).toFixed(2)}

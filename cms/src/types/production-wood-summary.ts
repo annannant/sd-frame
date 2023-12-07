@@ -18,6 +18,9 @@ export interface ITFProductionWoodSummary {
   wood?: ITFWood
 }
 
+export interface ITFProductionWoodSummaryTemp extends ITFProductionWoodSummary {
+  tempId?: string
+}
 export interface ITFTableProductionWoodSummary
   extends ITFTable,
     ITFProductionWoodSummary {}
