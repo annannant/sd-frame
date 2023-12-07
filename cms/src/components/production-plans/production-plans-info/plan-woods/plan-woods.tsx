@@ -200,7 +200,7 @@ export const PlanWoods = () => {
                 type="primary"
                 htmlType="button"
                 onClick={updateStatus}
-                disabled={checkedType !== 'normal'}
+                disabled={!firstCheckedItem || checkedType !== 'normal'}
               >
                 {title}
               </Button>
