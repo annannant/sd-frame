@@ -30,6 +30,7 @@ import { parser } from 'helper/number'
 import useMessage from 'hooks/useMessage'
 
 import CheckboxGroupWood from './checkbox-group-wood'
+import { ModalManageWoodWasted } from './modal-manage-wood-wasted'
 
 import { setParamsCreatePlan } from 'app/slice/production-orders'
 import { flatten, orderBy, sortBy } from 'lodash'
@@ -38,6 +39,7 @@ import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 export const PlanWoods = () => {
   const dispatch = useDispatch()
   const [form] = Form.useForm()
+  const [open, setOpen] = useState(false)
 
   const { id }: any = useLoaderData()
   const { data, refetch } = useGetProductionPlanByIDQuery(id, { skip: !id })
@@ -158,6 +160,14 @@ export const PlanWoods = () => {
     }
   }
 
+  const onOpen = () => {
+    setOpen(true)
+  }
+
+  const onClose = () => {
+    setOpen(false)
+  }
+
   useEffect(() => {
     form.setFieldValue('productionPlanWoods', productionPlanWoods)
   }, [productionPlanWoods])
@@ -173,7 +183,7 @@ export const PlanWoods = () => {
               <Button
                 type="primary"
                 htmlType="button"
-                onClick={() => {}}
+                onClick={onOpen}
                 // style={{ width: 100 }}
               >
                 จัดการไม้ผลิตเสีย
@@ -344,6 +354,7 @@ export const PlanWoods = () => {
           </div>
         )}
       </Card>
+      <ModalManageWoodWasted open={open} onClose={onClose} />
     </>
   )
 }

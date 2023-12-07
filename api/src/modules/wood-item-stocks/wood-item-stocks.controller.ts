@@ -15,6 +15,11 @@ import { UpdateWoodItemStockDto } from './dto/update-wood-item-stock.dto';
 export class WoodItemStocksController {
   constructor(private readonly woodItemStocksService: WoodItemStocksService) {}
 
+  @Post('multiple')
+  createMultiple(@Body() createWoodItemStockDto: CreateWoodItemStockDto[]) {
+    return this.woodItemStocksService.createMultiple(createWoodItemStockDto);
+  }
+
   @Post()
   create(@Body() createWoodItemStockDto: CreateWoodItemStockDto) {
     return this.woodItemStocksService.create(createWoodItemStockDto);

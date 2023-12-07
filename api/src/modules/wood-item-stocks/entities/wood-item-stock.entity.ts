@@ -9,6 +9,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 @Entity('wood_item_stock')
@@ -71,4 +73,15 @@ export class WoodItemStock {
   @ManyToOne(() => Location, (location) => location.woodItemStockLocations)
   @JoinColumn({ name: 'location_id', referencedColumnName: 'id' })
   location: Location;
+
+  @BeforeInsert()
+  insertDates() {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
+
+  @BeforeUpdate()
+  updateDates() {
+    this.updatedAt = new Date();
+  }
 }

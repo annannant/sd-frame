@@ -5,6 +5,7 @@ import standardFrameReducer from './slice/standard-frames'
 import woodStockReducer from './slice/wood-stocks'
 
 import { attributeApiSlice } from 'services/attribute'
+import { locationApiSlice } from 'services/location'
 import { productionOrderApiSlice } from 'services/production-order'
 import { productionPlanApiSlice } from 'services/production-plan'
 import { standardFrameApiSlice } from 'services/standard-frame'
@@ -29,6 +30,7 @@ export const rootReducer = {
   [woodStockLocationApiSlice.reducerPath]: woodStockLocationApiSlice.reducer,
   [standardFrameStockApiSlice.reducerPath]: standardFrameStockApiSlice.reducer,
   [productionPlanApiSlice.reducerPath]: productionPlanApiSlice.reducer,
+  [locationApiSlice.reducerPath]: locationApiSlice.reducer,
 }
 
 export default rootReducer

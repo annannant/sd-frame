@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import rootReducer from './root-reducer'
 
 import { attributeApiSlice } from 'services/attribute'
+import { locationApiSlice } from 'services/location'
 import { productionOrderApiSlice } from 'services/production-order'
 import { productionPlanApiSlice } from 'services/production-plan'
 import { standardFrameApiSlice } from 'services/standard-frame'
@@ -26,6 +27,7 @@ const store = configureStore({
       .concat(woodStockApiSlice.middleware)
       .concat(woodStockLocationApiSlice.middleware)
       .concat(productionPlanApiSlice.middleware)
+      .concat(locationApiSlice.middleware)
       .concat(woodTypeApiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 })

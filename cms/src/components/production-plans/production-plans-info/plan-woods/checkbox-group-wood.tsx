@@ -168,22 +168,6 @@ export const CheckboxGroupWood = (props: ITFProps) => {
                   const percent =
                     (parser(item.length ?? 0) * 100) / parser(woodLength)
                   const colorWasted = getColor(item)
-                  // switch (item.type) {
-                  //   case 'keep':
-                  //     colorWasted = checked ? 'bg-info' : 'bg-slate-300'
-                  //     break
-                  //   case 'wasted':
-                  //     colorWasted = 'bg-slate-200	'
-                  //     break
-                  //   default:
-                  //     colorWasted =
-                  //       item.cuttingStatus === 'pending'
-                  //         ? checked
-                  //           ? 'bg-warning'
-                  //           : 'bg-slate-400	'
-                  //         : 'bg-success'
-                  //     break
-                  // }
 
                   return (
                     <div

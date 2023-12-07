@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { Location } from './entities/location.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class LocationsService {
+  constructor(
+    @InjectRepository(Location)
+    private locationsRepository: Repository<Location>,
+  ) {}
   create(createLocationDto: CreateLocationDto) {
     return 'This action adds a new location';
   }
 
   findAll() {
-    return `This action returns all locations`;
+    return this.locationsRepository.find();
   }
 
   findOne(id: number) {
