@@ -891,6 +891,7 @@ class ImproveCoreAlgorithm {
           continue;
         }
         if (sumPattern > this.woodLength) {
+          combinationsKey[keyPattern] = true; // for checking duplicate
           continue;
         }
 
@@ -948,14 +949,13 @@ class ImproveCoreAlgorithm {
   }
 
   findRemainingList(all, used) {
-    const remainingList = [];
-    for (const iterator of all) {
-      const index = used.indexOf(iterator);
-      if (index < 0) {
-        remainingList.push(iterator);
+    for (const iterator of used) {
+      const index = all.indexOf(iterator);
+      if (index >= 0) {
+        all.splice(index, 1);
       }
     }
-    return remainingList;
+    return all;
   }
 
   findRemaningPatternWithCombinationStd(expectedRemaining, candidate) {
@@ -976,7 +976,9 @@ class ImproveCoreAlgorithm {
         if (+std.qty < currentQty) {
           continue;
         }
-        const list = flatten(Array(currentQty).fill(std.wood_list));
+        const list = flatten(Array(currentQty).fill(std.wood_list)).sort(
+          (a, b) => b - a,
+        );
 
         let combinations = [[]];
         const combinationsKey = { '': true };
@@ -1001,9 +1003,10 @@ class ImproveCoreAlgorithm {
               continue;
             }
 
+            const expMin = this.minLength / 4;
             if (
               remaining === 0 ||
-              (remaining < candidate && remaining < this.minLength)
+              (remaining < candidate && remaining < expMin)
             ) {
               const remainingPatternList = this.findRemainingList(
                 list,
