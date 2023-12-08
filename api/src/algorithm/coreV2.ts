@@ -110,11 +110,9 @@ class ImproveCoreAlgorithm {
           continue;
         }
 
-        combinations = [...combinations, currentPattern];
-        combinationsKey[keyPattern] = true; // for checking duplicate
-
         // isMoreThanWoodLength
         if (sumPattern > this.woodLength) {
+          combinationsKey[keyPattern] = true; // for checking duplicate
           if (this.printAlgo) {
             console.log(
               j + 1,
@@ -129,7 +127,7 @@ class ImproveCoreAlgorithm {
         }
 
         //
-        const woods = [...woodItemStocks, 120];
+        const woods = [...woodItemStocks, 120].sort((a, b) => a - b);
         if (this.printAlgo) {
           // console.log(j + 1, ';', currentCombinations[j], ';', currentPattern);
           console.log(
@@ -142,6 +140,7 @@ class ImproveCoreAlgorithm {
             sumPattern,
           );
         }
+
         for (let k = 0; k < woods.length; k++) {
           const wood = woods[k];
           const remaining = wood - sumPattern;
@@ -179,6 +178,9 @@ class ImproveCoreAlgorithm {
             tempList.push(temp);
           }
         }
+
+        combinations = [...combinations, currentPattern];
+        combinationsKey[keyPattern] = true; // for checking duplicate
 
         // if (this.printAlgo) {
         //   console.log(
@@ -791,13 +793,27 @@ class ImproveCoreAlgorithm {
   findRemaningPattern(remainingList) {
     const ori = [...remainingList];
     let numbers = [...remainingList].sort((a, b) => b - a);
+    console.log('numbers:', numbers);
     while (numbers.length > 0) {
       console.log('====>::::::');
       const selected = this.findCombination(
         [...numbers],
         this.remainigWoodItemStockList,
       );
-      console.log('selected:', selected.remaining);
+
+      console.log('selected.remaining:', selected.remaining);
+
+      if (selected.remaining < this.minLength / 4) {
+        this.finalResult.push(selected);
+        this.removeWoodItemStock(selected);
+        const newNumbers = this.removeSelectedPatternFromRemainingList(
+          numbers,
+          selected?.pattern_list ?? [],
+        );
+        numbers = [...newNumbers];
+        continue;
+      }
+
       // check numbers -> ว่า มีแต่ std รึป่าว
       const IsAllStd = this.checkAllIsStd(ori);
 

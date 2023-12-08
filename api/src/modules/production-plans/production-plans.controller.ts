@@ -23,6 +23,16 @@ export class ProductionPlansController {
     return this.productionPlansService.create(createProductionPlanDto);
   }
 
+  @Post(':id/replan')
+  replan(@Param('id') id: string) {
+    return this.productionPlansService.replan(+id);
+  }
+
+  @Post(':id/create-replan')
+  createReplan(@Param('id') id: string) {
+    return this.productionPlansService.createReplan(+id);
+  }
+
   @Get()
   findAll() {
     return this.productionPlansService.findAll();

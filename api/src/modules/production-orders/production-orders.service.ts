@@ -30,6 +30,7 @@ import { ProductionPlanSuggestItem } from '../production-plan-suggest-items/enti
 import { ProductionPlanWood } from '../production-plan-woods/entities/production-plan-wood.entity';
 import { ProductionPlanWoodItem } from '../production-plan-wood-items/entities/production-plan-wood-item.entity';
 import { ProductionWoodSummary } from '../production-wood-summary/entities/production-wood-summary.entity';
+import { formatItems } from '@/common/helpers/orders';
 @Injectable()
 export class ProductionOrdersService {
   constructor(
@@ -118,9 +119,9 @@ export class ProductionOrdersService {
         ...woodStock,
         totalRemaningStock: totalRemaningStock,
         totalRemaningStockLength: totalRemaningStockLength,
-        woodItemStocksNumbers: woodItemStocks.map((item) =>
-          parser(item.woodLength),
-        ),
+        woodItemStocksNumbers: woodItemStocks
+          .map((item) => parser(item.woodLength))
+          .sort((a, b) => a - b),
         woodItemStocks: woodItemStocks,
       });
     }
@@ -453,7 +454,7 @@ export class ProductionOrdersService {
       parser(minLength),
       parser(sparePart),
     );
-    const formatter = await this.formatItems(
+    const formatter = await formatItems(
       data.productionOrderItems,
       data.wood.woodType.width,
     );
@@ -965,19 +966,6 @@ export class ProductionOrdersService {
     return await this.productionOrdersRepository.delete(id);
   }
 
-  async formatItems(orderItems: ProductionOrderItem[], woodWidth: number) {
-    const formatted = orderItems.map((item: ProductionOrderItem) => {
-      return {
-        // ...item,
-        width: parser(item.width),
-        height: parser(item.height),
-        woodWidth: parser(woodWidth),
-        qty: parser(item.qty),
-      };
-    });
-
-    return formatted;
-  }
   async getMinLength(face: number, sparePart: number) {
     // min frame standard
     const frameList = await this.standardFramesRepository.findBy({

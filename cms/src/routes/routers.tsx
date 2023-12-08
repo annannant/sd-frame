@@ -299,6 +299,15 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: editPlanLoader,
       },
+      {
+        path: 'edit/:planId/replan',
+        // element: <ProductionPlansInfoPage />,
+        // errorElement: <ErrorPage />,
+        // loader: editPlanLoader,
+        element: <ProductionOrdersPlanInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editOrderLoader,
+      },
     ],
   },
 ])

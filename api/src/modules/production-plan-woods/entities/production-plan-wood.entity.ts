@@ -77,5 +77,5 @@ export class ProductionPlanWood {
   productionPlan: ProductionPlan;
 
   @OneToMany(() => ProductionPlanWoodItem, (item) => item.productionPlanWood)
-  productionPlanWoodItems: ProductionPlanWoodItem;
+  productionPlanWoodItems: ProductionPlanWoodItem[];
 }

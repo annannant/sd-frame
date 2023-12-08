@@ -68,11 +68,11 @@ export class ProductionPlan {
   productionOrder: ProductionOrder;
 
   @OneToMany(() => ProductionPlanSuggestItem, (item) => item.productionPlan)
-  productionPlanSuggestItems: ProductionPlanSuggestItem;
+  productionPlanSuggestItems: ProductionPlanSuggestItem[];
 
   @OneToMany(() => ProductionPlanWood, (item) => item.productionPlan)
-  productionPlanWoods: ProductionPlanWood;
+  productionPlanWoods: ProductionPlanWood[];
 
   @OneToMany(() => ProductionWoodSummary, (item) => item.productionPlan)
-  productionWoodSummary: ProductionWoodSummary;
+  productionWoodSummary: ProductionWoodSummary[];
 }
