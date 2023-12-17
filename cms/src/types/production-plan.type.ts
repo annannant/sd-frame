@@ -1,3 +1,4 @@
+import { ITFProductionOrderItem } from './production-order-items.type'
 import { ITFProductionOrder } from './production-order.type'
 import { ITFProductionPlanSuggestItem } from './production-plan-suggest-item.type'
 import { ITFProductionPlanWood } from './production-plan-wood'
@@ -15,4 +16,6 @@ export interface ITFProductionPlan {
   productionPlanSuggestItems?: ITFProductionPlanSuggestItem[]
   productionPlanWoods?: ITFProductionPlanWood[]
   productionWoodSummary?: ITFProductionWoodSummary[]
+  summaryOrderItems?: ITFProductionOrderItem[]
+  summarySuggestItems?: ITFProductionOrderItem[]
 }

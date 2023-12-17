@@ -15,14 +15,14 @@ import columns from '../columns'
 
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
-export const TableOrdersInprogress = () => {
+export const TableWaitForPreparing = () => {
   const { transformTable } = useProductionPlans()
-  const { dataOrderCutting, refetchOrderCutting } = useProductionOrders()
+  const { dataOrderPrepare, refetchOrderPrepare } = useProductionOrders()
 
-  const dataSource = transformTable(dataOrderCutting ?? [])
+  const dataSource = transformTable(dataOrderPrepare ?? [])
 
   useEffect(() => {
-    refetchOrderCutting()
+    refetchOrderPrepare()
   }, [])
 
   return (

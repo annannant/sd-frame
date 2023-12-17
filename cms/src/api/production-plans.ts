@@ -6,6 +6,10 @@ export const postCreate = async (data: any) => {
   return await httpClient.post('/production-plans', data)
 }
 
+export const patchFinishPlan = async (id: number) => {
+  return await httpClient.patch(`/production-plans/${id}/finish`)
+}
+
 export const patchWithdrawWoods = async (
   id: number,
   data: ITFProductionWoodSummary[]

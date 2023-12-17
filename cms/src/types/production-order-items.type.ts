@@ -10,6 +10,8 @@ export interface ITFProductionOrderItem {
   productionOrderId?: number | null
   name?: number | null
   standardFrame?: ITFStandardFrame | null
+  w?: number
+  h?: number
 }
 
 export interface ITFTableProductionOrderItem

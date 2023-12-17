@@ -40,22 +40,19 @@ import useMessage from 'hooks/useMessage'
 import useModal from 'hooks/useModal'
 import { useProductionOrdersPlan } from 'hooks/useProductionOrdersPlan'
 
-import { PlanWoodSummary } from './plan-wood-summary/plan-wood-summary'
-import { PlanWoods } from './plan-woods/plan-woods'
-import { TableOrderItems } from './table-order-items/table-order-items'
-import { TableOrderStandardFrameItems } from './table-order-std-items/table-order-std-items'
+import { TableItems } from './table-items/table-items'
+import { TableSuggestItems } from './table-suggest-items/table-suggest-items'
 
 import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 
 const { Title } = Typography
 
-export const ProductionPlansInfoComponent = () => {
+export const ProductionFormInfoComponent = () => {
   const navigate = useNavigate()
 
   const { id }: any = useLoaderData()
   const { data } = useGetProductionPlanByIDQuery(id, { skip: !id })
   const orderInfo = data?.productionOrder
-  console.log('data:', data)
   const [loading, setLoading] = useState(false)
   const { contextHolder, success, error } = useMessage()
   const [modal, contextHolderModal] = Modal.useModal()
@@ -103,43 +100,7 @@ export const ProductionPlansInfoComponent = () => {
             <Title level={5} style={{ margin: 0 }}>
               Production Order No. : {orderInfo?.orderNo}
             </Title>
-            <div className="flex gap-x-4">
-              <Button
-                type="default"
-                htmlType="button"
-                icon={<LeftOutlined />}
-                onClick={() => {
-                  navigate('/production-plans')
-                }}
-                size="large"
-              >
-                กลับไปก่อนหน้า
-              </Button>
-              <ButtonPrimarySuccess
-                type="primary"
-                htmlType="button"
-                // disabled={!!data?.isWoodOutStock}
-                // onClick={}
-                size="large"
-                icon={
-                  <CalculatorOutlined style={{ marginTop: 2, fontSize: 18 }} />
-                }
-              >
-                วางแผนผลิตใหม่
-              </ButtonPrimarySuccess>
-              <Button
-                type="primary"
-                htmlType="button"
-                // disabled={!!data?.isWoodOutStock}
-                onClick={onClickFinish}
-                size="large"
-                icon={
-                  <CalculatorOutlined style={{ marginTop: 2, fontSize: 18 }} />
-                }
-              >
-                เสร็จสิ้นการผลิต
-              </Button>
-            </div>
+            <div className="flex gap-x-4"></div>
           </div>
           <Divider />
           <div className="grid gap-y-[20px]">
@@ -154,30 +115,22 @@ export const ProductionPlansInfoComponent = () => {
           </div>
         </Card>
         <Row gutter={[30, 30]}>
-          <Col span={6}>
-            <Row gutter={[0, 30]}>
-              <Col span={24}>
-                <Card title="รายการขนาดกรอบรูปในคำสั่งผลิต" bordered={false}>
-                  <TableOrderItems />
-                </Card>
-              </Col>
-              <Col span={24}>
-                <Card title="รายการขนาดกรอบรูปที่แนะนำให้ตัด" bordered={false}>
-                  <TableOrderStandardFrameItems />
-                </Card>
-              </Col>
-            </Row>
+          <Col span={24}>
+            <Card title="รายการขนาดกรอบรูปในคำสั่งผลิต">
+              <TableItems />
+            </Card>
           </Col>
-          <Col span={18}>
-            <div className="flex flex-col gap-y-[30px]">
-              <PlanWoods />
-              <PlanWoodSummary />
-            </div>
-          </Col>
+          {(data?.productionPlanSuggestItems ?? []).length > 0 && (
+            <Col span={24}>
+              <Card title="รายการขนาดกรอบรูปที่แนะนำให้ตัด">
+                <TableSuggestItems />
+              </Card>
+            </Col>
+          )}
         </Row>
       </div>
     </>
   )
 }
 
-export default ProductionPlansInfoComponent
+export default ProductionFormInfoComponent

@@ -43,6 +43,11 @@ export class ProductionPlansController {
     return this.productionPlansService.findOne(+id);
   }
 
+  @Patch(':id/finish')
+  finishPlan(@Param('id') id: string) {
+    return this.productionPlansService.finishPlan(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

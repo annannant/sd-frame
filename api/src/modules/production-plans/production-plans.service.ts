@@ -23,12 +23,16 @@ import { todo } from 'node:test';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
 import { PART } from '@/common/constants/wood-type.constant';
+import { ProductionOrder } from '../production-orders/entities/production-order.entity';
+import { WAIT_FOR_PREPARING } from '@/common/constants/current-status.constant';
 
 @Injectable()
 export class ProductionPlansService {
   constructor(
     @InjectRepository(ProductionPlan)
     private productionPlansRepository: Repository<ProductionPlan>,
+    @InjectRepository(ProductionOrder)
+    private productionOrdersRepository: Repository<ProductionOrder>,
     @InjectRepository(ProductionWoodSummary)
     private productionWoodSummaryRepository: Repository<ProductionWoodSummary>,
     @InjectRepository(StandardFrame)
@@ -78,10 +82,50 @@ export class ProductionPlansService {
       .where('plan.id = :id', { id })
       .getOne();
 
+    const summary = data?.productionOrder.productionOrderItems.map((item) => {
+      const info = findProductionWoodList(
+        [
+          {
+            ...item,
+            width: parser(item.width),
+            height: parser(item.height),
+          },
+        ],
+        data?.productionOrder.wood.woodType.width,
+        data.sparePart,
+      );
+      return {
+        ...item,
+        w: info[0]?.w,
+        h: info[0]?.h,
+      };
+    });
+
+    const summarySuggest = data?.productionPlanSuggestItems.map((item) => {
+      const info = findProductionWoodList(
+        [
+          {
+            ...item,
+            width: parser(item.width),
+            height: parser(item.height),
+          },
+        ],
+        data?.productionOrder.wood.woodType.width,
+        data.sparePart,
+      );
+      return {
+        ...item,
+        w: info[0]?.w,
+        h: info[0]?.h,
+      };
+    });
+
     if (data) {
       return {
         ...data,
         minLength: 1,
+        summaryOrderItems: summary,
+        summarySuggestItems: summarySuggest,
       };
     }
 
@@ -101,6 +145,16 @@ export class ProductionPlansService {
     );
     await Promise.all(data);
     return data;
+  }
+
+  async finishPlan(id: number) {
+    await this.productionOrdersRepository.update(
+      { productionPlanId: id },
+      { status: WAIT_FOR_PREPARING },
+    );
+    return {
+      status: 'success',
+    };
   }
 
   update(id: number, updateProductionPlanDto: UpdateProductionPlanDto) {

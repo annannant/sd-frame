@@ -54,13 +54,13 @@ export const menus: ITFSidebarItem[] = [
   },
   {
     group: 'ประกอบกรอบรูป',
-    key: 'ิform',
-    url: 'ิform',
+    key: 'form',
+    url: 'form',
     permission: [],
     items: [
       {
-        key: 'form-list',
-        url: 'form-list',
+        key: '/production-plans/form',
+        url: '/production-plans/form',
         label: 'รอประกอบ',
         icon: <BlockOutlined />,
       },

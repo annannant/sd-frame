@@ -19,10 +19,24 @@ export const useProductionOrders = () => {
       statuses: [CUTTING_INPROGRESS, WAIT_FOR_PREPARING, PREPARING_INPROGRESS],
     })
 
+  const { data: dataOrderCutting, refetch: refetchOrderCutting } =
+    useGetAllProductionOrdersQuery({
+      statuses: [CUTTING_INPROGRESS],
+    })
+
+  const { data: dataOrderPrepare, refetch: refetchOrderPrepare } =
+    useGetAllProductionOrdersQuery({
+      statuses: [WAIT_FOR_PREPARING],
+    })
+
   return {
     dataOrders,
     refetchOrders,
     dataOrderInprogress,
     refetchOrderInprogress,
+    dataOrderPrepare,
+    refetchOrderPrepare,
+    dataOrderCutting,
+    refetchOrderCutting,
   }
 }

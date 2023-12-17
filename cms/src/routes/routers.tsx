@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import ErrorPage from 'pages/error-page'
+import { ProductionFormInfoPage } from 'pages/production-forms/production-forms-info'
+import { ProductionFormListPage } from 'pages/production-forms/production-forms-list'
 import {
   ProductionOrdersInfoPage,
   createOrderLoader,
@@ -301,12 +303,20 @@ export const router = createBrowserRouter([
       },
       {
         path: 'edit/:planId/replan',
-        // element: <ProductionPlansInfoPage />,
-        // errorElement: <ErrorPage />,
-        // loader: editPlanLoader,
         element: <ProductionOrdersPlanInfoPage />,
         errorElement: <ErrorPage />,
         loader: editOrderLoader,
+      },
+      {
+        path: 'form',
+        element: <ProductionFormListPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'form/:planId',
+        element: <ProductionFormInfoPage />,
+        errorElement: <ErrorPage />,
+        loader: editPlanLoader,
       },
     ],
   },
