@@ -2,7 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLoaderData, useSearchParams } from 'react-router-dom'
 
-import { LoadingOutlined } from '@ant-design/icons'
+import {
+  CheckOutlined,
+  DownloadOutlined,
+  LoadingOutlined,
+  ReloadOutlined,
+  ScissorOutlined,
+} from '@ant-design/icons'
 import {
   Button,
   Card,
@@ -42,6 +48,9 @@ export const PlanWoods = () => {
   const dispatch = useDispatch()
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
+  const [openKeep, setOpenKeep] = useState(false)
+  const [selectedLength, setSelectedLength] = useState<number[]>()
+  const [selectedKeepIds, setSelectedKeepIds] = useState<number[]>()
   const [modal, contextHolderModal] = Modal.useModal()
 
   const { id }: any = useLoaderData()
@@ -93,12 +102,11 @@ export const PlanWoods = () => {
   // const method =
   //   firstCheckedItem?.cuttingStatus === 'success' ? 'reverse' : 'update'
   // const checkedType = firstCheckedItem?.type ?? ''
-  console.log('checkbox?.cuttingStatus:', checkbox?.cuttingStatus)
 
   const title =
     checkbox?.cuttingStatus === 'success' ? 'ย้อนสถานะ' : 'อัพเดทสถานะ'
   const method = checkbox?.cuttingStatus === 'success' ? 'reverse' : 'update'
-  const firstCheckedItem = true
+  const firstCheckedItem = !!checkbox
 
   const onClickCalulate = () => {
     dispatch(
@@ -141,12 +149,46 @@ export const PlanWoods = () => {
     }
   }
 
+  const fetchSelectedLength = () => {
+    const values = form.getFieldValue('productionPlanWoods')
+    const data = values.filter((item: any) => item.checkbox?.length > 0)
+    const idList = []
+    const totalList = []
+    for (const wood of data) {
+      const temp = wood.productionPlanWoodItems.filter(
+        (item: ITFProductionPlanWoodItem) =>
+          (wood.checkbox ?? []).includes(item.id)
+      )
+      const ids = temp.map((item: ITFProductionPlanWoodItem) => parser(item.id))
+      const items = temp.map((item: ITFProductionPlanWoodItem) =>
+        parser(item.length)
+      )
+      console.log('items:', ids)
+      console.log('items:', items)
+      totalList.push(items)
+      idList.push(ids)
+    }
+    console.log('data:', flatten(totalList))
+    setSelectedLength(flatten(totalList))
+    setSelectedKeepIds(flatten(idList))
+  }
+
   const onOpen = () => {
+    fetchSelectedLength()
     setOpen(true)
   }
 
   const onClose = () => {
     setOpen(false)
+  }
+
+  const onOpenKeep = () => {
+    fetchSelectedLength()
+    setOpenKeep(true)
+  }
+
+  const onCloseKepp = () => {
+    setOpenKeep(false)
   }
 
   useEffect(() => {
@@ -163,19 +205,46 @@ export const PlanWoods = () => {
             <div>รายการไม้ที่ต้องตัด</div>
             <div className="flex gap-4">
               <Button
+                ghost
                 type="primary"
                 htmlType="button"
                 onClick={onOpen}
-                // style={{ width: 100 }}
+                // disabled={!firstCheckedItem}
+                style={{ fontWeight: 600 }}
+                icon={
+                  <ScissorOutlined style={{ marginTop: 2, fontWeight: 600 }} />
+                }
               >
                 จัดการไม้ผลิตเสีย
               </Button>
               <Button
+                ghost
+                type="primary"
+                htmlType="button"
+                onClick={onOpenKeep}
+                style={{ width: 150, fontWeight: 600 }}
+                icon={
+                  <DownloadOutlined style={{ marginTop: 2, fontWeight: 600 }} />
+                }
+                // disabled={checkbox?.type !== 'keep'}
+                // disabled={!firstCheckedItem}
+              >
+                จับเก็บไม้
+              </Button>
+              <Button
+                ghost
                 type="primary"
                 htmlType="button"
                 onClick={updateStatus}
                 disabled={!firstCheckedItem}
-                // disabled={!firstCheckedItem || checkedType !== 'normal'}
+                style={{ width: 150, fontWeight: 600 }}
+                icon={
+                  checkbox?.cuttingStatus === 'success' ? (
+                    <ReloadOutlined style={{ marginTop: 2, fontWeight: 600 }} />
+                  ) : (
+                    <CheckOutlined style={{ marginTop: 2, fontWeight: 600 }} />
+                  )
+                }
               >
                 {title}
               </Button>
@@ -295,7 +364,21 @@ export const PlanWoods = () => {
           </div>
         )}
       </Card>
-      <ModalManageWoodWasted open={open} onClose={onClose} />
+      <ModalManageWoodWasted
+        title="จัดการไม้ผลิตเสีย"
+        description="ระบุความยาวไม้ที่ผลิตเสีย"
+        open={open}
+        onClose={onClose}
+        selectedItems={selectedLength}
+      />
+      <ModalManageWoodWasted
+        title="จัดการเก็บไม้"
+        description="ระบุความยาวไมต้องการจัดเก็บ"
+        open={openKeep}
+        onClose={onCloseKepp}
+        selectedItems={selectedLength}
+        successIds={selectedKeepIds}
+      />
     </>
   )
 }

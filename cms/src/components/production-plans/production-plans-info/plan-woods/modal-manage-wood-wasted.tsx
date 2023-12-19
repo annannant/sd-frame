@@ -21,6 +21,7 @@ import {
 import { colors } from 'constants/colors'
 import { ITFUpdateProductionWoodSummary } from 'types/production-wood-summary'
 
+import { patchUpdateStatus } from 'api/production-plan-wood-items'
 import { postCreateMultiple } from 'api/wood-item-stocks'
 import { filterOption } from 'helper/select-input'
 import useMessage from 'hooks/useMessage'
@@ -32,12 +33,22 @@ import { useGetProductionPlanByIDQuery } from 'services/production-plan'
 const { Title } = Typography
 
 interface ITFProps {
+  title?: string
+  description?: string
   open: boolean
+  selectedItems?: number[]
   onClose: () => void
+  successIds?: number[]
 }
 
 export const ModalManageWoodWasted = (props: ITFProps) => {
-  const { open } = props
+  const {
+    open,
+    selectedItems,
+    title = 'จัดการไม้ผลิตเสีย',
+    description = 'ระบุความยาวไม้ที่ผลิตเสีย',
+    successIds,
+  } = props
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
 
@@ -57,7 +68,19 @@ export const ModalManageWoodWasted = (props: ITFProps) => {
     } else {
       form.resetFields()
     }
-  }, [open])
+  }, [open, form])
+
+  useEffect(() => {
+    if (selectedItems?.length === 0) {
+      form.setFieldValue('woods', [{ key: 1 }])
+    } else {
+      const woods = selectedItems?.map((item: number, index: number) => ({
+        key: index + 1,
+        woodLength: item,
+      }))
+      form.setFieldValue('woods', woods)
+    }
+  }, [form, selectedItems])
 
   const onSubmit = () => {
     form.submit()
@@ -67,12 +90,19 @@ export const ModalManageWoodWasted = (props: ITFProps) => {
     try {
       setLoading(true)
       const values = form.getFieldValue('woods') ?? []
+      console.log('values:', values)
       const payload = values.map((val: ITFUpdateProductionWoodSummary) => ({
         ...omit(val, ['key']),
         lot,
         woodId,
       }))
       await postCreateMultiple(payload)
+      if (successIds && (successIds ?? []).length > 0) {
+        await patchUpdateStatus({
+          cuttingStatus: 'success',
+          ids: successIds,
+        })
+      }
       refetch()
       success()
       setTimeout(() => {
@@ -95,7 +125,7 @@ export const ModalManageWoodWasted = (props: ITFProps) => {
         width={720}
         title={
           <Title level={3} style={{ marginBottom: 4 }}>
-            จัดการไม้ผลิตเสีย
+            {title}
           </Title>
         }
         footer={[
@@ -119,7 +149,7 @@ export const ModalManageWoodWasted = (props: ITFProps) => {
           </Button>,
         ]}
       >
-        <div className="text-[16px]">ระบุความยาวไม้ที่ผลิตเสีย</div>
+        <div className="text-[16px]">{description}</div>
         <div className="mb-[50px] mt-[30px] px-[20px]">
           <Form form={form} onFinish={onFinish} autoComplete="off" size="large">
             <Row gutter={[0, 30]} className="mt-20px">

@@ -13,13 +13,16 @@ import { useProductionPlans } from 'hooks/useProductionPlans'
 
 import columns from '../columns'
 
+import { orderBy } from 'lodash'
 import { useGetAllProductionOrdersQuery } from 'services/production-order'
 
 export const TableWaitForPreparing = () => {
   const { transformTable } = useProductionPlans()
   const { dataOrderPrepare, refetchOrderPrepare } = useProductionOrders()
 
-  const dataSource = transformTable(dataOrderPrepare ?? [])
+  const dataSource = transformTable(
+    orderBy(dataOrderPrepare ?? [], 'updatedAt', 'asc')
+  )
 
   useEffect(() => {
     refetchOrderPrepare()

@@ -17,7 +17,8 @@ export const Container = styled.div`
     display: block;
   }
 
-  .checkbox-wood.keep .ant-checkbox.ant-checkbox-checked + span {
+  .checkbox-wood.keep .ant-checkbox.ant-checkbox-checked + span,
+  .checkbox-wood.keep.success .ant-checkbox.ant-checkbox-checked + span {
     color: ${colors.info};
   }
 
@@ -41,12 +42,14 @@ export const Container = styled.div`
     inset-inline-start: 27.5%;
     border-color: ${colors.warning};
   }
-  .checkbox-wood.keep .ant-checkbox .ant-checkbox-inner:after {
+  .checkbox-wood.keep .ant-checkbox .ant-checkbox-inner:after,
+  .checkbox-wood.keep.success .ant-checkbox .ant-checkbox-inner:after {
     border-color: ${colors.info};
   }
   .checkbox-wood.success .ant-checkbox .ant-checkbox-inner:after {
     border-color: ${colors.success};
   }
+
   .checkbox-wood.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
     .ant-checkbox-checked:not(.ant-checkbox-disabled)
     .ant-checkbox-inner {
@@ -55,6 +58,11 @@ export const Container = styled.div`
   }
 
   .checkbox-wood.keep.ant-checkbox-wrapper:not(
+      .ant-checkbox-wrapper-disabled
+    ):hover
+    .ant-checkbox-checked:not(.ant-checkbox-disabled)
+    .ant-checkbox-inner,
+  .checkbox-wood.keep.success.ant-checkbox-wrapper:not(
       .ant-checkbox-wrapper-disabled
     ):hover
     .ant-checkbox-checked:not(.ant-checkbox-disabled)
@@ -78,7 +86,14 @@ export const Container = styled.div`
     .checkbox-wood.keep
     .ant-checkbox-checked:not(.ant-checkbox-disabled)
     .ant-checkbox-inner,
-  .checkbox-wood.keep .ant-checkbox-inner {
+  .checkbox-wood.keep .ant-checkbox-inner,
+  .checkbox-wood.keep.success.ant-checkbox-wrapper:not(
+      .ant-checkbox-wrapper-disabled
+    ):hover
+    .checkbox-wood.keep.success
+    .ant-checkbox-checked:not(.ant-checkbox-disabled)
+    .ant-checkbox-inner,
+  .checkbox-wood.keep.success .ant-checkbox-inner {
     background-color: ${colors.white};
     border-color: ${colors.info};
   }

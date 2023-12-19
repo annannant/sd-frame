@@ -35,7 +35,7 @@ import { OrderWoodDetailIndex } from 'components/orders-wood-detail'
 import { colors } from 'constants/colors'
 import { CREATE, EDIT } from 'constants/common'
 
-import { patchFinishPlan } from 'api/production-plans'
+import { patchFinishPlan, postReplan } from 'api/production-plans'
 import useMessage from 'hooks/useMessage'
 import useModal from 'hooks/useModal'
 import { useProductionOrdersPlan } from 'hooks/useProductionOrdersPlan'
@@ -73,11 +73,37 @@ export const ProductionPlansInfoComponent = () => {
       })
       if (confirmed) {
         await patchFinishPlan(id)
+        success()
+        setTimeout(() => {
+          navigate(-1)
+        }, 500)
       }
-      success()
-      setTimeout(() => {
-        navigate(-1)
-      }, 500)
+    } catch (err) {
+      error()
+      console.log('err:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onClickReplan = async () => {
+    try {
+      setLoading(true)
+      const confirmed = await modal.confirm({
+        title: 'ยืนยันวางแผนผลิตใหม่',
+        okText: 'ยืนยัน',
+        okButtonProps: {},
+        cancelText: 'ยกเลิก',
+        content: <>ต้องการวางแผนผลิตใหม่ใช่หรือไม่ ?</>,
+        icon: <InfoCircleOutlined style={{ color: colors.primary }} />,
+      })
+      if (confirmed) {
+        await postReplan(id)
+        success()
+        setTimeout(() => {
+          window.location.reload()
+        }, 500)
+      }
     } catch (err) {
       error()
       console.log('err:', err)
@@ -118,8 +144,7 @@ export const ProductionPlansInfoComponent = () => {
               <ButtonPrimarySuccess
                 type="primary"
                 htmlType="button"
-                // disabled={!!data?.isWoodOutStock}
-                // onClick={}
+                onClick={onClickReplan}
                 size="large"
                 icon={
                   <CalculatorOutlined style={{ marginTop: 2, fontSize: 18 }} />

@@ -167,7 +167,7 @@ export class ProductionPlansService {
   async finishPlan(id: number) {
     await this.productionOrdersRepository.update(
       { productionPlanId: id },
-      { status: WAIT_FOR_PREPARING },
+      { status: WAIT_FOR_PREPARING, updatedAt: new Date() },
     );
     return {
       status: 'success',

@@ -10,6 +10,10 @@ export const patchFinishPlan = async (id: number) => {
   return await httpClient.patch(`/production-plans/${id}/finish`)
 }
 
+export const postReplan = async (id: number) => {
+  return await httpClient.post(`/production-plans/${id}/replan`)
+}
+
 export const patchWithdrawWoods = async (
   id: number,
   data: ITFProductionWoodSummary[]
