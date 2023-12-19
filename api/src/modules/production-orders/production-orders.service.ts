@@ -31,6 +31,8 @@ import { ProductionPlanWood } from '../production-plan-woods/entities/production
 import { ProductionPlanWoodItem } from '../production-plan-wood-items/entities/production-plan-wood-item.entity';
 import { ProductionWoodSummary } from '../production-wood-summary/entities/production-wood-summary.entity';
 import { formatItems } from '@/common/helpers/orders';
+import { KEEP, WASTED } from '@/common/constants/wood-item-type.constant';
+import { PENDING, SUCCESS } from '@/common/constants/cutting-status.constant';
 @Injectable()
 export class ProductionOrdersService {
   constructor(
@@ -600,6 +602,7 @@ export class ProductionOrdersService {
         }
 
         if (plan?.remaining) {
+          const type = plan?.remaining >= data?.minLength ? KEEP : WASTED;
           await manager.save(
             plainToInstance(
               ProductionPlanWoodItem,
@@ -607,8 +610,8 @@ export class ProductionOrdersService {
                 productionPlanWoodId: created.id,
                 productionPlanId,
                 length: plan?.remaining,
-                type: plan?.remaining >= data?.minLength ? 'keep' : 'wasted',
-                cuttingStatus: 'pending',
+                type,
+                cuttingStatus: PENDING,
               },
               { strategy: 'excludeAll' },
             ),

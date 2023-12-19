@@ -32,17 +32,21 @@ export const useProductionPlans = () => {
   const transformTableWoodSummary = (
     data: ITFProductionWoodSummary[]
   ): ITFTableProductionWoodSummary[] => {
-    const result = data.map(
-      (item, index: number): ITFTableProductionWoodSummary => {
-        return {
-          ...item,
-          key: item?.id?.toString(),
-          no: index + 1,
-        }
+    const result = data.map((item, index: number) => {
+      return {
+        ...item,
+        length: parser(item?.length ?? 0),
       }
-    )
+    })
 
-    return result
+    const list = orderBy(result, ['length'], ['asc'])
+    return list.map((item, index: number): ITFTableProductionWoodSummary => {
+      return {
+        ...item,
+        key: item?.id?.toString(),
+        no: index + 1,
+      }
+    })
   }
 
   const formatWood = (

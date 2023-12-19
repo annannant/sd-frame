@@ -38,7 +38,6 @@ export const getRemainingList = (allList, cutList) => {
 };
 
 export function findProductionWoodList(frames, faceWidth, sparePart) {
-  console.log('frames:', frames);
   const result = [];
   for (const item of frames) {
     item.hight = item.height ?? item.hight;

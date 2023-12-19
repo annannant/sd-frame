@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, flatten } from '@nestjs/common';
 import { CreateProductionPlanDto } from './dto/create-production-plan.dto';
 import { UpdateProductionPlanDto } from './dto/update-production-plan.dto';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
 import { ProductionPlan } from './entities/production-plan.entity';
 import { UpdateProductionWoodSummaryDto } from '../production-wood-summary/dto/update-production-wood-summary.dto';
 import { ProductionWoodSummary } from '../production-wood-summary/entities/production-wood-summary.entity';
@@ -17,18 +18,30 @@ import {
 import { ProductionPlanItem } from '../production-plan-items/entities/production-plan-item.entity';
 import { ProductionPlanWood } from '../production-plan-woods/entities/production-plan-wood.entity';
 import { ProductionPlanWoodItem } from '../production-plan-wood-items/entities/production-plan-wood-item.entity';
-import { SUCCESS } from '@/common/constants/cutting-status.constant';
+import { PENDING, SUCCESS } from '@/common/constants/cutting-status.constant';
 import { ProductionPlanSuggestItem } from '../production-plan-suggest-items/entities/production-plan-suggest-item.entity';
 import { todo } from 'node:test';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
 import { WoodItemStock } from '../wood-item-stocks/entities/wood-item-stock.entity';
-import { PART } from '@/common/constants/wood-type.constant';
+import { FULL, PART } from '@/common/constants/wood-type.constant';
 import { ProductionOrder } from '../production-orders/entities/production-order.entity';
 import { WAIT_FOR_PREPARING } from '@/common/constants/current-status.constant';
+import { mapValues, orderBy, sumBy, groupBy, omit } from 'lodash';
+import { minLength } from 'class-validator';
+import ImproveCoreAlgorithm from '@/algorithm/coreV2';
+import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
+import {
+  KEEP,
+  NORMAL,
+  WASTED,
+} from '@/common/constants/wood-item-type.constant';
+import { plainToInstance } from 'class-transformer';
+import { WoodStock } from '../wood-stocks/entities/wood-stock.entity';
 
 @Injectable()
 export class ProductionPlansService {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(ProductionPlan)
     private productionPlansRepository: Repository<ProductionPlan>,
     @InjectRepository(ProductionOrder)
@@ -37,6 +50,9 @@ export class ProductionPlansService {
     private productionWoodSummaryRepository: Repository<ProductionWoodSummary>,
     @InjectRepository(StandardFrame)
     private standardFramesRepository: Repository<StandardFrame>,
+    @InjectRepository(StandardFrameStock)
+    private standardFrameStocksRepository: Repository<StandardFrameStock>,
+
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
@@ -80,6 +96,7 @@ export class ProductionPlansService {
         'productionWoodSummaryWoodType',
       )
       .where('plan.id = :id', { id })
+      .orderBy('productionOrderItems.id', 'ASC')
       .getOne();
 
     const summary = data?.productionOrder.productionOrderItems.map((item) => {
@@ -200,8 +217,25 @@ export class ProductionPlansService {
     return flatted;
   }
 
+  splitProductionByQty = (productionList: any[]) => {
+    const result = [];
+    for (const item of productionList) {
+      const { qty } = item;
+      const list = flatten(
+        Array(qty).fill({
+          ...item,
+          qty: 1,
+          remaining_list: [...item.wood_list],
+        }),
+      );
+      result.push(...list);
+    }
+    console.log('result:', result);
+
+    return result;
+  };
+
   getToDoNextStd(successList: number[], data: ProductionPlan) {
-    const tempSuggest = [...successList];
     const faceWidth = data?.productionOrder?.wood?.woodType?.width;
     const frames = data.productionPlanSuggestItems.map(
       (val: ProductionPlanSuggestItem) => {
@@ -212,45 +246,50 @@ export class ProductionPlansService {
         };
       },
     );
-
-    let temp = {};
+    // let temp = {};
     const res = findProductionWoodList(frames, faceWidth, data.sparePart);
-    for (const iterator of res) {
-      for (let index = 0; index < iterator.qty; index++) {
-        const qty = index + 1;
-        let add = false;
-        for (const wood of iterator.wood_list) {
-          const index = successList.indexOf(wood);
-          if (index > -1) {
-            successList.splice(index, 1);
-            add = true;
+    const result = this.splitProductionByQty(res);
+
+    const temp = [];
+    for (const frame of result) {
+      const list = [...frame.remaining_list];
+      for (const item of frame.wood_list) {
+        const idx = successList.indexOf(item);
+        if (idx > -1) {
+          successList.splice(idx, 1);
+          const idz = list.indexOf(item);
+          if (idx > -1) {
+            list.splice(idz, 1);
           }
         }
-        if (add) {
-          temp = {
-            ...temp,
-            [iterator.id]: { ...iterator, qty },
-          };
-        }
       }
+      temp.push({
+        ...frame,
+        is_start: list.length !== frame.wood_list.length,
+        remaining_list: list,
+      });
     }
 
-    const doneList = [...tempSuggest];
-    const todos: any = [...Object.values(temp)];
-    for (const item of todos) {
-      const list = flatten(Array(item?.qty ?? 1).fill(item?.wood_list ?? []));
-      item.all_wood_list = [...list];
-      for (const wood of doneList) {
-        const index = list.indexOf(wood);
-        if (index > -1) {
-          list.splice(index, 1);
-        }
-      }
-      item.remaining_pattern_list = list;
-    }
+    const filter = temp.filter((val) => val.is_start);
+    const filterNotStart = temp.filter((val) => !val.is_start);
+    // const grouping: any = mapValues(groupBy(filter, 'name'), (clist) =>
+    //   clist.map((car) => omit(car, 'name')),
+    // );
+
+    // const finishedValues = [];
+    // for (const key of Object.keys(grouping)) {
+    //   const value: any[] = grouping[key];
+    //   finishedValues.push({
+    //     name: key,
+    //     ...value[0],
+    //     qty: (value ?? []).length,
+    //   });
+    // }
+
     return {
-      todos,
-      nubmersToDoStd: flatten(todos.map((val) => val.remaining_pattern_list)),
+      todoList: filter,
+      numbers: flatten(filter.map((val) => val.remaining_list)),
+      notTodoList: filterNotStart,
     };
   }
 
@@ -292,33 +331,629 @@ export class ProductionPlansService {
     };
   }
 
-  prepareReplanWoodInPlan(data: ProductionPlan) {
+  prepareReplanWoodInPlan(data: ProductionPlan, minLength: number) {
     const result = [];
-    const numbers = [];
+    // const minLength = data.minLength;
     for (const planWood of data.productionPlanWoods ?? []) {
-      const used = (planWood.productionPlanWoodItems ?? []).filter(
-        (val: any) => {
-          val.cuttingStatus === SUCCESS;
-        },
-      );
-      if (!used && planWood.itemType === PART) {
-        result.push(planWood);
-        numbers.push(parser(planWood.length));
+      const totalLength = planWood.length;
+      const usedList = (planWood.productionPlanWoodItems ?? [])
+        .filter((val) => val.cuttingStatus === SUCCESS)
+        .map((val) => ({ ...val, length: parser(val.length) }));
+      const totalUsed = sumBy(usedList, (val) => val.length);
+      const totalRemaining = totalLength - totalUsed;
+      if (totalRemaining < minLength) {
+        continue;
       }
-      // const items = item.productionPlanWoodItems;
-      // const list = items.map((val: ProductionPlanWoodItem) => {
-      //   return {
-      //     ...val,
-      //     length: parser(val.length),
-      //   };
-      // });
-      // item.productionPlanWoodItems = list;
+      if (planWood.itemType === FULL && totalUsed === 0) {
+        continue;
+      }
+
+      result.push(totalRemaining);
     }
 
-    return {
-      result,
-      numbers,
-    };
+    return result;
+  }
+
+  async getStdOrderList(woodId: number, notTodoList: any[]) {
+    const data = await this.standardFrameStocksRepository
+      .createQueryBuilder('std')
+      .leftJoinAndSelect('std.standardFrame', 'standardFrame')
+      .leftJoinAndSelect('std.wood', 'wood')
+      .leftJoinAndSelect('wood.woodType', 'woodType')
+      .where('std.wood_id = :woodId', { woodId })
+      .getMany();
+
+    const res = data
+      .map((item: any) => {
+        console.log('item:', item);
+        const qty =
+          item.reorderPoint && item.reorderPoint > 0
+            ? parser(item.reorderPoint) -
+              (parser(item.stock) + parser(item.inprogressStock))
+            : 0;
+
+        const width = parser(item.standardFrame?.width);
+        const height = parser(item.standardFrame?.height);
+        const planList = notTodoList.filter(
+          (val: any) => val.width === width && val.height === height,
+        );
+        const planQty = sumBy(planList, (val) => val.qty);
+        return {
+          standardFrameId: item.standardFrameId,
+          woodId: item.woodId,
+          // size: item.standardFrame.name,
+          size: `${parser(item.standardFrame?.width)}x${parser(
+            item.standardFrame?.height,
+          )}`,
+          width: parser(item.standardFrame?.width),
+          height: parser(item.standardFrame?.height),
+          woodWidth: parser(item.wood?.woodType?.width),
+          qty: qty + planQty,
+        };
+      })
+      .filter((item) => item.qty > 0);
+
+    return res;
+  }
+
+  async updatePlanWoodItems(
+    manager: EntityManager,
+    data: any,
+    dataUpdate: any,
+  ) {
+    const planWoodId = dataUpdate.id;
+
+    const existing = await manager.findBy(ProductionPlanWoodItem, {
+      productionPlanId: data.id,
+      productionPlanWoodId: planWoodId,
+    });
+    const tempItems = [...existing];
+    // update plan wood items
+    console.log('>>>>===== plan item=====');
+    const items = dataUpdate.productionPlanWoodItems;
+    console.log('items:', dataUpdate.id, dataUpdate.length, items);
+    console.log('', planWoodId, items);
+
+    for (const item2 of items) {
+      if (item2.id) {
+        console.log('item2.id:', item2.id);
+        console.log('item2:', item2);
+        const updated = await manager.update(
+          ProductionPlanWoodItem,
+          {
+            id: item2.id,
+          },
+          plainToInstance(
+            ProductionPlanWoodItem,
+            { ...item2, productionPlanWoodId: planWoodId },
+            {
+              strategy: 'excludeAll',
+            },
+          ),
+        );
+
+        const indexById = tempItems.findIndex((item) => item.id === item2.id);
+        if (indexById > -1) {
+          tempItems.splice(indexById, 1);
+        }
+      } else {
+        const savedItem = await manager.save(
+          plainToInstance(
+            ProductionPlanWoodItem,
+            {
+              ...item2,
+              productionPlanWoodId: planWoodId,
+              productionPlanId: data.id,
+            },
+            { strategy: 'excludeAll' },
+          ),
+        );
+        console.log('savedItem:', savedItem);
+      }
+    }
+
+    if (tempItems.length > 0) {
+      const deleted = await manager.delete(ProductionPlanWoodItem, {
+        id: In(tempItems.map((item) => item.id)),
+      });
+      console.log('deleted:', deleted);
+    }
+    console.log('tempItems:', tempItems);
+  }
+
+  async editPlanWood(manager: EntityManager, data: any, response: any) {
+    console.log('============== editPlanWood ==========');
+    const existing = await manager.findBy(ProductionPlanWood, {
+      productionPlanId: data.id,
+    });
+    const tempExisting = [...existing];
+    for (const val of response) {
+      if (val.isFullSuccess) {
+        const indexById = tempExisting.findIndex((item) => item.id === val.id);
+        if (indexById > -1) {
+          tempExisting.splice(indexById, 1);
+        }
+        continue;
+      }
+      if (val.id) {
+        await manager.update(
+          ProductionPlanWood,
+          { id: val.id },
+          plainToInstance(
+            ProductionPlanWood,
+            {
+              ...val,
+            },
+            { strategy: 'excludeAll' },
+          ),
+        );
+        await this.updatePlanWoodItems(manager, data, {
+          ...val,
+        });
+        const indexById = tempExisting.findIndex((item) => item.id === val.id);
+        if (indexById > -1) {
+          tempExisting.splice(indexById, 1);
+        }
+      } else {
+        const dataCreated = await manager.save(
+          ProductionPlanWood,
+          plainToInstance(
+            ProductionPlanWood,
+            {
+              ...val,
+            },
+            { strategy: 'excludeAll' },
+          ),
+        );
+        await this.updatePlanWoodItems(manager, data, {
+          ...val,
+          ...dataCreated,
+        });
+      }
+    }
+
+    const deleted = await manager.delete(ProductionPlanWood, {
+      id: In(tempExisting.map((item) => item.id)),
+    });
+
+    const newExisting = await manager.find(ProductionPlanWood, {
+      where: { productionPlanId: data.id },
+      relations: ['productionPlanWoodItems'],
+    });
+
+    // // update or delete
+    // for (const val of existing) {
+    //   // find by id
+    //   const indexById = response.findIndex((item) => item.id === val.id);
+    //   if (indexById > -1) {
+    //     // update plan wood
+    //     const dataUpdate = response[indexById];
+    //     // console.log('dataUpdate:', dataUpdate);
+    //     const update = await manager.update(
+    //       ProductionPlanWood,
+    //       { id: val.id },
+    //       plainToInstance(
+    //         ProductionPlanWood,
+    //         {
+    //           ...omit(dataUpdate, 'productionPlanWoodItems'),
+    //         },
+    //         { strategy: 'excludeAll' },
+    //       ),
+    //     );
+    //     await this.updatePlanWoodItems(manager, data, dataUpdate);
+
+    //     // update paln wood items
+    //     response.splice(indexById, 1);
+    //   } else {
+    //     // delete
+    //     const deleted = await manager.delete(ProductionPlanWoodItem, {
+    //       productionPlanId: data.id,
+    //       cuttingStatus: PENDING,
+    //     });
+    //   }
+    // }
+
+    // // create
+    // for (const val of response) {
+    //   const dataCreated = await manager.save(
+    //     ProductionPlanWood,
+    //     plainToInstance(
+    //       ProductionPlanWood,
+    //       {
+    //         ...omit(val, 'productionPlanWoodItems'),
+    //       },
+    //       { strategy: 'excludeAll' },
+    //     ),
+    //   );
+    //   await this.updatePlanWoodItems(manager, data, { ...val, ...dataCreated });
+    // }
+
+    // const newExisting = await manager.find(ProductionPlanWood, {
+    //   where: { productionPlanId: data.id },
+    //   relations: ['productionPlanWoodItems'],
+    //   // productionPlanId: data.id,
+    // });
+    // console.log('newExisting:', JSON.stringify(newExisting));
+  }
+
+  async updatePlanWoods(
+    manager: EntityManager,
+    data: any,
+    response: any,
+    minLength: any,
+  ) {
+    try {
+      const tempResponse = [...response];
+      const planWoodItems = data.productionPlanWoods.reduce(
+        (acc, val: ProductionPlanWood) => {
+          const isNotStart = val.productionPlanWoodItems
+            .filter((item) => item.type === NORMAL)
+            .every((item) => item.cuttingStatus === PENDING);
+          if (isNotStart) {
+            return acc;
+          }
+          const isFullSuccess = val.productionPlanWoodItems
+            .filter((item) => item.type === NORMAL)
+            .every((item) => item.cuttingStatus === SUCCESS);
+          if (isFullSuccess) {
+            return [
+              ...acc,
+              {
+                ...val,
+                isFullSuccess,
+              },
+            ];
+          }
+          const success = val.productionPlanWoodItems.filter(
+            (item) => item.type === NORMAL && item.cuttingStatus === SUCCESS,
+          );
+          const totalLength = val.length;
+          const sumSuccess = sumBy(success, (item) => parser(item.length));
+          const totalRemaining = totalLength - sumSuccess;
+
+          const woodIndex = tempResponse.findIndex(
+            (val: any) => parser(val.wood) === parser(totalRemaining),
+          );
+          if (woodIndex > -1) {
+            const woodData = tempResponse[woodIndex];
+            tempResponse.splice(woodIndex, 1);
+            const newList = woodData.list.map((item) => {
+              return plainToInstance(ProductionPlanWoodItem, {
+                productionPlanWoodId: val.id,
+                productionPlanId: val.productionPlanId,
+                length: parser(item),
+                cuttingStatus: PENDING,
+                type: NORMAL,
+                woodInfo: woodData,
+              });
+            });
+
+            const productionPlanWoodItems = [...success, ...newList];
+
+            if (woodData.remaining > 0) {
+              const remainingList = {
+                productionPlanWoodId: val.id,
+                productionPlanId: val.productionPlanId,
+                length: parser(woodData.remaining),
+                cuttingStatus: PENDING,
+                type: woodData.remaining < minLength ? WASTED : KEEP,
+                woodInfo: woodData,
+              };
+              productionPlanWoodItems.push(remainingList);
+            }
+
+            return [
+              ...acc,
+              {
+                ...val,
+                productionPlanWoodItems,
+              },
+            ];
+          }
+
+          return acc;
+        },
+        [],
+      );
+
+      let planWoodFormTemp = [];
+      if (tempResponse.length > 0) {
+        planWoodFormTemp = tempResponse.map((val: any) => {
+          const items = val.list.map((length: any) => {
+            return {
+              length: length,
+              cuttingStatus: PENDING,
+              type: NORMAL,
+            };
+          });
+
+          if (val.remaining > 0) {
+            items.push({
+              length: val.remaining,
+              cuttingStatus: PENDING,
+              type: val.remaining < minLength ? WASTED : KEEP,
+            });
+          }
+
+          return plainToInstance(ProductionPlanWood, {
+            productionPlanId: data.id,
+            itemType: val.woodType,
+            length: parser(val.wood),
+            productionPlanWoodItems: items,
+          });
+        });
+      }
+
+      const result = [...planWoodItems, ...planWoodFormTemp].map((item) => {
+        const items = item.productionPlanWoodItems.map((val) => ({
+          ...val,
+          length: parser(val.length),
+          typeNo: val.type === NORMAL ? 1 : val.type === KEEP ? 2 : 3,
+        }));
+
+        return {
+          ...item,
+          length: parser(item.length),
+          sum: sumBy(items, (val) => val.length),
+          productionPlanWoodItems: orderBy(
+            items,
+            ['typeNo', 'length'],
+            ['asc', 'asc'],
+          ),
+        };
+      });
+      const res = orderBy(result, 'length', 'asc');
+      await this.editPlanWood(manager, data, res);
+      return res;
+    } catch (err) {
+      console.log('err:', err);
+    }
+  }
+
+  async updatePlanWoodSuggest(
+    manager: EntityManager,
+    data: any,
+    stdNotTodoList: any[],
+    response: any,
+  ) {
+    try {
+      const list = [...data.productionPlanSuggestItems];
+      for (let index = 0; index < list.length; index++) {
+        const suggest = list[index];
+        for (const notTodo of stdNotTodoList) {
+          if (
+            parser(notTodo.width) === parser(suggest.width) &&
+            parser(notTodo.height) === parser(suggest.height)
+          ) {
+            list[index].qty = suggest.qty - notTodo.qty;
+          }
+        }
+      }
+      const updateList = list.filter((val) => val.qty > 0);
+      const newList = [
+        ...response
+          .filter((val) => val.std)
+          .map((val) => ({
+            ...val.std,
+            name: val.std.size,
+          })),
+      ];
+      const grouping: any = mapValues(
+        groupBy([...newList, ...updateList], 'name'),
+        (clist) => clist.map((val) => val),
+      );
+
+      const finishedValues = [];
+      for (const size of Object.keys(grouping)) {
+        const frames = grouping[size].map((val) => ({
+          ...val,
+          qty: parser(val.qty),
+        }));
+        const value = {
+          ...frames[0],
+          qty: sumBy(frames, (val) => val.qty),
+        };
+        finishedValues.push(value);
+      }
+
+      await manager.delete(ProductionPlanSuggestItem, {
+        productionPlanId: data.id,
+      });
+
+      for (const item of finishedValues) {
+        await manager.save(
+          plainToInstance(
+            ProductionPlanSuggestItem,
+            {
+              ...item,
+              productionPlanId: data.id,
+            },
+            { strategy: 'excludeAll' },
+          ),
+        );
+      }
+    } catch (err) {
+      console.log('err:', err);
+    }
+  }
+
+  async handleUpdatePlanWoodSummaryFull(
+    manager: EntityManager,
+    data: any,
+    filteredFull: any,
+  ) {
+    const countFull = filteredFull.length;
+    const foundFull = data.productionWoodSummary.find(
+      (item) => item.woodType === FULL,
+    );
+    if (foundFull) {
+      // update wood summary
+      const totalHold = countFull - foundFull.totalQty;
+      const full = await manager.findOneBy(ProductionWoodSummary, {
+        id: foundFull.id,
+      });
+      full.totalQty = countFull;
+      await manager.update(ProductionWoodSummary, { id: foundFull.id }, full);
+
+      // update wood stock location
+      const locationStockCriteria = {
+        woodId: foundFull.woodId,
+        locationId: foundFull.locationId,
+        lot: foundFull.lot,
+      };
+      const locationStock = await manager.findOneBy(WoodStockLocation, {
+        ...locationStockCriteria,
+      });
+      locationStock.used = locationStock.used + totalHold;
+      await manager.update(
+        WoodStockLocation,
+        {
+          ...locationStockCriteria,
+        },
+        plainToInstance(WoodItemStock, locationStock, {
+          strategy: 'excludeAll',
+        }),
+      );
+
+      // update wood summary
+      const woodStockCriteria = {
+        woodId: foundFull.woodId,
+        lot: foundFull.lot,
+      };
+      const woodStock = await manager.findOneBy(WoodStock, woodStockCriteria);
+      woodStock.totalUsed = woodStock.totalUsed + totalHold;
+      await manager.update(
+        WoodStock,
+        { ...woodStockCriteria },
+        plainToInstance(WoodStock, woodStock, { strategy: 'excludeAll' }),
+      );
+    } else {
+      const location = await manager.findBy(WoodStockLocation, {
+        woodId: data?.productionOrder?.woodId,
+        lot: data?.woodLot,
+      });
+      const ordered = orderBy(location, 'remaining', 'asc').filter(
+        (item: any) => item?.remaining >= countFull,
+      );
+      const locationId = ordered?.[0]?.locationId;
+      await manager.save(
+        plainToInstance(
+          ProductionWoodSummary,
+          {
+            woodType: FULL,
+            length: filteredFull[0].length,
+            totalQty: countFull,
+            totalWithdraw: 0,
+            woodId: data?.productionOrder?.woodId,
+            lot: data?.woodLot,
+            locationId: locationId,
+          },
+          { strategy: 'excludeAll' },
+        ),
+      );
+      // update used stock
+      const locationStockCriteria2 = {
+        woodId: data?.productionOrder?.woodId,
+        locationId: locationId,
+        lot: data?.woodLot,
+      };
+      const locationStock = await manager.findOneBy(WoodStockLocation, {
+        ...locationStockCriteria2,
+      });
+      locationStock.used = locationStock.used + countFull;
+      await manager.update(
+        WoodStockLocation,
+        { ...locationStockCriteria2 },
+        plainToInstance(WoodItemStock, locationStock, {
+          strategy: 'excludeAll',
+        }),
+      );
+
+      // update used stock
+      const woodStockCriteria2 = {
+        woodId: data?.productionOrder?.woodId,
+        lot: data?.woodLot,
+      };
+      const woodStock = await manager.findOneBy(WoodStock, {
+        ...woodStockCriteria2,
+      });
+      woodStock.totalUsed = woodStock.totalUsed + countFull;
+      await manager.update(
+        WoodStock,
+        { ...woodStockCriteria2 },
+        plainToInstance(WoodStock, woodStock, { strategy: 'excludeAll' }),
+      );
+    }
+  }
+
+  async handleUpdatePlanWoodSummaryPart(
+    manager: EntityManager,
+    data: any,
+    filteredPart: any,
+  ) {
+    const foundPart = data.productionWoodSummary.filter(
+      (item) => item.woodType === PART,
+    );
+    const addList = [];
+    const deleteList = [];
+    for (let index = 0; index < foundPart.length; index++) {
+      const element = foundPart[index];
+      const partIndex = filteredPart.findIndex(
+        (item) => parser(item.length) === parser(element.length),
+      );
+      if (partIndex > -1) {
+        const partData = filteredPart[partIndex];
+        filteredPart.splice(partIndex, 1);
+      } else {
+        deleteList.push(element.id);
+        await manager.delete(ProductionWoodSummary, { id: element.id });
+      }
+    }
+    if (filteredPart.length > 0) {
+      for (const iterator of filteredPart) {
+        const findItemWoodData = await manager.findOneBy(WoodItemStock, {
+          woodId: data?.productionOrder?.woodId,
+          lot: data?.woodLot,
+          used: 0,
+        });
+        await manager.save(
+          plainToInstance(
+            ProductionWoodSummary,
+            {
+              productionPlanId: data?.id,
+              woodType: PART,
+              length: iterator.length,
+              totalQty: 1,
+              totalWithdraw: 0,
+              woodId: data?.productionOrder?.woodId,
+              lot: data?.woodLot,
+              locationId: findItemWoodData.id,
+            },
+            { strategy: 'excludeAll' },
+          ),
+        );
+      }
+    }
+  }
+
+  async updateWoodSummary(
+    manager: EntityManager,
+    data: any,
+    resultPlanWoods: any,
+  ) {
+    try {
+      const filteredFull = resultPlanWoods.filter(
+        (item) => item.itemType === FULL,
+      );
+      const filteredPart = resultPlanWoods.filter(
+        (item) => item.itemType === PART,
+      );
+
+      await this.handleUpdatePlanWoodSummaryFull(manager, data, filteredFull);
+      await this.handleUpdatePlanWoodSummaryPart(manager, data, filteredPart);
+    } catch (err) {
+      console.log('err:', err);
+    }
   }
 
   async replan(id: number) {
@@ -358,17 +993,17 @@ export class ProductionPlansService {
     const woodLength = woodType?.length;
     const woodWidth = woodType?.width;
     const minLength = await this.getMinLength(woodWidth, sparePart);
+
     const core1 = new CoreAlgorithm(
       parser(woodLength),
       parser(minLength),
       parser(sparePart),
     );
-    const formatter = await formatItems(
+    const formatter = formatItems(
       data.productionOrder.productionOrderItems,
       woodWidth,
     );
     const numbers = await core1.totalCutting(formatter);
-    console.log('data?.productionPlanWoods:', data?.productionPlanWoods);
     const numberFinished = this.findWoodNumbersSuccess(
       data?.productionPlanWoods,
     );
@@ -377,38 +1012,73 @@ export class ProductionPlansService {
       numberFinished,
     );
 
-    // เอา to dos ไปหา stock ที่เหลือ
-    const { todos, nubmersToDoStd } = this.getToDoNextStd(successStd, data);
+    // // หา todo ของ std ที่ต้องทำต่อ
+    const {
+      numbers: remainingNumbersStd,
+      todoList: stdTodoList,
+      notTodoList: stdNotTodoList,
+    } = this.getToDoNextStd(successStd, data);
+
+    const orderStd = await this.getStdOrderList(
+      data.productionOrder.woodId,
+      stdNotTodoList,
+    );
 
     const { woodItemStocksNumbers } = await this.prepareReplanWoodStocks(data);
-    const { numbers: woodItemsStocks } =
-      await this.prepareReplanWoodInPlan(data);
+    const woodItemStocksNumbersInPlan = await this.prepareReplanWoodInPlan(
+      data,
+      minLength,
+    );
 
-    console.log('woodItemsStocksxx:', woodItemsStocks);
-    console.log('woodItemStocks:', woodItemStocksNumbers);
-    return [];
-    // console.log('lot:', lot);
+    const core = new ImproveCoreAlgorithm(
+      woodLength,
+      minLength,
+      sparePart,
+      woodWidth,
+    );
+    const remainingList = [...remainingNumbers, ...remainingNumbersStd];
+    const woodItemList = [
+      ...woodItemStocksNumbers,
+      ...woodItemStocksNumbersInPlan,
+    ];
 
-    // wood
-
-    // const woodItemStocks = woodItemStocks;
-    const remainingList = [...remainingNumbers];
-
-    // hand
-    return todos;
-
-    // find all number of main list
-    // const orderItems = data?.productionOrder?.productionOrderItems ?? [];
-
-    // find all number of suggest
-    const suggestItems = data?.productionPlanSuggestItems ?? [];
-
-    // const woods = data?.productionPlanWoods ?? [];
-    // const woods = data?.productionPlanWoods;
-
-    // console.log('data:', data);
-    // console.log('id:', id);
-    return data;
+    core.setRemainingList([...remainingList]);
+    core.setWoodItemStockList([...woodItemList]);
+    core.setStandardListByOrders(
+      [...orderStd].map((item) => {
+        return item;
+      }),
+    );
+    core.findPattern();
+    const { response, responseSuggest } = core.prepareResponseV2();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      //
+      // prepare wood item
+      const resultPlanWoods = await this.updatePlanWoods(
+        queryRunner.manager,
+        data,
+        response,
+        minLength,
+      );
+      await this.updatePlanWoodSuggest(
+        queryRunner.manager,
+        data,
+        stdNotTodoList,
+        response,
+      );
+      await this.updateWoodSummary(queryRunner.manager, data, resultPlanWoods);
+      await queryRunner.commitTransaction();
+      return response;
+    } catch (err) {
+      console.log('err:', err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+    return response;
   }
 
   createReplan(id: number) {

@@ -7,7 +7,7 @@ export interface ITFProductionWoodSummary {
   productionPlanID?: number | null
   woodType?: string | null
   woodItemStockID?: number | null
-  length?: string | null
+  length?: number | null
   unit?: number | null
   totalQty?: number | null
   totalWithdraw?: number | null

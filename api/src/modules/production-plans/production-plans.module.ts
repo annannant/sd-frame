@@ -11,6 +11,7 @@ import { ProductionOrder } from '../production-orders/entities/production-order.
 import { ProductionOrderItem } from '../production-order-items/entities/production-order-item.entity';
 import { StandardFrame } from '../standard-frames/entities/standard-frame.entity';
 import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-location.entity';
+import { StandardFrameStock } from '../standard-frame-stocks/entities/standard-frame-stocks.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WoodStockLocation } from '../wood-stock-locations/entities/wood-stock-l
       ProductionWoodSummary,
       StandardFrame,
       WoodStockLocation,
+      StandardFrameStock,
     ]),
   ],
   controllers: [ProductionPlansController],
