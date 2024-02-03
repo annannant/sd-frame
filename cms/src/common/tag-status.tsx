@@ -28,7 +28,7 @@ export const TagStatus = (props: ITFTagStatus) => {
       case CUTTING_INPROGRESS:
         return 'processing'
       case WAIT_FOR_PREPARING:
-        return 'orange'
+        return 'magenta'
       case PREPARING_INPROGRESS:
         return 'cyan'
       case COMPLETED:

@@ -20,11 +20,12 @@ export const TableConfirm = () => {
         </Title>
         <Text className="m-0">โปรดตรวจสอบความถูกต้อง</Text>
       </div>
-      <div className="mt-4 w-[1070px]">
+      <div className="mt-4 w-[1230px]">
         <Table
           dataSource={dataSource}
           columns={columns}
           pagination={false}
+          className="w-full"
           scroll={{ x: 1500 }}
         />
       </div>

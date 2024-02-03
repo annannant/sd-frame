@@ -15,6 +15,7 @@ import { useStandardFrameStocks } from 'hooks/useStandardFrameStocks'
 import { DrawerForm } from './drawer-form/drawer-form'
 import { TableWoodStandardFrameStocks } from './table-wood-std-stocks/table-wood-std-stocks'
 
+import wood from 'app/slice/master/wood'
 import { setFilter } from 'app/slice/standard-frame-stocks'
 import { useGetStandardFramesByIDQuery } from 'services/standard-frame'
 import { useGetAllWoodsQuery } from 'services/wood'
@@ -24,13 +25,20 @@ const { Title } = Typography
 export const StandardFrameStocksInfoComponent = () => {
   const dispathch = useDispatch()
   const [form] = Form.useForm()
+  const woodId = Form.useWatch('woodId', form)
 
   const { id }: any = useLoaderData()
   const { data } = useGetStandardFramesByIDQuery(id)
-  const { onClickCreate } = useStandardFrameStocks()
+  const { data: list, onClickCreate } = useStandardFrameStocks()
 
   const { data: dataWoods } = useGetAllWoodsQuery()
   const options = useMemo(() => dataWoods?.options ?? [], [dataWoods])
+  const showCreate = useMemo(() => {
+    if (!woodId) {
+      return true
+    }
+    return woodId && (list ?? [])?.length === 0
+  }, [woodId, list])
 
   const handleChange = (value: string, option: any) => {
     const filter = { woodId: value ? +value : undefined }
@@ -55,9 +63,15 @@ export const StandardFrameStocksInfoComponent = () => {
     <>
       <div className="flex items-center justify-between">
         <Title level={3}>จัดการสต๊อกกรอบมาตรฐาน / {data?.name}</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={onClickCreate}>
-          สร้าง
-        </Button>
+        {showCreate && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={onClickCreate}
+          >
+            สร้าง
+          </Button>
+        )}
       </div>
       <Card
         title={

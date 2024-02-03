@@ -89,9 +89,9 @@ export const DrawerForm = (props: DrawerFormProps) => {
         open={isShowDrawer}
         extra={
           <Space>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose}>ยกเลิก</Button>
             <Button type="primary" onClick={() => form?.submit()}>
-              OK
+              บันทึก
             </Button>
           </Space>
         }

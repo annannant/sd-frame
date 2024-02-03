@@ -31,18 +31,18 @@ const columns = [
   },
   {
     title: 'วันที่สั่งผลิต',
-    dataIndex: 'address',
-    key: 'address',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     render: (text: any, record: ITFTableProductionOrder, count: any) => {
-      if (!record?.createdAt) {
+      if (!record?.updatedAt) {
         return <></>
       }
       return (
         <>
-          <span className="mr-[6px]">{`${formatDate(record?.createdAt).format(
+          <span className="mr-[6px]">{`${formatDate(record?.updatedAt).format(
             'DD MMM YYYY '
           )}`}</span>
-          <span>{`${formatDate(record?.createdAt).format('HH:mm')} น.`}</span>
+          <span>{`${formatDate(record?.updatedAt).format('HH:mm')} น.`}</span>
         </>
       )
     },

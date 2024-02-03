@@ -93,9 +93,9 @@ class ImproveCoreAlgorithm {
     for (let i = 0; i < list.length; i++) {
       const value = list[i];
       const currentCombinations = [...combinations];
-      if (i == 20) {
-        return;
-      }
+      // if (i == 20) {
+      //   return;
+      // }
       for (let j = 0; j < currentCombinations.length; j++) {
         const combination = currentCombinations[j];
         const currentPattern = [...combination, value];
@@ -111,8 +111,7 @@ class ImproveCoreAlgorithm {
         // isMoreThanWoodLength
         if (sumPattern > this.woodLength) {
           combinationsKey[keyPattern] = true; // for checking duplicate
-
-          console.log("====>sumPattern > this.woodLength");
+          console.log("aaaaa====>sumPattern > this.woodLength");
           console.log(
             i + 1,
             ";",
@@ -824,6 +823,7 @@ class ImproveCoreAlgorithm {
 
   // ========= v2 =========
   findRemaningPatternWithCombinationStd(expectedRemaining, candidate) {
+    console.log("========>expectedRemaining:", expectedRemaining);
     if (this.standardList.length === 0) {
       return false;
     }
@@ -841,7 +841,11 @@ class ImproveCoreAlgorithm {
         if (+std.qty < currentQty) {
           continue;
         }
-        const list = flatten(Array(currentQty).fill(std.wood_list));
+        const list = flatten(Array(currentQty).fill(std.wood_list)).sort(
+          (a, b) => b - a
+        );
+        // // console.log("list:", currentQty, JSON.stringify(list));
+        // console.log(list.join(","));
 
         let combinations = [[]];
         const combinationsKey = { "": true };
@@ -858,17 +862,28 @@ class ImproveCoreAlgorithm {
               continue;
             }
             if (sumPattern > this.woodLength) {
+              combinationsKey[keyPattern] = true; // for checking duplicate
               continue;
             }
 
             const remaining = expectedRemaining - sumPattern;
+            console.log(
+              i + 1,
+              ";",
+              JSON.stringify(currentPattern),
+              ";",
+              sumPattern,
+              ";",
+              remaining
+            );
             if (remaining < 0) {
               continue;
             }
 
+            const expMin = this.minLength / 4;
             if (
               remaining === 0 ||
-              (remaining < candidate && remaining < this.minLength)
+              (remaining < candidate && remaining < expMin)
             ) {
               const remainingPatternList = this.findRemainingList(
                 list,
@@ -926,11 +941,12 @@ class ImproveCoreAlgorithm {
     const ori = [...remainingList];
     let numbers = [...remainingList].sort((a, b) => b - a);
     while (numbers.length > 0) {
-      console.log("====>::::::");
+      console.log("====> a ::::::");
       const selected = this.findCombination(
         [...numbers],
         this.remainigWoodItemStockList
       );
+      console.log("====> end a::::::", selected.remaining);
 
       if (selected.remaining < this.minLength / 4) {
         this.finalResult.push(selected);
@@ -945,6 +961,9 @@ class ImproveCoreAlgorithm {
 
       // check numbers -> ว่า มีแต่ std รึป่าว
       const IsAllStd = this.checkAllIsStd(ori);
+      console.log("IsAllStd:", IsAllStd);
+
+      console.log("====> start std ::::::");
 
       // หา pattern ที่รวมกับ std แล้วเศษน้อยกว่า selected.remaining
       const selectedstd = this.findCombinationRemaningPattern2(
@@ -968,6 +987,7 @@ class ImproveCoreAlgorithm {
         //   'selectedstd?.remaining_pattern_list:',
         //   selectedstd?.remaining_pattern_list,
         // );
+
         numbers = [
           ...newNumbers,
           ...(selectedstd?.remaining_pattern_list ?? []),
@@ -998,6 +1018,7 @@ class ImproveCoreAlgorithm {
     }
 
     console.log("====>finalResult<=====");
+    return;
     console.log(this.finalResult);
   }
   findCombinationRemaningPattern2(candidate, numbers, woodItemStocksList) {
@@ -1019,8 +1040,19 @@ class ImproveCoreAlgorithm {
           continue;
         }
         if (sumPattern > this.woodLength) {
+          combinationsKey[keyPattern] = true; // for checking duplicate
+          console.log("bbbb sumPattern > this.woodLength");
+          console.log(
+            i + 1,
+            ";",
+            JSON.stringify(currentPattern),
+            ";",
+            sumPattern
+          );
           continue;
         }
+
+        let a = [];
 
         const woods = [...woodItemStocks, 120];
         for (let k = 0; k < woods.length; k++) {
@@ -1030,22 +1062,37 @@ class ImproveCoreAlgorithm {
             continue;
           }
 
+          const minA = parser(sumPattern) < parser(wood / 2);
+          // console.log("minA:", minA, parser(sumPattern), parser(wood / 2));
           if (parser(sumPattern) < parser(wood / 2)) {
             continue;
           }
+          a.push(remaining);
 
           console.log(
-            "remaining:",
-            remaining,
-            candidate,
+            i + 1,
+            ";",
+            JSON.stringify(currentPattern),
+            ";",
             sumPattern,
-            JSON.stringify(currentPattern)
+            ";",
+            a.join(";")
           );
+
+          // console.log(
+          //   "remaining:",
+          //   remaining,
+          //   candidate,
+          //   sumPattern,
+          //   JSON.stringify(currentPattern)
+          // );
           // // หาเศษ จาก std
           const match = this.findRemaningPatternWithCombinationStd(
             remaining,
             candidate
           );
+          // console.log("match:", match);
+
           if (!match) {
             continue;
           }
@@ -1054,6 +1101,8 @@ class ImproveCoreAlgorithm {
           console.log(JSON.stringify(currentPattern));
           // console.log('match:', match);
           const pattern = [...match.used_pattern_list, ...currentPattern];
+          console.log("match:", match);
+
           return {
             ...match,
             main_pattern: currentPattern.join(","),
@@ -1074,29 +1123,41 @@ class ImproveCoreAlgorithm {
 
     return undefined;
   }
+
   findRemainingList(all, used) {
-    const remainingList = [];
-    for (const iterator of all) {
-      const index = used.indexOf(iterator);
-      if (index < 0) {
-        remainingList.push(iterator);
+    for (const iterator of used) {
+      const index = all.indexOf(iterator);
+      if (index >= 0) {
+        all.splice(index, 1);
       }
     }
-    return remainingList;
+    return all;
   }
 }
 
 async function execute() {
   const remainingList = [
-    12.5, 12.5,
+    // 12.5, 12.5,
     // 12.5, 12.5,
     // 10.5, 10.5,
-    10.5,
+    // 10.5,
     // 10.5,
     //  9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5,
     // 7.5,
-    7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5,
+    7.5, 7.5, 7.5, 7.5, 7.5, 6.5,
+    // 7.5, 7.5, 7.5, 7.5,
   ];
+
+  // const remainingList = [
+  //   12.5, 12.5,
+  //   // 12.5, 12.5,
+  //   // 10.5, 10.5,
+  //   10.5,
+  //   // 10.5,
+  //   //  9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5,
+  //   // 7.5,
+  //   7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5,
+  // ];
   const orderStd = [
     { width: 4, hight: 6, qty: 5 },
     { width: 5, hight: 7, qty: 1 },

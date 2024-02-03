@@ -47,7 +47,8 @@ class ImproveCoreAlgorithm {
       for (let j = 0; j < currentWoodItemStocks.length; j++) {
         const wood = currentWoodItemStocks[j];
         const remaining = wood - item;
-        if (remaining >= 0 && remaining <= this.minLength) {
+        // if (remaining >= 0 && remaining <= this.minLength) {
+        if (remaining >= 0 && remaining < this.minLength) {
           woodItemStocks.splice(j, 1);
           result.push({
             pattern: item,
@@ -252,7 +253,8 @@ class ImproveCoreAlgorithm {
           continue;
         }
 
-        if (remaining >= 0 && remaining <= this.minLength) {
+        if (remaining >= 0 && remaining < this.minLength) {
+          // if (remaining >= 0 && remaining <= this.minLength) {
           return temp;
         }
       }

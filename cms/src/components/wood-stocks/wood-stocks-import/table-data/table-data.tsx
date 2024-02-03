@@ -40,7 +40,7 @@ export const TableData = () => {
         </>
       )}
       {!!dataFailed.length && (
-        <div className="mt-4 w-[1070px]">
+        <div className="mt-4 w-[1230px]">
           {/* <Tag className="mb-2 rounded-[10px]" color={colors.danger}>
             Failed
           </Tag> */}
@@ -54,7 +54,7 @@ export const TableData = () => {
       )}
       {!!dataPass.length && (
         <>
-          <div className="mt-4 w-[1070px]">
+          <div className="mt-4 w-[1230px]">
             {/* <Tag className="mb-2 rounded-[10px]" color={colors.success}>
               Pass
             </Tag> */}

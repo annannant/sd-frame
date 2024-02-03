@@ -1,10 +1,12 @@
 import { useLoaderData } from 'react-router-dom'
 
-import { Col, Image, Row, Typography } from 'antd'
+import { Card, Col, Image, Row, Table, Typography } from 'antd'
 
 import { parser, toFixed } from 'helper/number'
 import { convertUnitToText } from 'helper/unit'
 import { convertSizeSymbol } from 'helper/wood'
+
+import columns from '../table-woods/columns'
 
 import { useGetWoodsByWoodTypeIDQuery } from 'services/wood-type'
 
@@ -56,6 +58,11 @@ export const WoodTypesInfo = () => {
       </Col>
       <Col span={12} className="flex justify-end">
         <Image src={data?.imageUrl ?? ''} style={{ height: 130 }} />
+      </Col>
+      <Col span={24}>
+        <Card title="pending product">
+          <Table dataSource={data?.woods ?? []} columns={columns} />
+        </Card>
       </Col>
     </Row>
   )

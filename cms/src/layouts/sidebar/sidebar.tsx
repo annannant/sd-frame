@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { useCookies } from 'react-cookie'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
@@ -29,36 +30,10 @@ function getItem(
   } as MenuItem
 }
 
-const transformMenu = (menus: ITFSidebarItem[], collapsed: boolean) => {
-  return menus.map((menu, pindex) => {
-    const items = menu.items?.map((item, index: number) => {
-      const label = item.url ? (
-        <NavLink
-          to={item.url}
-          className={({ isActive, isPending }) =>
-            isPending ? 'pending' : isActive ? 'active' : ''
-          }
-        >
-          {item.label}
-        </NavLink>
-      ) : (
-        item.label
-      )
-      return getItem(label, item.key, item.icon, item.children, item.type)
-    })
-
-    return getItem(
-      menu.group,
-      menu.key,
-      collapsed ? menu.items?.[0]?.icon : null,
-      items
-    )
-  })
-}
-
 export const Sidebar = () => {
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
+  const [cookies] = useCookies(['user'])
 
   const selectedKeys = useMemo(() => {
     const items = keyBy(menus.map((menu) => menu.items).flat(), 'key')
@@ -85,6 +60,37 @@ export const Sidebar = () => {
 
     return [location.pathname]
   }, [location.pathname])
+
+  const transformMenu = (menus: ITFSidebarItem[], collapsed: boolean) => {
+    const items = menus.filter((menu, pindex) => {
+      return menu.permission?.includes(cookies.user.data.role)
+    })
+
+    return items.map((menu, pindex) => {
+      const items = menu.items?.map((item, index: number) => {
+        const label = item.url ? (
+          <NavLink
+            to={item.url}
+            className={({ isActive, isPending }) =>
+              isPending ? 'pending' : isActive ? 'active' : ''
+            }
+          >
+            {item.label}
+          </NavLink>
+        ) : (
+          item.label
+        )
+        return getItem(label, item.key, item.icon, item.children, item.type)
+      })
+
+      return getItem(
+        menu.group,
+        menu.key,
+        collapsed ? menu.items?.[0]?.icon : null,
+        items
+      )
+    })
+  }
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed)

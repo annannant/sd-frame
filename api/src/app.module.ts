@@ -40,6 +40,7 @@ import { ProductionPlanWoodItem } from './modules/production-plan-wood-items/ent
 import { ProductionWoodSummary } from './modules/production-wood-summary/entities/production-wood-summary.entity';
 import { ProductionPlanSuggestItemsModule } from './modules/production-plan-suggest-items/production-plan-suggest-items.module';
 import { ProductionPlanSuggestItem } from './modules/production-plan-suggest-items/entities/production-plan-suggest-item.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ProductionPlanSuggestItem } from './modules/production-plan-suggest-ite
         ProductionPlanWood,
         ProductionPlanWoodItem,
         ProductionWoodSummary,
+        User,
       ],
       autoLoadEntities: true,
       // synchronize: true,
@@ -96,6 +98,8 @@ import { ProductionPlanSuggestItem } from './modules/production-plan-suggest-ite
     ProductionPlanWoodsModule,
     ProductionPlanWoodItemsModule,
     ProductionWoodSummaryModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

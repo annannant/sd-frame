@@ -372,8 +372,8 @@ export const PlanWoods = () => {
         selectedItems={selectedLength}
       />
       <ModalManageWoodWasted
-        title="จัดการเก็บไม้"
-        description="ระบุความยาวไมต้องการจัดเก็บ"
+        title="จัดเก็บไม้"
+        description="ระบุความยาวไม้ต้องการจัดเก็บ"
         open={openKeep}
         onClose={onCloseKepp}
         selectedItems={selectedLength}

@@ -29,7 +29,7 @@ export const TableItems = () => {
 
   return (
     <>
-      <Table dataSource={dataSources} columns={columns} />
+      <Table dataSource={dataSources} columns={columns} pagination={false} />
     </>
   )
 }

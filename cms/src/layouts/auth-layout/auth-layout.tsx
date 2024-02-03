@@ -1,25 +1,14 @@
-import { useEffect } from 'react'
-import { useCookies } from 'react-cookie'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import { notification } from 'antd'
 
 import Sidebar from '../sidebar/sidebar'
-import { Content } from './main-layout.styles'
+import { Content } from './auth-layout.styles'
 
 import { Navbar } from 'layouts/navbar/navbar'
 
-export const MainLayout = () => {
-  const navigate = useNavigate()
-
+export const AuthLayout = () => {
   const [api, contextHolder] = notification.useNotification()
-  const [cookies, setCookie] = useCookies(['user'])
-
-  useEffect(() => {
-    if (!cookies?.user) {
-      navigate('/login')
-    }
-  }, [cookies])
 
   return (
     <>
@@ -27,7 +16,6 @@ export const MainLayout = () => {
       <div className="flex flex-col">
         <Navbar />
         <div className="flex flex-row">
-          <Sidebar />
           <Content className="flex-1">
             <Outlet />
           </Content>
@@ -37,4 +25,4 @@ export const MainLayout = () => {
   )
 }
 
-export default MainLayout
+export default AuthLayout

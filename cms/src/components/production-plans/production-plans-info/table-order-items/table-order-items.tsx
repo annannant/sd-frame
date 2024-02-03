@@ -75,7 +75,7 @@ export const TableOrderItems = () => {
 
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
     </div>
   )
 }

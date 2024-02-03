@@ -7,12 +7,13 @@ export type ITFMenuItem = {
   url?: string
   children?: ITFMenuItem[]
   type?: 'group'
+  permission?: string[]
 }
 
 export interface ITFSidebarItem {
   group: string
   url?: string
   key: React.Key
-  permission?: TypePermission[]
+  permission?: string[]
   items?: ITFMenuItem[]
 }

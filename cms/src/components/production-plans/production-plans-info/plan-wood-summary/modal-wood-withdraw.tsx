@@ -41,7 +41,7 @@ import {
   productionOrdersSelector,
   setParamsCreatePlan,
 } from 'app/slice/production-orders'
-import { omit, sortBy, sum } from 'lodash'
+import { omit, orderBy, sortBy, sum } from 'lodash'
 import {
   useGetProductionOrderByIDQuery,
   usePostProductionOrderCreatePlanQuery,
@@ -61,12 +61,32 @@ export const ModalWoodWithdraw = (props: ITFProps) => {
 
   const { id }: any = useLoaderData()
   const { data, refetch } = useGetProductionPlanByIDQuery(id, { skip: !id })
-  const productionWoodSummary = data?.productionWoodSummary ?? []
+
+  const formatted = (items: any[]) => {
+    const result = (items ?? []).map((item) => ({
+      ...item,
+      length: parser(item?.length ?? 0),
+    }))
+    const values = orderBy(result, 'length', 'asc').map((item, idnex) => ({
+      ...item,
+      key: idnex,
+    }))
+
+    return values
+  }
+
+  const productionWoodSummary = useMemo(
+    () => formatted(data?.productionWoodSummary ?? []),
+    [data?.productionWoodSummary]
+  )
   const lot = productionWoodSummary?.[0]?.lot
 
   useEffect(() => {
-    form.setFieldValue('woodsWithdraw', data?.productionWoodSummary)
-  }, [data?.productionWoodSummary])
+    form.setFieldValue(
+      'woodsWithdraw',
+      formatted(data?.productionWoodSummary ?? [])
+    )
+  }, [form, data?.productionWoodSummary])
 
   const onSubmit = () => {
     form.submit()
@@ -76,7 +96,6 @@ export const ModalWoodWithdraw = (props: ITFProps) => {
     try {
       setLoading(true)
       const values = form.getFieldValue('woodsWithdraw') ?? []
-
       const payload = values.map((val: ITFUpdateProductionWoodSummary) => ({
         ...omit(val, ['location', 'wood']),
       }))

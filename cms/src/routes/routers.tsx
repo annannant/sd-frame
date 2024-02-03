@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import ErrorPage from 'pages/error-page'
+import { LoginPage } from 'pages/login/login'
 import { ProductionFormInfoPage } from 'pages/production-forms/production-forms-info'
 import { ProductionFormListPage } from 'pages/production-forms/production-forms-list'
 import {
@@ -43,6 +44,7 @@ import { WoodTypesListPage } from 'pages/wood-types/wood-types-list'
 import { WoodTypesWoodInfoPage } from 'pages/wood-types/wood-types-wood-info'
 import { WoodTypesWoodListPage } from 'pages/wood-types/wood-types-wood-list'
 
+import AuthLayout from 'layouts/auth-layout/auth-layout'
 import MainLayout from 'layouts/main-layout/main-layout'
 
 export const router = createBrowserRouter([
@@ -50,6 +52,18 @@ export const router = createBrowserRouter([
     path: '/',
     element: <div>Hello world!</div>,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: '/login',
+    element: <AuthLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <LoginPage />,
+        errorElement: <ErrorPage />,
+      },
+    ],
   },
   {
     path: '/production-orders',

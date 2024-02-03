@@ -927,7 +927,7 @@ export class ProductionPlansService {
               totalWithdraw: 0,
               woodId: data?.productionOrder?.woodId,
               lot: data?.woodLot,
-              locationId: findItemWoodData.id,
+              locationId: findItemWoodData?.locationId,
             },
             { strategy: 'excludeAll' },
           ),

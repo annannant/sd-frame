@@ -76,7 +76,7 @@ export const PlanWoodList = () => {
       title={
         <div className="flex items-center justify-between">
           <span>
-            รายการไม้ที่ต้องใช้
+            รายการไม้ที่ต้องใช้{' '}
             {lot && (
               <span>
                 ( Lot : <span className="mx-1">{lot}</span> )

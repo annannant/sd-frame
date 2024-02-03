@@ -944,6 +944,7 @@ export class ProductionOrdersService {
       {
         ...updateProductionOrderDto,
         orderNo,
+        updatedAt: new Date(),
       },
       { strategy: 'excludeAll' },
     );

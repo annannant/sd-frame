@@ -23,9 +23,17 @@ export const useSaveWood = () => {
     await deleteWood(id)
   }
 
+  const transformItems = (data: ITFWoodForm[]) => {
+    return data.map((item: ITFWoodForm) => ({
+      ...item,
+      key: item?.code?.toString(),
+    }))
+  }
+
   return {
     create,
     update,
     remove,
+    transformItems,
   }
 }
